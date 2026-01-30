@@ -21,3 +21,7 @@ Thumbs.db
 
 # Environment
 appsettings.Development.json
+
+*.csproj.user
+bin/
+obj/
