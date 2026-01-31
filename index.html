@@ -334,28 +334,76 @@ let users = JSON.parse(localStorage.getItem("users") || "[]");
                 localStorage.setItem("scores", JSON.stringify(scores));
             }
 
-            // تسجيل الدخول
-            function login() {
-                const email = document.getElementById("email").value.trim().toLowerCase();
-                const password = document.getElementById("password").value.trim();
+          // تسجيل الدخول (Firestore)
+async function login() {
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value.trim();
 
-                const user = users.find(
-                    (u) =>
-                        u.email.toLowerCase().trim() === email &&
-                        u.password === password
-                );
+    if (!email || !password) {
+        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+        return;
+    }
 
-                if (!user) {
-                    alert("بيانات الدخول غير صحيحة!");
-                    return;
-                }
+    try {
+        const { doc, getDoc } = window.firestoreTools;
 
-                if (user.role === "STUDENT" && !user.approved) {
-                    alert("حسابك لم يتم تفعيله بعد!");
-                    return;
-                }
+        // 👇 نبحث عن المستخدم في Firestore داخل collection اسمها students
+        const userRef = doc(window.db, "students", email);
+        const snap = await getDoc(userRef);
 
-                currentUser = user;
+        if (!snap.exists()) {
+            alert("هذا الحساب غير موجود ❌");
+            return;
+        }
+
+        const user = snap.data();
+
+        // التحقق من كلمة المرور
+        if (user.password !== password) {
+            alert("كلمة المرور غير صحيحة ❌");
+            return;
+        }
+
+        // منع الطالب غير المفعل
+        if (user.role === "STUDENT" && user.approved === false) {
+            alert("حسابك لم يتم تفعيله بعد!");
+            return;
+        }
+
+        // ✅ تسجيل الدخول
+        currentUser = user;
+
+        // 👇 إخفاء رسالة الترحيب
+        document.getElementById("welcomeMessage").classList.add("hidden");
+
+        // إخفاء صفحات الدخول والتسجيل
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("registerPage").classList.add("hidden");
+
+        // عرض الصفحة الرئيسية
+        document.getElementById("mainPage").classList.remove("hidden");
+        document.querySelector(".logout-btn").classList.remove("hidden");
+
+        // عرض اسم المستخدم في الـ navbar
+        document.getElementById("navUser").textContent = " | " + currentUser.email;
+
+        // عرض الصفوف
+        renderGrades();
+
+        // إظهار لوحة الإدارة للـ Admin و Supervisor فقط
+        document.getElementById("adminPanel").classList.toggle(
+            "hidden",
+            !(user.role === "ADMIN" || user.role === "SUPERVISOR")
+        );
+
+        hideAllAdminSections();
+
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء تسجيل الدخول ❌\n" + err.message);
+    }
+}
+
 
                 // 👇 إخفاء رسالة الترحيب
                 document.getElementById("welcomeMessage").classList.add("hidden");
@@ -1108,6 +1156,7 @@ let users = JSON.parse(localStorage.getItem("users") || "[]");
 
 </body>
 </html>
+
 
 
 
