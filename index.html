@@ -395,24 +395,6 @@ async function login() {
 
 
 
-                // 👇 إخفاء رسالة الترحيب
-                document.getElementById("welcomeMessage").classList.add("hidden");
-
-                document.getElementById("loginPage").classList.add("hidden");
-                document.getElementById("registerPage").classList.add("hidden");
-                document.getElementById("mainPage").classList.remove("hidden");
-                document.querySelector(".logout-btn").classList.remove("hidden");
-                document.getElementById("navUser").textContent = " | " + currentUser.email;
-
-                renderGrades();
-
-                document.getElementById("adminPanel").classList.toggle(
-                    "hidden",
-                    !(user.role === "ADMIN" || user.role === "SUPERVISOR")
-                );
-                hideAllAdminSections();
-            }
-
 
 
             // تسجيل خروج
@@ -1137,7 +1119,7 @@ async function login() {
 
         <script>
             if ("serviceWorker" in navigator) {
-                navigator.serviceWorker.register("/sw.js")
+                navigator.serviceWorker.register("./sw.js")
                     .then(() => console.log("Service Worker Registered"))
                     .catch(err => console.log("SW registration failed:", err));
             }
@@ -1146,6 +1128,7 @@ async function login() {
 
 </body>
 </html>
+
 
 
 
