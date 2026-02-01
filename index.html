@@ -446,36 +446,44 @@ async function login() {
                 }
 
                 try {
-                    const res = await fetch("/api/students/register", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            name: email.split("@")[0],
-                            email: email,
-                            password: password
-                        })
-                    });
+    const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
 
-                    if (!res.ok) {
-                        const msg = await res.text();
-                        alert("فشل إرسال الطلب ❌\n" + msg);
-                        return;
-                    }
+    // ✅ منع التكرار
+    const q = query(
+        collection(window.db, "students"),
+        where("email", "==", email.toLowerCase())
+    );
+    const snap = await getDocs(q);
 
-                    alert("تم إرسال طلب التسجيل للموافقة من المشرف ✅");
+    if (!snap.empty) {
+        alert("هذا البريد مسجل بالفعل ❌");
+        return;
+    }
 
-                    // تنظيف الحقول
-                    document.getElementById("regEmail").value = "";
-                    document.getElementById("regPassword").value = "";
+    // ✅ إضافة الطالب في Firestore
+    await addDoc(collection(window.db, "students"), {
+        name: email.split("@")[0],
+        email: email.toLowerCase(),
+        password: password,
+        role: "STUDENT",
+        approved: false,            // 👈 مهم: يبقى في انتظار موافقة الأدمن
+        createdAt: new Date().toISOString()
+    });
 
-                    // رجوع للصفحة الرئيسية
-                    backToLogin();
+    alert("تم إنشاء الحساب بنجاح ✅\nبانتظار موافقة الإدارة");
 
-                } catch (err) {
-                    alert("تعذر الاتصال بالسيرفر ❌\n" + err.message);
-                }
+    // تنظيف الحقول
+    document.getElementById("regEmail").value = "";
+    document.getElementById("regPassword").value = "";
+
+    // رجوع للصفحة الرئيسية
+    backToLogin();
+
+} catch (err) {
+    console.error(err);
+    alert("حدث خطأ أثناء التسجيل ❌\n" + err.message);
+}
+
             }
 
 
@@ -1128,6 +1136,7 @@ async function login() {
 
 </body>
 </html>
+
 
 
 
