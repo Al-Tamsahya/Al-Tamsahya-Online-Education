@@ -10,6 +10,8 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e40af">
 
+    <link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 
 
 </head>
@@ -1348,7 +1350,8 @@ async function toggleApprove(studentDocId, currentApproved) {
 
         <script>
             if ("serviceWorker" in navigator) {
-                navigator.serviceWorker.register("./sw.js")
+                navigator.serviceWorker.register("./js/sw.js")
+
                     .then(() => console.log("Service Worker Registered"))
                     .catch(err => console.log("SW registration failed:", err));
             }
@@ -1357,6 +1360,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
