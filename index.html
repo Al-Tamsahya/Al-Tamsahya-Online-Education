@@ -333,9 +333,7 @@ let users = JSON.parse(localStorage.getItem("users") || "[]");
                 localStorage.setItem("scores", JSON.stringify(scores));
             }
 
-          // تسجيل الدخول (Firestore)
-// تسجيل الدخول (Firestore) - يعمل حتى لو Document ID ليس الإيميل
-// تسجيل الدخول (Firestore) - يعمل حتى لو Document ID ليس الإيميل
+         // تسجيل الدخول (Firestore) - يعمل حتى لو Document ID ليس الإيميل
 async function login() {
     const email = document.getElementById("email").value.trim().toLowerCase();
     const password = document.getElementById("password").value.trim();
@@ -366,39 +364,52 @@ async function login() {
         const user = userDoc.data();
 
         // التحقق من كلمة المرور
-        if (user.password !== password) {
+        if (!user.password || user.password !== password) {
             alert("كلمة المرور غير صحيحة ❌");
             return;
         }
-currentUser = user;
 
-// إخفاء صفحة الدخول وإظهار الرئيسية
-document.getElementById("loginPage").classList.add("hidden");
-document.getElementById("mainPage").classList.remove("hidden");
-document.querySelector(".logout-btn").classList.remove("hidden");
+        // ✅ role آمن
+        const role = (user.role || "").toString().trim().toUpperCase();
 
-// 👇 إخفاء رسالة الترحيب
-document.getElementById("welcomeMessage").classList.add("hidden");
+        // ✅ لو طالب ومش approved يمنع الدخول (الأدمن يدخل عادي)
+        if (role !== "ADMIN" && user.approved !== true) {
+            alert("حسابك قيد المراجعة من الإدارة ⏳");
+            return;
+        }
 
-// عرض اسم المستخدم في الـ navbar
-document.getElementById("navUser").textContent = " | " + (user.email || email);
+        // حفظ المستخدم الحالي
+        currentUser = user;
 
-// ✅ إظهار لوحة الإدارة فقط لو ADMIN
-if (user.role && user.role.toUpperCase() === "ADMIN") {
-    document.getElementById("adminPanel").classList.remove("hidden");
-} else {
-    document.getElementById("adminPanel").classList.add("hidden");
-}
+        // إخفاء صفحة الدخول وإظهار الرئيسية
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+        document.querySelector(".logout-btn").classList.remove("hidden");
 
-// عرض الصفوف
-renderGrades();
+        // 👇 إخفاء رسالة الترحيب
+        document.getElementById("welcomeMessage").classList.add("hidden");
+
+        // عرض اسم المستخدم في الـ navbar
+        document.getElementById("navUser").textContent = " | " + (user.email || email);
+
+        // ✅ إظهار لوحة الإدارة فقط لو ADMIN
+        const adminPanel = document.getElementById("adminPanel");
+        if (adminPanel) {
+            if (role === "ADMIN") {
+                adminPanel.classList.remove("hidden");
+            } else {
+                adminPanel.classList.add("hidden");
+            }
+        }
+
+        // عرض الصفوف
+        renderGrades();
 
     } catch (err) {
-        console.error(err);
+        console.error("LOGIN ERROR:", err);
         alert("حدث خطأ أثناء تسجيل الدخول ❌");
     }
 }
-
 
 
 
@@ -1142,6 +1153,7 @@ renderGrades();
 
 </body>
 </html>
+
 
 
 
