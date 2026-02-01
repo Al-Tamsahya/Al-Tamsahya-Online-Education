@@ -334,6 +334,7 @@
             // }
 
          // تسجيل الدخول (Admin + Student)
+// تسجيل الدخول (Admin + Supervisor + Student)
 async function login() {
     const email = document.getElementById("email").value.trim().toLowerCase();
     const password = document.getElementById("password").value.trim();
@@ -365,7 +366,6 @@ async function login() {
                 return;
             }
 
-            // تسجيل دخول الأدمن
             currentUser = { ...admin, id: adminDoc.id, role: "ADMIN" };
 
             document.getElementById("loginPage").classList.add("hidden");
@@ -375,7 +375,6 @@ async function login() {
             document.getElementById("welcomeMessage").classList.add("hidden");
             document.getElementById("navUser").textContent = " | " + admin.email;
 
-            // ✅ إظهار لوحة الإدارة
             document.getElementById("adminPanel").classList.remove("hidden");
 
             renderGrades();
@@ -383,7 +382,48 @@ async function login() {
         }
 
         // =========================
-        // 2) لو مش أدمن → نبحث داخل students
+        // 2) لو مش أدمن → نبحث داخل users عن SUPERVISOR
+        // =========================
+        const supervisorQuery = query(
+            collection(window.db, "users"),
+            where("email", "==", email)
+        );
+
+        const supervisorSnap = await getDocs(supervisorQuery);
+
+        if (!supervisorSnap.empty) {
+            const supDoc = supervisorSnap.docs[0];
+            const sup = supDoc.data();
+
+            // مهم: نتأكد أنه فعلاً مشرف
+            if ((sup.role || "").toUpperCase() !== "SUPERVISOR") {
+                alert("هذا الحساب ليس مشرف ❌");
+                return;
+            }
+
+            if (sup.password !== password) {
+                alert("كلمة المرور غير صحيحة ❌");
+                return;
+            }
+
+            currentUser = { ...sup, id: supDoc.id, role: "SUPERVISOR" };
+
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("mainPage").classList.remove("hidden");
+            document.querySelector(".logout-btn").classList.remove("hidden");
+
+            document.getElementById("welcomeMessage").classList.add("hidden");
+            document.getElementById("navUser").textContent = " | " + sup.email;
+
+            // ✅ إظهار لوحة الإدارة للمشرف
+            document.getElementById("adminPanel").classList.remove("hidden");
+
+            renderGrades();
+            return;
+        }
+
+        // =========================
+        // 3) لو مش أدمن ولا مشرف → نبحث داخل students
         // =========================
         const studentQuery = query(
             collection(window.db, "students"),
@@ -405,13 +445,11 @@ async function login() {
             return;
         }
 
-        // منع الدخول لو الحساب غير مفعل
         if (student.approved !== true) {
             alert("حسابك قيد المراجعة ولم يتم تفعيله بعد ⏳");
             return;
         }
 
-        // تسجيل دخول الطالب
         currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
 
         document.getElementById("loginPage").classList.add("hidden");
@@ -1317,6 +1355,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
