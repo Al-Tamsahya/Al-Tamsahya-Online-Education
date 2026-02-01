@@ -275,7 +275,7 @@
             
 
           
-            // let scores = JSON.parse(localStorage.getItem("scores") || "{}");
+            let scores = JSON.parse(localStorage.getItem("scores") || "{}");
 
             let currentUser = null;
             let currentGrade = null;
@@ -396,10 +396,12 @@ async function login() {
             const sup = supDoc.data();
 
             // مهم: نتأكد أنه فعلاً مشرف
-            if ((sup.role || "").toUpperCase() !== "SUPERVISOR") {
-                alert("هذا الحساب ليس مشرف ❌");
-                return;
-            }
+           const role = (sup.role || "SUPERVISOR").toUpperCase();
+if (role !== "SUPERVISOR") {
+   alert("هذا الحساب ليس مشرف ❌");
+   return;
+}
+
 
             if (sup.password !== password) {
                 alert("كلمة المرور غير صحيحة ❌");
@@ -1355,6 +1357,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
