@@ -1374,13 +1374,15 @@ async function toggleApprove(studentDocId, currentApproved) {
   });
 </script>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+<!-- Firebase init -->
+<script src="./js/firebase.js"></script>
 
-
-
-
-
-        <script>
+<!-- Service Worker -->
+<script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js")
       .then(() => console.log("Service Worker Registered"))
@@ -1388,10 +1390,12 @@ async function toggleApprove(studentDocId, currentApproved) {
   }
 </script>
 
+</body>
 
 
 </body>
 </html>
+
 
 
 
