@@ -390,10 +390,11 @@ async function login() {
     const { collection, getDocs, query, where } = window.firestoreTools;
 
     const supQuery = query(
-      collection(db, "users")
-      where("email", "==", email),
-      where("role", "==", "SUPERVISOR")
-    );
+  collection(db, "users"),
+  where("email", "==", email),
+  where("role", "==", "SUPERVISOR")
+);
+
 
     const supSnap = await getDocs(supQuery);
 
@@ -720,39 +721,53 @@ async function login() {
                 loadLesson(currentLessonIndex);
             }
 
-            // عرض تفاصيل الدرس (فيديو + شرح نصي)
             function showLessonDetail(lesson) {
-                const videoDiv = document.getElementById("lessonVideo");
-                const textDiv = document.getElementById("lessonText");
+  const videoDiv = document.getElementById("lessonVideo");
+  const textDiv = document.getElementById("lessonText");
 
-                videoDiv.innerHTML = `
-   <video
-  id="lessonPlayer"
-  controls
-  playsinline
-  preload="auto"
-  muted
-  width="100%"
-  style="max-height: 220px; border-radius: 12px;"
->
-  <source src="./videos/Lesson1.mp4.mp4?v=1" type="video/mp4">
-  المتصفح لا يدعم تشغيل الفيديو
-</video>
+  videoDiv.innerHTML = `
+    <video
+      id="lessonPlayer"
+      controls
+      playsinline
+      preload="auto"
+      muted
+      width="100%"
+      style="max-height: 220px; border-radius: 12px;"
+    >
+      <source src="./videos/Lesson1.mp4.mp4?v=1" type="video/mp4">
+      المتصفح لا يدعم تشغيل الفيديو
+    </video>
+  `;
 
-<script>
-  window.addEventListener("load", () => {
-    const v = document.getElementById("lessonPlayer");
+  const video = document.getElementById("lessonPlayer");
+  if (video) {
+    video.play().catch(err => console.log("Autoplay blocked:", err));
 
-    // تشغيل تلقائي (مسموح لأنه muted)
-    v.play().catch(err => {
-      console.log("Autoplay blocked:", err);
+    lessonCompleted = false;
+    const nextBtn = document.getElementById("nextLessonBtn");
+    if (nextBtn) nextBtn.disabled = true;
+
+    video.addEventListener("loadeddata", () => {
+      video.muted = false;
+      video.play().catch(() => console.log("المتصفح منع التشغيل التلقائي بالصوت"));
     });
-  });
-</script>
+
+    video.addEventListener("ended", () => {
+      lessonCompleted = true;
+      if (nextBtn) nextBtn.disabled = false;
+      saveLastLesson(currentLessonIndex);
+    });
+  }
+
+  textDiv.textContent = lesson.content;
+  updateLessonNav(true);
+}
 
 
 
-                                                                                                                                                                                                                                                  `;
+
+                                                                                                                                                                                                                                                 `;
 
                 const video = document.getElementById("lessonPlayer");
 
@@ -1413,6 +1428,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
