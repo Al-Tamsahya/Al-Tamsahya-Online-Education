@@ -342,7 +342,7 @@
             //     localStorage.setItem("scores", JSON.stringify(scores));
             // }
 
-         // تسجيل الدخول (Admin + Student)
+        // تسجيل الدخول (Admin + Student)
 async function login() {
   const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value.trim();
@@ -365,42 +365,38 @@ async function login() {
     console.log("Email:", email);
 
     // ✅ Admin doc
-const adminRef = db.doc("admins/admin");
-const adminSnap = await adminRef.get();
+    const adminRef = db.doc("admins/admin");
+    const adminSnap = await adminRef.get();
 
-console.log("adminSnap.exists:", adminSnap.exists);
+    console.log("adminSnap.exists:", adminSnap.exists);
 
-if (adminSnap.exists) {
-  const adminData = adminSnap.data();
-  console.log("adminData:", adminData);
+    // ✅ لو الأدمن موجود
+    if (adminSnap.exists) {
+      const adminData = adminSnap.data();
+      console.log("adminData:", adminData);
 
-  const dbEmail = (adminData.email || "").toLowerCase();
-  const dbPass = adminData.password || "";
+      const dbEmail = (adminData.email || "").toLowerCase();
+      const dbPass = adminData.password || "";
 
-  // ✅ Admin login
-  if (dbEmail === email && dbPass === password) {
-    alert("تم تسجيل الدخول كأدمن ✅");
-    window.location.href = "./admin.html";
-    return;
-      
-  }
-}
-
-// ✅ Student login (إذا لم يكن أدمن)
-alert("تم تسجيل الدخول بنجاح ✅");
-window.location.href = "./index.html"; // أو صفحة المنصة الرئيسية عندك
-return;
-
+      // ✅ Admin login
+      if (dbEmail === email && dbPass === password) {
+        alert("تم تسجيل الدخول كأدمن ✅");
+        window.location.href = "./admin.html";
+        return;
       }
     }
 
-    alert("بيانات الدخول غير صحيحة ❌");
+    // ✅ Student login (إذا لم يكن أدمن)
+    alert("تم تسجيل الدخول بنجاح ✅");
+    window.location.href = "./index.html"; // غيرها لاسم صفحة المنصة لو مختلف
+    return;
 
   } catch (err) {
     console.error("LOGIN ERROR FULL:", err);
     alert("حدث خطأ أثناء تسجيل الدخول ❌\n" + (err.message || err));
   }
 }
+
 </script>
 
 
@@ -1406,6 +1402,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
