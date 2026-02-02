@@ -365,22 +365,31 @@ async function login() {
     console.log("Email:", email);
 
     // ✅ Admin doc
-    const adminRef = db.doc("admins/admin");
-    const adminSnap = await adminRef.get();
+const adminRef = db.doc("admins/admin");
+const adminSnap = await adminRef.get();
 
-    console.log("adminSnap.exists:", adminSnap.exists);
+console.log("adminSnap.exists:", adminSnap.exists);
 
-    if (adminSnap.exists) {
-      const adminData = adminSnap.data();
-      console.log("adminData:", adminData);
+if (adminSnap.exists) {
+  const adminData = adminSnap.data();
+  console.log("adminData:", adminData);
 
-      const dbEmail = (adminData.email || "").toLowerCase();
-      const dbPass = adminData.password || "";
+  const dbEmail = (adminData.email || "").toLowerCase();
+  const dbPass = adminData.password || "";
 
-      if (dbEmail === email && dbPass === password) {
-        alert("تم تسجيل الدخول كأدمن ✅");
-        window.location.href = "./admin.html";
-        return;
+  // ✅ Admin login
+  if (dbEmail === email && dbPass === password) {
+    alert("تم تسجيل الدخول كأدمن ✅");
+    window.location.href = "./admin.html";
+    return;
+  }
+}
+
+// ✅ Student login (إذا لم يكن أدمن)
+alert("تم تسجيل الدخول بنجاح ✅");
+window.location.href = "./index.html"; // أو صفحة المنصة الرئيسية عندك
+return;
+
       }
     }
 
@@ -1394,6 +1403,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
