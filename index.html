@@ -1320,29 +1320,60 @@ async function toggleApprove(studentDocId, currentApproved) {
     <script src="js/admin.js"></script>
     <script src="js/app.js"></script>
     </div>-->
-        <script>
+       <script>
+  // ===============================
+  // 📲 PWA Install Button Logic
+  // ===============================
+  let deferredPrompt = null;
+  const installBtn = document.getElementById("installBtn");
 
-            // ===============================
-            // 📲 PWA Install Button Logic
-            // ===============================
-            let deferredPrompt;
-            const installBtn = document.getElementById("installBtn");
+  // إخفاء الزر افتراضيًا
+  installBtn.classList.add("hidden");
 
-            window.addEventListener("beforeinstallprompt", (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBtn.classList.remove("hidden");
-            });
+  window.addEventListener("beforeinstallprompt", (e) => {
+    // منع البانر التلقائي
+    e.preventDefault();
 
-            installBtn.addEventListener("click", async () => {
-                if (!deferredPrompt) return;
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                installBtn.classList.add("hidden");
-            });
+    // حفظ الحدث لاستخدامه لاحقًا عند الضغط على الزر
+    deferredPrompt = e;
 
-        </script>
+    // إظهار زر التثبيت
+    installBtn.classList.remove("hidden");
+
+    // (اختياري) منع ظهور التحذير في console
+    // console.log("PWA install prompt captured");
+  });
+
+  installBtn.addEventListener("click", async () => {
+    try {
+      if (!deferredPrompt) return;
+
+      // عرض نافذة التثبيت
+      deferredPrompt.prompt();
+
+      // انتظار قرار المستخدم
+      const { outcome } = await deferredPrompt.userChoice;
+
+      // تفريغ الحدث بعد الاستخدام
+      deferredPrompt = null;
+
+      // إخفاء الزر بعد الاختيار
+      installBtn.classList.add("hidden");
+
+      // console.log("Install outcome:", outcome);
+    } catch (err) {
+      console.log("Install prompt failed:", err);
+    }
+  });
+
+  // بعد التثبيت فعليًا
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    installBtn.classList.add("hidden");
+    // console.log("App installed");
+  });
+</script>
+
 
 
 
@@ -1361,6 +1392,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
