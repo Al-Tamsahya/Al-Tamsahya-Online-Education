@@ -713,14 +713,27 @@ async function login() {
    <video
   id="lessonPlayer"
   controls
-  autoplay
   playsinline
+  preload="auto"
+  muted
   width="100%"
   style="max-height: 220px; border-radius: 12px;"
 >
-  <source src="./videos/Lesson1.mp4.mp4" type="video/mp4">
+  <source src="./videos/Lesson1.mp4.mp4?v=1" type="video/mp4">
   المتصفح لا يدعم تشغيل الفيديو
 </video>
+
+<script>
+  window.addEventListener("load", () => {
+    const v = document.getElementById("lessonPlayer");
+
+    // تشغيل تلقائي (مسموح لأنه muted)
+    v.play().catch(err => {
+      console.log("Autoplay blocked:", err);
+    });
+  });
+</script>
+
 
 
                                                                                                                                                                                                                                                   `;
@@ -1382,6 +1395,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
