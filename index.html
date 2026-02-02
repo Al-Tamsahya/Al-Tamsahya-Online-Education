@@ -343,6 +343,9 @@
             // }
 
         // تسجيل الدخول (Admin + Student)
+// ===============================
+// تسجيل الدخول (Admin + Supervisor + Student)
+// ===============================
 async function login() {
   const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value.trim();
@@ -361,24 +364,19 @@ async function login() {
   const db = window.firestoreTools.db;
 
   try {
-    console.log("=== LOGIN START ===");
-    console.log("Email:", email);
+    console.log("=== LOGIN START ===", email);
 
-    // ✅ Admin doc
+    // =========================
+    // 1) Admin login (admins/admin)
+    // =========================
     const adminRef = db.doc("admins/admin");
     const adminSnap = await adminRef.get();
 
-    console.log("adminSnap.exists:", adminSnap.exists);
-
-    // ✅ لو الأدمن موجود
     if (adminSnap.exists) {
       const adminData = adminSnap.data();
-      console.log("adminData:", adminData);
-
       const dbEmail = (adminData.email || "").toLowerCase();
       const dbPass = adminData.password || "";
 
-      // ✅ Admin login
       if (dbEmail === email && dbPass === password) {
         alert("تم تسجيل الدخول كأدمن ✅");
         window.location.href = "./admin.html";
@@ -386,63 +384,94 @@ async function login() {
       }
     }
 
-    // ✅ Student login (إذا لم يكن أدمن)
-    alert("تم تسجيل الدخول بنجاح ✅");
-    window.location.href = "./index.html"; // غيرها لاسم صفحة المنصة لو مختلف
-    return;
-  } 
-  catch (err) {
+    // =========================
+    // 2) Supervisor login (users role=SUPERVISOR)
+    // =========================
+    const { collection, getDocs, query, where } = window.firestoreTools;
+
+    const supQuery = query(
+      collection(window.db, "users"),
+      where("email", "==", email),
+      where("role", "==", "SUPERVISOR")
+    );
+
+    const supSnap = await getDocs(supQuery);
+
+    if (!supSnap.empty) {
+      const supDoc = supSnap.docs[0];
+      const sup = supDoc.data();
+
+      if (sup.password !== password) {
+        alert("كلمة المرور غير صحيحة ❌");
+        return;
+      }
+
+      currentUser = { ...sup, id: supDoc.id, role: "SUPERVISOR" };
+
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("mainPage").classList.remove("hidden");
+      document.querySelector(".logout-btn").classList.remove("hidden");
+
+      document.getElementById("welcomeMessage").classList.add("hidden");
+      document.getElementById("navUser").textContent = " | " + sup.email;
+
+      // ✅ إظهار لوحة الإدارة للمشرف
+      document.getElementById("adminPanel").classList.remove("hidden");
+
+      renderGrades();
+      return;
+    }
+
+    // =========================
+    // 3) Student login (students)
+    // =========================
+    const studentQuery = query(
+      collection(window.db, "students"),
+      where("email", "==", email)
+    );
+
+    const studentSnap = await getDocs(studentQuery);
+
+    if (studentSnap.empty) {
+      alert("هذا الحساب غير موجود ❌");
+      return;
+    }
+
+    const studentDoc = studentSnap.docs[0];
+    const student = studentDoc.data();
+
+    if (student.password !== password) {
+      alert("كلمة المرور غير صحيحة ❌");
+      return;
+    }
+
+    if (student.approved !== true) {
+      alert("حسابك قيد المراجعة ولم يتم تفعيله بعد ⏳");
+      return;
+    }
+
+    currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("mainPage").classList.remove("hidden");
+    document.querySelector(".logout-btn").classList.remove("hidden");
+
+    document.getElementById("welcomeMessage").classList.add("hidden");
+    document.getElementById("navUser").textContent = " | " + student.email;
+
+    // ❌ إخفاء لوحة الإدارة للطلاب
+    document.getElementById("adminPanel").classList.add("hidden");
+
+    renderGrades();
+
+  } catch (err) {
     console.error("LOGIN ERROR FULL:", err);
     alert("حدث خطأ أثناء تسجيل الدخول ❌\n" + (err.message || err));
   }
 }
 
-</script>
 
 
-            currentUser = { ...sup, id: supDoc.id, role: "SUPERVISOR" };
-
-            document.getElementById("loginPage").classList.add("hidden");
-            document.getElementById("mainPage").classList.remove("hidden");
-            document.querySelector(".logout-btn").classList.remove("hidden");
-
-            document.getElementById("welcomeMessage").classList.add("hidden");
-            document.getElementById("navUser").textContent = " | " + sup.email;
-
-            // ✅ إظهار لوحة الإدارة للمشرف
-            document.getElementById("adminPanel").classList.remove("hidden");
-
-            renderGrades();
-            return;
-        }
-
-        // =========================
-        // 3) لو مش أدمن ولا مشرف → نبحث داخل students
-        // =========================
-        const studentQuery = query(
-            collection(window.db, "students"),
-            where("email", "==", email)
-        );
-
-        const studentSnap = await getDocs(studentQuery);
-
-        if (studentSnap.empty) {
-            alert("هذا الحساب غير موجود ❌");
-            return;
-        }
-
-        const studentDoc = studentSnap.docs[0];
-        const student = studentDoc.data();
-
-        if (student.password !== password) {
-            alert("كلمة المرور غير صحيحة ❌");
-            return;
-        }
-
-        if (student.approved !== true) {
-            alert("حسابك قيد المراجعة ولم يتم تفعيله بعد ⏳");
-            return;
-        }
 
         currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
 
@@ -1392,7 +1421,7 @@ async function toggleApprove(studentDocId, currentApproved) {
       .then(() => console.log("Service Worker Registered"))
       .catch(err => console.log("SW registration failed:", err));
   }
-    window.login = loginUser;
+   window.login = login;
 
 </script>
 
@@ -1402,6 +1431,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
