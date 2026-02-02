@@ -711,16 +711,17 @@ async function login() {
 
                 videoDiv.innerHTML = `
                                                                                                                                                               <video
-                                                                                                                                                              id="lessonPlayer"
-                                                                                                                                                              controls
-                                                                                                                                                              autoplay
-                                                                                                                                                              playsinline
-                                                                                                                                                              width="100%"
-                                                                                                                                                              style="max-height: 220px; border-radius: 12px;"
-                                                                                                                                                                >
-                                                                                                                                                                           <source src="videos/lesson1.mp4" type="video/mp4">
-                                                                                                                                                                          المتصفح لا يدعم تشغيل الفيديو
-                                                                                                                                                                           </video>
+  id="lessonPlayer"
+  controls
+  autoplay
+  playsinline
+  width="100%"
+  style="max-height: 220px; border-radius: 12px;"
+>
+  <source src="./videos/Lesson1.mp4.mp4" type="video/mp4">
+  المتصفح لا يدعم تشغيل الفيديو
+</video>
+
                                                                                                                                                                                                                                                   `;
 
                 const video = document.getElementById("lessonPlayer");
@@ -1380,6 +1381,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
