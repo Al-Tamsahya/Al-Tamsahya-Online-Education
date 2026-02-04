@@ -1064,7 +1064,8 @@ async function addStudent() {
         const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
 
         // ✅ منع التكرار
-        const db = getDB();
+        const db = window.firestoreTools.db;
+
 const q = query(collection(db, "students"), where("email", "==", email));
 
         const snap = await getDocs(q);
@@ -1246,6 +1247,7 @@ async function deleteUser(docId, collectionName) {
 }
 
 
+
 // ==============================
 // ✅ تفعيل/إلغاء تفعيل طالب (Firestore)
 // ==============================
@@ -1253,7 +1255,8 @@ async function toggleApprove(studentDocId, currentApproved) {
     try {
         const { doc, updateDoc } = window.firestoreTools;
 
-        const db = getDB();
+        const db = window.firestoreTools.db;
+
 
 await updateDoc(doc(db, "students", studentDocId), {
   approved: !currentApproved
@@ -1444,6 +1447,7 @@ await updateDoc(doc(db, "students", studentDocId), {
 
 </body>
 </html>
+
 
 
 
