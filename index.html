@@ -340,6 +340,15 @@
             //     localStorage.setItem("users", JSON.stringify(users));
             //     localStorage.setItem("scores", JSON.stringify(scores));
             // }
+// ===============================
+// ✅ Firebase DB Global Reference
+// ===============================
+function getDB() {
+  if (!window.firestoreTools || !window.firestoreTools.db) {
+    throw new Error("Firebase لم يتم تحميله بعد");
+  }
+  return window.firestoreTools.db;
+}
 
   // ===============================
 // تسجيل الدخول (Admin + Supervisor + Student)
@@ -380,8 +389,21 @@ async function login() {
 
         localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
 
-        window.location.href = "./admin.html";
-        return;
+        currentUser = { email: dbEmail, role: "ADMIN" };
+
+document.getElementById("loginPage").classList.add("hidden");
+document.getElementById("mainPage").classList.remove("hidden");
+document.querySelector(".logout-btn").classList.remove("hidden");
+
+document.getElementById("welcomeMessage").classList.add("hidden");
+document.getElementById("navUser").textContent = " | " + dbEmail;
+
+// ✅ إظهار لوحة الإدارة للأدمن
+document.getElementById("adminPanel").classList.remove("hidden");
+
+renderGrades();
+return;
+
       }
     }
 
@@ -529,23 +551,32 @@ function logout() {
             }
 
             // تسجيل طالب جديد
-            async function registerStudent() {
-                const email = document.getElementById("regEmail").value.trim();
-                const password = document.getElementById("regPassword").value.trim();
+async function registerStudent() {
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPassword").value.trim();
 
-                if (!email || !password) {
-                    alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-                    return;
-                }
+    if (!email || !password) {
+        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+        return;
+    }
+
+    // ✅ هذا السطر هو الحل
+    const db = window.firestoreTools.db;
+
+    // كمل باقي الكود تحت هنا كما هو بدون تغيير
+
 
                 try {
     const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
 
     // ✅ منع التكرار
-    const q = query(
-        collection(db, "students"),
-        where("email", "==", email.toLowerCase())
-    );
+    const db = getDB();
+
+const q = query(
+    collection(db, "students"),
+    where("email", "==", email.toLowerCase())
+);
+
     const snap = await getDocs(q);
 
     if (!snap.empty) {
@@ -956,7 +987,8 @@ async function renderStudents() {
         const { collection, getDocs, query, where } = window.firestoreTools;
 
         // 🔥 نجلب الطلاب من students مباشرة
-        const q = query(collection(db, "students"));
+        const db = getDB();
+const q = query(collection(db, "students"));
         const snap = await getDocs(q);
 
         let rows = "";
@@ -1031,7 +1063,9 @@ async function addStudent() {
         const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
 
         // ✅ منع التكرار
-        const q = query(collection(db, "students"), where("email", "==", email));
+        const db = getDB();
+const q = query(collection(db, "students"), where("email", "==", email));
+
         const snap = await getDocs(q);
 
         if (!snap.empty) {
@@ -1188,7 +1222,8 @@ async function deleteUser(docId, collectionName) {
     try {
         const { doc, deleteDoc } = window.firestoreTools;
 
-        await deleteDoc(doc(window.db, collectionName, docId));
+        const db = getDB();
+await deleteDoc(doc(db, collectionName, docId));
 
         alert("تم الحذف بنجاح ✅");
 
@@ -1210,9 +1245,12 @@ async function toggleApprove(studentDocId, currentApproved) {
     try {
         const { doc, updateDoc } = window.firestoreTools;
 
-        await updateDoc(doc(window.db, "students", studentDocId), {
-            approved: !currentApproved
-        });
+        const db = getDB();
+
+await updateDoc(doc(db, "students", studentDocId), {
+  approved: !currentApproved
+});
+
 
         alert("تم تحديث حالة الطالب ✅");
         renderStudents();
@@ -1398,6 +1436,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
