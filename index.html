@@ -70,9 +70,7 @@
 
             <!-- الأزرار داخل صفحة الدخول -->
             <div class="auth-buttons">
-                <button class="login-btn" onclick="login()">
-                    دخول
-                </button>
+                <button id="loginBtn">تسجيل الدخول</button>
 
                 <button class="register-btn secondary" onclick="registerStudentPage()">
                     تسجيل حساب جديد
@@ -721,7 +719,7 @@ async function login() {
                 loadLesson(currentLessonIndex);
             }
 
-            function showLessonDetail(lesson) {
+  function showLessonDetail(lesson) {
   const videoDiv = document.getElementById("lessonVideo");
   const textDiv = document.getElementById("lessonText");
 
@@ -767,7 +765,7 @@ async function login() {
 
 
 
-                                                                                                                                                                                                                                                 `;
+
 
                 const video = document.getElementById("lessonPlayer");
 
@@ -1423,11 +1421,12 @@ async function toggleApprove(studentDocId, currentApproved) {
 </script>
 
 
-</body>
+
 
 
 </body>
 </html>
+
 
 
 
