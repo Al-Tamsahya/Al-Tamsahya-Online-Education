@@ -763,44 +763,6 @@ async function login() {
 }
 
 
-
-
-
-
-                const video = document.getElementById("lessonPlayer");
-
-                // 🔒 قفل زر الدرس التالي عند بداية الدرس
-                lessonCompleted = false;
-                const nextBtn = document.getElementById("nextLessonBtn");
-                if (nextBtn) nextBtn.disabled = true;
-
-                /* ===============================
-                   🔊 ❌ لم يتم تغيير أي شيء هنا
-                   =============================== */
-                video.addEventListener("loadeddata", () => {
-                    video.muted = false;
-                    video.play().catch(() => {
-                        console.log("المتصفح منع التشغيل التلقائي بالصوت");
-                    });
-                });
-
-                // ✅ عند انتهاء الفيديو
-                video.addEventListener("ended", () => {
-                    lessonCompleted = true;
-
-                    // 🔓 فتح زر التالي
-                    if (nextBtn) nextBtn.disabled = false;
-
-                    // 💾 حفظ آخر درس مكتمل
-                    saveLastLesson(currentLessonIndex);
-                });
-
-                textDiv.textContent = lesson.content;
-
-                updateLessonNav(true);
-            }
-
-
             // عرض قائمة الدروس بشكل كروت
             function renderLessonList() {
                 const listDiv = document.getElementById("lessonList");
@@ -1426,6 +1388,7 @@ async function toggleApprove(studentDocId, currentApproved) {
 
 </body>
 </html>
+
 
 
 
