@@ -352,194 +352,149 @@
         }
 
         // ===============================
-        // تسجيل الدخول (Admin + Supervisor + Student)
-        // ===============================
-        async function login() {
-            const email = document.getElementById("email").value.trim().toLowerCase();
-            const password = document.getElementById("password").value.trim();
+       // ===============================
+// تسجيل الدخول (Admin + Supervisor + Student)
+// ===============================
+async function login() {
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
 
-            if (!email || !password) {
-                alert("من فضلك أدخل البريد وكلمة المرور");
-                return;
-            }
-
-            if (!window.firestoreTools || !window.firestoreTools.db) {
-                alert("Firebase لم يتم تحميله بعد");
-                console.log("firestoreTools:", window.firestoreTools);
-                return;
-            }
-
-            const db = window.firestoreTools.db;
-
-            try {
-                console.log("=== LOGIN START ===", email);
-
-                // =========================
-                // 1) Admin login (admins/admin)
-                // =========================
-                const adminRef = db.doc("admins/admin");
-                const adminSnap = await adminRef.get();
-
-                if (adminSnap.exists) {
-                    const adminData = adminSnap.data();
-                    const dbEmail = (adminData.email || "").toLowerCase();
-                    const dbPass = adminData.password || "";
-
-                    if (dbEmail === email && dbPass === password) {
-                        alert("تم تسجيل الدخول كأدمن ✅");
-
-                        localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
-
-                        currentUser = { email: dbEmail, role: "ADMIN" };
-
-                        document.getElementById("loginPage").classList.add("hidden");
-                        document.getElementById("mainPage").classList.remove("hidden");
-                        document.querySelector(".logout-btn").classList.remove("hidden");
-
-                        document.getElementById("welcomeMessage").classList.add("hidden");
-                        document.getElementById("navUser").textContent = " | " + dbEmail;
-
-                        // ✅ إظهار لوحة الإدارة للأدمن
-                        document.getElementById("adminPanel").classList.remove("hidden");
-
-                        renderGrades();
-                        return;
-
-                    }
-                }
-
-                // ✅ مهم جدًا: لو لم يكن أدمن احذف العلامة حتى لا يعلق في admin.html
-                localStorage.removeItem("isAdmin");
-
-                // =========================
-       // =========================
-// 2) Supervisor login (compat)
-// =========================
-const supSnap = await db
-  .collection("users")
-  .where("email", "==", email)
-  .where("role", "==", "SUPERVISOR")
-  .get();
-
-if (!supSnap.empty) {
-  const supDoc = supSnap.docs[0];
-  const sup = supDoc.data();
-
-  if (sup.password !== password) {
-    alert("كلمة المرور غير صحيحة ❌");
+  if (!email || !password) {
+    alert("من فضلك أدخل البريد وكلمة المرور");
     return;
   }
 
-  localStorage.removeItem("isAdmin");
+  if (!window.firestoreTools || !window.firestoreTools.db) {
+    alert("Firebase لم يتم تحميله بعد");
+    console.log("firestoreTools:", window.firestoreTools);
+    return;
+  }
 
-  currentUser = { ...sup, id: supDoc.id, role: "SUPERVISOR" };
+  const db = window.firestoreTools.db;
 
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("mainPage").classList.remove("hidden");
-  document.querySelector(".logout-btn").classList.remove("hidden");
+  try {
+    console.log("=== LOGIN START ===", email);
 
-  document.getElementById("welcomeMessage").classList.add("hidden");
-  document.getElementById("navUser").textContent = " | " + sup.email;
+    // =========================
+    // 1) Admin login (admins/admin)
+    // =========================
+    const adminRef = db.doc("admins/admin");
+    const adminSnap = await adminRef.get();
 
-  document.getElementById("adminPanel").classList.remove("hidden");
+    if (adminSnap.exists) {
+      const adminData = adminSnap.data();
+      const dbEmail = (adminData.email || "").toLowerCase();
+      const dbPass = adminData.password || "";
 
-  renderGrades();
-  return;
+      if (dbEmail === email && dbPass === password) {
+        alert("تم تسجيل الدخول كأدمن ✅");
+
+        localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
+        currentUser = { email: dbEmail, role: "ADMIN" };
+
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("mainPage").classList.remove("hidden");
+        document.querySelector(".logout-btn").classList.remove("hidden");
+
+        document.getElementById("welcomeMessage").classList.add("hidden");
+        document.getElementById("navUser").textContent = " | " + dbEmail;
+
+        // ✅ إظهار لوحة الإدارة للأدمن
+        document.getElementById("adminPanel").classList.remove("hidden");
+
+        renderGrades();
+        return;
+      }
+    }
+
+    // ✅ مهم جدًا: لو لم يكن أدمن احذف العلامة حتى لا يعلق في admin.html
+    localStorage.removeItem("isAdmin");
+
+    // =========================
+    // 2) Supervisor login (users)
+    // =========================
+    const supSnap = await db
+      .collection("users")
+      .where("email", "==", email)
+      .where("role", "==", "SUPERVISOR")
+      .get();
+
+    if (!supSnap.empty) {
+      const supDoc = supSnap.docs[0];
+      const sup = supDoc.data();
+
+      if (sup.password !== password) {
+        alert("كلمة المرور غير صحيحة ❌");
+        return;
+      }
+
+      localStorage.removeItem("isAdmin");
+
+      currentUser = { ...sup, id: supDoc.id, role: "SUPERVISOR" };
+
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("mainPage").classList.remove("hidden");
+      document.querySelector(".logout-btn").classList.remove("hidden");
+
+      document.getElementById("welcomeMessage").classList.add("hidden");
+      document.getElementById("navUser").textContent = " | " + sup.email;
+
+      // المشرف يشوف لوحة الإدارة
+      document.getElementById("adminPanel").classList.remove("hidden");
+
+      renderGrades();
+      return;
+    }
+
+    // =========================
+    // 3) Student login (students)
+    // =========================
+    const studentSnap = await db
+      .collection("students")
+      .where("email", "==", email)
+      .get();
+
+    if (studentSnap.empty) {
+      alert("هذا الحساب غير موجود ❌");
+      return;
+    }
+
+    const studentDoc = studentSnap.docs[0];
+    const student = studentDoc.data();
+
+    if (student.password !== password) {
+      alert("كلمة المرور غير صحيحة ❌");
+      return;
+    }
+
+    if (student.approved !== true) {
+      alert("حسابك قيد المراجعة ولم يتم تفعيله بعد ⏳");
+      return;
+    }
+
+    // ✅ Student ليس Admin
+    localStorage.removeItem("isAdmin");
+
+    currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("mainPage").classList.remove("hidden");
+    document.querySelector(".logout-btn").classList.remove("hidden");
+
+    document.getElementById("welcomeMessage").classList.add("hidden");
+    document.getElementById("navUser").textContent = " | " + student.email;
+
+    // ❌ إخفاء لوحة الإدارة للطلاب
+    document.getElementById("adminPanel").classList.add("hidden");
+
+    renderGrades();
+    return;
+
+  } catch (err) {
+    console.error(err);
+    alert("حدث خطأ أثناء تسجيل الدخول ❌\n" + err.message);
+  }
 }
-
-// =========================
-// 3) Student login (compat)
-// =========================
-const studentSnap = await db
-  .collection("students")
-  .where("email", "==", email)
-  .get();
-
-if (studentSnap.empty) {
-  alert("هذا الحساب غير موجود ❌");
-  return;
-}
-
-const studentDoc = studentSnap.docs[0];
-const student = studentDoc.data();
-
-if (student.password !== password) {
-  alert("كلمة المرور غير صحيحة ❌");
-  return;
-}
-
-if (student.approved !== true) {
-  alert("حسابك قيد المراجعة ولم يتم تفعيله بعد ⏳");
-  return;
-}
-
-localStorage.removeItem("isAdmin");
-
-currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
-
-document.getElementById("loginPage").classList.add("hidden");
-document.getElementById("mainPage").classList.remove("hidden");
-document.querySelector(".logout-btn").classList.remove("hidden");
-
-document.getElementById("welcomeMessage").classList.add("hidden");
-document.getElementById("navUser").textContent = " | " + student.email;
-
-document.getElementById("adminPanel").classList.add("hidden");
-
-renderGrades();
-return;
-
-                }
-
-                // =========================
-                // 3) Student login (students)
-                // =========================
-               const studentSnap = await db
-  .collection("students")
-  .where("email", "==", email)
-  .get();
-
-
-                if (studentSnap.empty) {
-                    alert("هذا الحساب غير موجود ❌");
-                    return;
-                }
-
-                const studentDoc = studentSnap.docs[0];
-                const student = studentDoc.data();
-
-                if (student.password !== password) {
-                    alert("كلمة المرور غير صحيحة ❌");
-                    return;
-                }
-
-                if (student.approved !== true) {
-                    alert("حسابك قيد المراجعة ولم يتم تفعيله بعد ⏳");
-                    return;
-                }
-
-                // ✅ Student ليس Admin
-                localStorage.removeItem("isAdmin");
-
-                currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
-
-                document.getElementById("loginPage").classList.add("hidden");
-                document.getElementById("mainPage").classList.remove("hidden");
-                document.querySelector(".logout-btn").classList.remove("hidden");
-
-                document.getElementById("welcomeMessage").classList.add("hidden");
-                document.getElementById("navUser").textContent = " | " + student.email;
-
-                // ❌ إخفاء لوحة الإدارة للطلاب
-                document.getElementById("adminPanel").classList.add("hidden");
-
-                renderGrades();
-
-            } catch (err) {
-                console.error(err);
-                alert("حدث خطأ أثناء تسجيل الدخول ❌");
-            }
-        }
 
 
 
@@ -1467,6 +1422,7 @@ async function editStudent(studentEmail) {
 
 </body>
 </html>
+
 
 
 
