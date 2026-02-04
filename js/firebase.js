@@ -1,7 +1,5 @@
 // js/firebase.js
-
 (function () {
-  // 🔥 Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyDRAwI-FZxQyD_KRPcdtLhAVbjgwLSZ9xU",
     authDomain: "ai-tamsahya-online-education.firebaseapp.com",
@@ -11,30 +9,45 @@
     appId: "1:853000263503:web:5c6406ac42c8dcffbb573a"
   };
 
-  // ✅ Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+  // منع التهيئة مرتين
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
-  // ✅ Firestore
   const db = firebase.firestore();
 
-  // ✅ Make tools globally available (this fixes window.firestoreTools undefined)
+  // أدوات compat جاهزة
   window.firestoreTools = {
-  db,
-  collection: (name) => db.collection(name),
+    db,
 
-  // ✅ doc يدعم الطريقتين:
-  // doc("admins","admin")
-  // doc("admins/admin")
-  doc: (...segments) => {
-    const path = segments.join("/");
-    return db.doc(path);
-  },
+    // collection("students")
+    collection: (name) => db.collection(name),
 
-  getDoc: (ref) => ref.get(),
-  setDoc: (ref, data) => ref.set(data),
-  updateDoc: (ref, data) => ref.update(data),
-};
+    // doc("students", id)  أو doc("students/id")
+    doc: (...segments) => {
+      const path = segments.join("/");
+      return db.doc(path);
+    },
 
+    // getDocs(collection("students"))  أو getDocs(query)
+    getDocs: async (refOrQuery) => refOrQuery.get(),
 
-  console.log("🔥 Firebase Initialized Successfully");
+    // addDoc(collection("students"), data)
+    addDoc: async (colRef, data) => colRef.add(data),
+
+    // deleteDoc(docRef)
+    deleteDoc: async (docRef) => docRef.delete(),
+
+    // updateDoc(docRef, data)
+    updateDoc: async (docRef, data) => docRef.update(data),
+
+    // setDoc(docRef, data)
+    setDoc: async (docRef, data) => docRef.set(data),
+
+    // query + where (compat)
+    query: (colRef, ...conds) => conds.reduce((q, c) => q.where(...c), colRef),
+    where: (field, op, value) => [field, op, value],
+  };
+
+  console.log("🔥 Firebase Initialized Successfully (compat mode)");
 })();
