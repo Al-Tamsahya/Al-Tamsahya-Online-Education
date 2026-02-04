@@ -1421,6 +1421,14 @@
         });
 
 </script>  <!-- ✅ هنا نهاية سكربت الموقع الأساسي -->
+</script>  <!-- ✅ هنا نهاية سكربت الموقع الأساسي -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Firebase init -->
+<script src="./js/firebase.js"></script>
 
 <!-- Service Worker -->
 <script>
@@ -1431,24 +1439,36 @@
   }
 </script>
 
-
-
-    </script>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-<!-- Firebase init -->
-<script src="./js/firebase.js"></script>
-
 <!-- PWA Install Button -->
+<script>
+  let deferredPrompt = null;
+  const installBtn = document.getElementById("installBtn");
 
-<!-- PWA Install Button -->
+  installBtn.classList.add("hidden");
 
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.classList.remove("hidden");
+  });
 
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.classList.add("hidden");
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    installBtn.classList.add("hidden");
+  });
+</script>
 
 </body>
 </html>
+
 
 
 
