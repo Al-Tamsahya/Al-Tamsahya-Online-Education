@@ -765,7 +765,7 @@ body[dir="rtl"] {
         transform: translateY(-1px);
     }
 
-..register-btn.secondary {
+.register-btn.secondary {
     min-width: 150px;
     padding: 12px 20px;
     font-size: 0.9rem;
@@ -805,4 +805,65 @@ img, video {
 
 .container, .content, .card, .box {
     max-width: 100%;
+}
+/* =========================
+   Fix Login/Register Size on Mobile
+========================= */
+@media (max-width: 480px) {
+
+  /* تصغير المسافة العلوية */
+  .login-container {
+    max-width: 340px;
+    margin: 20px 12px;   /* بدل 60px */
+    padding: 18px;       /* بدل 32px */
+    border-radius: 14px;
+  }
+
+  /* تصغير عنوان الصفحة */
+  .login-container h1,
+  .register-title {
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+  }
+
+  /* تصغير حقول الإدخال */
+  .login-container input {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    margin: 8px 0;
+  }
+
+  /* الأزرار تكون تحت بعض + أصغر */
+  .auth-buttons {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  /* زر الدخول */
+  #loginBtn {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  /* زر تسجيل حساب جديد */
+  .register-btn.secondary {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  /* صفحة التسجيل نفسها */
+  #registerPage {
+    margin: 20px 12px;
+    padding: 18px;
+    max-width: 340px;
+  }
+
+  /* تصغير رسالة الأمان */
+  .trust-message {
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
 }
