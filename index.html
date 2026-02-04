@@ -552,46 +552,37 @@ function logout() {
 
             // تسجيل طالب جديد
 async function registerStudent() {
-    const email = document.getElementById("regEmail").value.trim();
-    const password = document.getElementById("regPassword").value.trim();
+  const email = document.getElementById("regEmail").value.trim().toLowerCase();
+  const password = document.getElementById("regPassword").value.trim();
 
-    if (!email || !password) {
-        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-        return;
-    }
+  if (!email || !password) {
+    alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+    return;
+  }
 
-    // ✅ هذا السطر هو الحل
-    const db = window.firestoreTools.db;
+  // ✅ نفس طريقة الأدمن (compat)
+  const db = window.firestoreTools.db;
 
-    // كمل باقي الكود تحت هنا كما هو بدون تغيير
-
-
-                try {
-    const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
-
+  try {
     // ✅ منع التكرار
-    const db = getDB();
+    const existingSnap = await db
+      .collection("students")
+      .where("email", "==", email)
+      .get();
 
-const q = query(
-    collection(db, "students"),
-    where("email", "==", email.toLowerCase())
-);
-
-    const snap = await getDocs(q);
-
-    if (!snap.empty) {
-        alert("هذا البريد مسجل بالفعل ❌");
-        return;
+    if (!existingSnap.empty) {
+      alert("هذا البريد مسجل بالفعل ❌");
+      return;
     }
 
     // ✅ إضافة الطالب في Firestore
-    await addDoc(collection(window.firestoreTools.db, "students"), {
-        name: email.split("@")[0],
-        email: email.toLowerCase(),
-        password: password,
-        role: "STUDENT",
-        approved: false,            // 👈 مهم: يبقى في انتظار موافقة الأدمن
-        createdAt: new Date().toISOString()
+    await db.collection("students").add({
+      name: email.split("@")[0],
+      email: email,
+      password: password,
+      role: "STUDENT",
+      approved: false, // 👈 في انتظار موافقة الأدمن
+      createdAt: new Date().toISOString()
     });
 
     alert("تم إنشاء الحساب بنجاح ✅\nبانتظار موافقة الإدارة");
@@ -600,15 +591,15 @@ const q = query(
     document.getElementById("regEmail").value = "";
     document.getElementById("regPassword").value = "";
 
-    // رجوع للصفحة الرئيسية
+    // رجوع لصفحة تسجيل الدخول
     backToLogin();
 
-} catch (err) {
+  } catch (err) {
     console.error(err);
     alert("حدث خطأ أثناء التسجيل ❌\n" + err.message);
+  }
 }
 
-            }
 
 
 
@@ -1436,6 +1427,7 @@ await updateDoc(doc(db, "students", studentDocId), {
 
 </body>
 </html>
+
 
 
 
