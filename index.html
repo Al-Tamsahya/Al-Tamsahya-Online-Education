@@ -1442,39 +1442,14 @@
 <script src="./js/firebase.js"></script>
 
 <!-- PWA Install Button -->
-<script>
-  let deferredPrompt = null;
-  const installBtn = document.getElementById("installBtn");
 
-  installBtn.classList.add("hidden");
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.classList.remove("hidden");
-  });
-
-  installBtn.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-
-    deferredPrompt = null;
-    installBtn.classList.add("hidden");
-  });
-
-  window.addEventListener("appinstalled", () => {
-    deferredPrompt = null;
-    installBtn.classList.add("hidden");
-  });
-</script>
 <!-- PWA Install Button -->
 
 
 
 </body>
 </html>
+
 
 
 
