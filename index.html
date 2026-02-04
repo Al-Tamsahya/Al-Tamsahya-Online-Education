@@ -302,27 +302,81 @@
 
 
 
-
-       let scores = JSON.parse(localStorage.getItem("scores") || "{}");
+let scores = JSON.parse(localStorage.getItem("scores") || "{}");
 
 let currentUser = null;
 let currentGrade = null;
 let currentSubject = null;
 let currentUnit = null;
 
+// ===== فلترة الطلاب =====
 let currentFilter = "all";
 let savedStudents = [];
-        
+
+// زر الفلترة
 function filterStudents(type) {
   currentFilter = type;
   renderStudentsFiltered();
 }
 
+// رسم الطلاب حسب الفلتر
+function renderStudentsFiltered() {
+  let filteredStudents = savedStudents;
 
+  if (currentFilter === "approved") {
+    filteredStudents = savedStudents.filter(s => s.approved === true);
+  }
 
-        function updateBackButton() {
-            const backBtn = document.getElementById("backBtn");
-            if (!backBtn) return;
+  if (currentFilter === "pending") {
+    filteredStudents = savedStudents.filter(s => !s.approved);
+  }
+
+  drawStudentsTable(filteredStudents);
+}
+
+// رسم الجدول
+function drawStudentsTable(students) {
+  let rows = "";
+
+  students.forEach((s) => {
+    rows += `
+      <tr>
+        <td>${s.email || "-"}</td>
+        <td>
+          ${
+            s.approved
+              ? `<span class="status approved">🟢 مفعل</span>`
+              : `<span class="status pending">🟡 قيد المراجعة</span>`
+          }
+        </td>
+        <td>${scores[s.email] ?? "-"}</td>
+        <td style="display:flex; gap:6px; justify-content:center;">
+          ${
+            s.approved
+              ? `
+                <button class="custom-btn" onclick="editStudent('${s.email}')">✏️ تعديل</button>
+                <button class="custom-btn" onclick="deleteUser('${s.id}', 'students')">🗑️ حذف</button>
+              `
+              : `
+                <button class="custom-btn" onclick="setApprove('${s.id}', true)">✅ موافقة</button>
+                <button class="custom-btn danger" onclick="rejectStudent('${s.id}')">❌ رفض</button>
+              `
+          }
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("studentsTableBody").innerHTML =
+    rows || `<tr><td colspan="4">لا يوجد طلاب</td></tr>`;
+}
+
+// ===== باقي كودك =====
+function updateBackButton() {
+  const backBtn = document.getElementById("backBtn");
+  if (!backBtn) return;
+}
+
 
             // ❌ لا يظهر في الصفحة الرئيسية ولا اختيار الصف
             if (!currentGrade) {
@@ -1043,61 +1097,6 @@ container.innerHTML = `
 `;
 
 
-/* ========= هنا يبدأ الكود الجديد ========= */
-
-let students = [];
-
-// 1️⃣ نحول نتائج Firestore لمصفوفة
-snap.forEach((docSnap) => {
-  students.push({
-    id: docSnap.id,
-    ...docSnap.data()
-  });
-});
-
-// 2️⃣ نرتّب: المفعلين فوق
-students.sort((a, b) => {
-  if (a.approved === b.approved) return 0;
-  return a.approved ? -1 : 1;
-});
-
-// 3️⃣ نرسم الصفوف
-let rows = "";
-
-students.forEach((s) => {
-  rows += `
-    <tr>
-      <td>${s.email || "-"}</td>
-
-      <td>
-        ${
-          s.approved
-            ? `<span class="status approved">🟢 مفعل</span>`
-            : `<span class="status pending">🟡 قيد المراجعة</span>`
-        }
-      </td>
-
-      <td>${(typeof scores !== "undefined" && scores[s.email]) ? scores[s.email] : "-"}</td>
-
-      <td style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
-        ${
-          s.approved
-            ? `
-              <button class="custom-btn" onclick="editStudent('${s.email || ""}')">✏️ تعديل</button>
-              <button class="custom-btn" onclick="deleteUser('${s.id}', 'students')">🗑️ حذف</button>
-            `
-            : `
-              <button class="custom-btn" onclick="setApprove('${s.id}', true)">✅ موافقة</button>
-              <button class="custom-btn danger" onclick="rejectStudent('${s.id}')">❌ رفض</button>
-            `
-        }
-      </td>
-    </tr>
-  `;
-});
-
-/* ========= هنا ينتهي الكود الجديد ========= */
-
             container.innerHTML = `
   <h4>قائمة الطلاب</h4>
   <button class="custom-btn" onclick="showAddStudentModal()">إضافة طالب</button>
@@ -1544,6 +1543,7 @@ async function editStudent(studentEmail) {
 
 </body>
 </html>
+
 
 
 
