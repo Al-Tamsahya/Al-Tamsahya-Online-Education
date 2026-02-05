@@ -343,17 +343,18 @@ function drawStudentsTable(students) {
         </td>
         <td>${scores[s.email] ?? "-"}</td>
         <td style="display:flex; gap:6px; justify-content:center;">
-          ${
-            s.approved
-              ? `
-                <button class="custom-btn" onclick="editStudent('${s.email}')">✏️ تعديل</button>
-                <button class="custom-btn" onclick="deleteUser('${s.id}', 'students')">🗑️ حذف</button>
-              `
-              : `
-                <button class="custom-btn" onclick="setApprove('${s.id}', true)">✅ موافقة</button>
-                <button class="custom-btn danger" onclick="rejectStudent('${s.id}')">❌ رفض</button>
-              `
-          }
+        ${
+  s.approved
+    ? `
+      <button class="custom-btn" onclick="editStudent('${s.email}')">✏️ تعديل</button>
+      <button class="custom-btn danger" disabled title="لا يمكن حذف طالب مفعل">🗑️ حذف</button>
+    `
+    : `
+      <button class="custom-btn" onclick="setApprove('${s.id}', true)">✅ موافقة</button>
+      <button class="custom-btn danger" onclick="rejectStudent('${s.id}')">❌ رفض</button>
+    `
+}
+
         </td>
       </tr>
     `;
@@ -575,6 +576,16 @@ async function login() {
   }
 }
 
+function filterStudents() {
+  const input = document.getElementById("studentSearch");
+  const filter = input.value.toLowerCase();
+  const rows = document.querySelectorAll("#studentsList tbody tr");
+
+  rows.forEach(row => {
+    const email = row.getAttribute("data-email") || "";
+    row.style.display = email.includes(filter) ? "" : "none";
+  });
+}
 
 
 
@@ -1050,24 +1061,36 @@ async function login() {
     let pendingStudents = 0;
     let rows = "";
 
-    snapshot.forEach(doc => {
-      const student = doc.data();
-      const status = student.approved ? "مفعل" : "قيد المراجعة";
+  snapshot.forEach(doc => {
+  const student = doc.data();
+  const status = student.approved ? "مفعل" : "قيد المراجعة";
 
-      if (student.approved) approvedStudents++;
-      else pendingStudents++;
+  if (student.approved) approvedStudents++;
+  else pendingStudents++;
 
-      rows += `
-        <tr>
-          <td>${student.email || "-"}</td>
-          <td>${status}</td>
-          <td>${student.grade || "-"}</td>
-          <td>
-            <button onclick="editStudent('${student.email}')">✏️ تعديل</button>
-          </td>
-        </tr>
-      `;
-    });
+  rows += `
+    <tr data-email="${(student.email || "").toLowerCase()}">
+      <td>${student.email || "-"}</td>
+      <td>${status}</td>
+      <td>${student.grade || "-"}</td>
+      <td class="actions-cell">
+  <button
+    class="custom-btn"
+    onclick="editStudent('${student.email}')">
+    ✏️ تعديل
+  </button>
+
+  <button
+    class="custom-btn danger"
+    onclick="deleteUser('${doc.id}', 'students')">
+    🗑 حذف
+  </button>
+</td>
+</tr>
+`;
+});
+
+
 
     if (!rows) {
       rows = `<tr><td colspan="4">لا يوجد طلاب حاليا</td></tr>`;
@@ -1075,6 +1098,8 @@ async function login() {
 
     container.innerHTML = `
       <h4>قائمة الطلاب</h4>
+      <input id="studentSearch" onkeyup="filterStudents()" placeholder="🔍 ابحث بالبريد">
+
       <button class="custom-btn" onclick="showAddStudentModal()">إضافة طالب</button>
 
       <div style="margin:10px 0;">
@@ -1339,8 +1364,7 @@ async function editStudent(studentEmail) {
 
 
 
-        // ==============================
-        // 🗑️ حذف مستخدم/طالب (Firestore)
+       
         // ==============================
         // 🗑️ حذف مستخدم/طالب (Firestore)
         async function deleteUser(docId, collectionName) {
@@ -1521,6 +1545,7 @@ async function editStudent(studentEmail) {
 
 </body>
 </html>
+
 
 
 
