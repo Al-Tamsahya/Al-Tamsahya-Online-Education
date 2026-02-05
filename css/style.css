@@ -1,17 +1,14 @@
-body {
-   
-}
-
 /* =====================
    Global Styles
 ===================== */
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
     margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
     background: #f3f4f6;
     color: #111827;
 }
@@ -25,9 +22,6 @@ p {
     color: #444;
 }
 
-.hidden {
-    display: none !important;
-}
 
 /* =====================
    Navigation
@@ -68,32 +62,36 @@ footer {
     color: white;
 }
 
-    /* العنوان */
-    .login-container h1,
-    .register-title {
-        margin-bottom: 22px;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #ffffff;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-    }
+/* العنوان */
+.login-container h1,
+.register-title {
+    margin-bottom: 22px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
 
-    /* =====================
+/* =====================
    Inputs
 ===================== */
-    .login-container input {
-        width: 100%;
-        padding: 12px 16px;
-        margin: 10px 0;
-        border-radius: 999px;
-        border: none;
-        font-size: 1rem;
-    }
+.login-container input {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 10px 0;
+    border-radius: 999px;
+    border: none;
+    font-size: 1rem;
+}
 
-        .login-container input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
-        }
+.login-container input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
+}
+
+/* =====================
+   Buttons (General)
+===================== */
 
 /* =====================
    Buttons (General)
@@ -104,9 +102,9 @@ button {
     transition: background 0.2s ease, transform 0.1s ease;
 }
 
-    button:active {
-        transform: scale(0.97);
-    }
+button:active {
+    transform: scale(0.97);
+}
 
 /* =====================
    Buttons Layout (دخول + تسجيل)
@@ -127,13 +125,13 @@ button {
     font-size: 0.95rem;
     font-weight: 700;
     background: #22c55e;
-    color: white;
+    color: #ffffff;
     border-radius: 999px;
 }
 
-    .login-btn:hover {
-        background: #16a34a;
-    }
+.login-btn:hover {
+    background: #16a34a;
+}
 
 /* =====================
    Register Buttons
@@ -146,26 +144,26 @@ button {
     border-radius: 999px;
 }
 
-    /* إرسال طلب التسجيل */
-    .register-btn.primary {
-        background: #22c55e;
-        color: white;
-    }
+/* إرسال طلب التسجيل */
+.register-btn.primary {
+    background: #22c55e;
+    color: #ffffff;
+}
 
-        .register-btn.primary:hover {
-            background: #16a34a;
-        }
+.register-btn.primary:hover {
+    background: #16a34a;
+}
 
-    /* رجوع / تسجيل حساب جديد */
-    .register-btn.secondary {
-        background: #ffffff;
-        color: #2563eb;
-        border: 2px solid #2563eb;
-    }
+/* رجوع / تسجيل حساب جديد */
+.register-btn.secondary {
+    background: #ffffff;
+    color: #2563eb;
+    border: 2px solid #2563eb;
+}
 
-        .register-btn.secondary:hover {
-            background: #e0e7ff;
-        }
+.register-btn.secondary:hover {
+    background: #e0e7ff;
+}
 
 /* =====================
    Trust Message
@@ -173,8 +171,8 @@ button {
 .trust-message {
     margin-top: 18px;
     font-size: 0.9rem;
-    color: black;
-    opacity: 0.95;
+    color: #000000;
+    opacity: 1;
 }
 
 /* =====================
@@ -190,7 +188,7 @@ button {
 
 .card,
 .custom-btn {
-    background: white;
+    background: #ffffff;
     border-radius: 18px;
     padding: 25px;
     font-size: 18px;
@@ -199,15 +197,16 @@ button {
     cursor: pointer;
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
+    color: #111827;
 }
 
-    .card:hover,
-    .custom-btn:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 35px rgba(0,0,0,0.15);
-        background: linear-gradient(135deg, #2f6df6, #1e4fd8);
-        color: white;
-    }
+.card:hover,
+.custom-btn:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 35px rgba(0,0,0,0.15);
+    background: linear-gradient(135deg, #2f6df6, #1e4fd8);
+    color: #ffffff;
+}
 
 /* =====================
    Admin Box
@@ -218,6 +217,7 @@ button {
     border-radius: 10px;
     margin-top: 20px;
     text-align: center;
+    color: #111827;
 }
 
 /* =====================
@@ -230,14 +230,14 @@ button {
     padding: 10px 16px;
     border-radius: 10px;
     background: #ef4444;
-    color: white;
+    color: #ffffff;
     font-weight: bold;
     z-index: 100;
 }
 
-    .logout-btn:hover {
-        background: #dc2626;
-    }
+.logout-btn:hover {
+    background: #dc2626;
+}
 
 /* =====================
    Modal
@@ -253,12 +253,13 @@ button {
 }
 
 .modal-content {
-    background: white;
+    background: #ffffff;
     padding: 22px;
     border-radius: 12px;
     width: 90%;
     max-width: 420px;
     text-align: center;
+    color: #111827;
 }
 
 /* =====================
@@ -283,62 +284,65 @@ button {
         width: 100%;
     }
 }
+
 /* =====================
    Auth Page ONLY
 ===================== */
-
 .auth-page {
     display: flex;
     justify-content: center;
     margin-top: 60px;
 }
 
-    /* كل شيء مقيد بصفحة الدخول */
-    .auth-page .login-container {
-        max-width: 360px;
-        padding: 32px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        color: white;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-        text-align: center;
-    }
+/* كل شيء مقيد بصفحة الدخول */
+.auth-page .login-container {
+    max-width: 360px;
+    padding: 32px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #ffffff;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    text-align: center;
+}
 
-    /* العناوين */
-    .auth-page h1 {
-        font-size: 1.6rem;
-        margin-bottom: 22px;
-        font-weight: 800;
-    }
+/* العناوين */
+.auth-page h1 {
+    font-size: 1.6rem;
+    margin-bottom: 22px;
+    font-weight: 800;
+    color: #ffffff;
+}
 
-    /* الأزرار جنب بعض */
-    .auth-page .auth-buttons {
-        display: flex;
-        gap: 14px;
-        justify-content: center;
-        margin-top: 20px;
-    }
+/* الأزرار جنب بعض */
+.auth-page .auth-buttons {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-    /* زر دخول */
-    .auth-page .login-btn {
-        background: #22c55e;
-        color: white;
-        padding: 12px 22px;
-        border-radius: 999px;
-        font-size: 0.95rem;
-        font-weight: 700;
-    }
+/* زر دخول */
+.auth-page .login-btn {
+    background: #22c55e;
+    color: #ffffff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
 
-    /* زر تسجيل */
-    .auth-page .register-btn.secondary {
-        background: #ffffff;
-        color: #2563eb;
-        border: 2px solid #2563eb;
-        padding: 12px 26px;
-        border-radius: 999px;
-        font-size: 1.05rem;
-        font-weight: 800;
-    }
+   /* زر تسجيل */
+.auth-page .register-btn.secondary {
+    background: #ffffff;
+    color: #2563eb;
+    border: 2px solid #2563eb;
+    padding: 12px 26px;
+    border-radius: 999px;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+/* أزرار عامة */
 .btn {
     padding: 12px 20px;
     border-radius: 999px;
@@ -349,7 +353,7 @@ button {
 
 .btn-primary {
     background: #22c55e;
-    color: white;
+    color: #ffffff;
 }
 
 .btn-secondary {
@@ -357,6 +361,8 @@ button {
     color: #2563eb;
     border: 2px solid #2563eb;
 }
+
+/* توحيد حجم الأزرار */
 button,
 .custom-btn {
     min-height: 48px; /* حجم لمس مريح */
@@ -364,13 +370,17 @@ button,
     padding: 12px 16px;
     border-radius: 10px;
 }
+
+/* =====================
+   Mobile Navigation
+===================== */
 @media (max-width: 768px) {
     #globalNav {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
-        background: #fff;
+        background: #ffffff;
         padding: 10px;
         box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         display: flex;
@@ -382,15 +392,21 @@ button,
         padding-bottom: 80px; /* علشان المحتوى ما يستخباش */
     }
 }
+
+/* =====================
+   Mobile Text Sizes
+===================== */
 @media (max-width: 768px) {
     .nav-title {
         font-size: 0.9rem;
         text-align: center;
+        color: #ffffff;
     }
 
     footer {
         font-size: 0.8rem;
         padding: 10px;
+        color: #6b7280;
     }
 }
 /* كروت عامة */
@@ -404,56 +420,69 @@ button,
     font-size: 1.05rem;
     font-weight: 600;
     text-align: right;
+    color: #1f2937;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     transition: all 0.25s ease;
     cursor: pointer;
 }
 
-    .custom-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(0,0,0,0.12);
-    }
+.custom-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
 
-    .custom-btn:active {
-        transform: scale(0.97);
-    }
+.custom-btn:active {
+    transform: scale(0.97);
+}
+
+/* شبكة الكروت */
 .list-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     padding: 30px;
 }
+
+/* إعدادات عامة للصفحة */
 body {
     background: linear-gradient(180deg, #f5f7fb, #ffffff);
     font-family: "Cairo", sans-serif;
+    color: #111827;
 }
-h2, h3 {
+
+h2,
+h3 {
     margin-bottom: 15px;
     color: #2c3e50;
 }
 
+/* عنوان الدرس */
 #lessonTitle {
     background: #ffffff;
     padding: 14px;
     border-radius: 14px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.06);
     margin-bottom: 15px;
+    color: #1f2937;
 }
+
+/* محتوى الدرس */
 #lessonPageContent {
     background: #ffffff;
     padding: 16px;
     border-radius: 18px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     margin-top: 15px;
+    color: #1f2937;
 }
 
 #lessonText {
     margin-top: 15px;
     line-height: 1.8;
-    color: #444;
+    color: #374151;
 }
 
-
+/* أنيميشن */
 .list-container,
 #lessonPage {
     animation: fadeUp 0.4s ease;
@@ -464,12 +493,13 @@ h2, h3 {
         opacity: 0;
         transform: translateY(12px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
+/* اتجاه النص */
 body[dir="ltr"] {
     text-align: left;
 }
@@ -477,6 +507,8 @@ body[dir="ltr"] {
 body[dir="rtl"] {
     text-align: right;
 }
+
+/* قسم الإدارة */
 .admin-section {
     background: #f4f7fb;
     margin: 40px;
@@ -489,23 +521,27 @@ body[dir="rtl"] {
     margin-bottom: 25px;
     color: #1e3a8a;
 }
-
+/* أزرار الإدارة */
 .admin-buttons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 18px;
 }
+
+/* الشريط العلوي */
 .top-nav {
     background: linear-gradient(135deg, #2563eb, #1e40af);
-    padding: 5px;
+    padding: 10px;
     text-align: center;
 }
 
 .nav-title {
     font-size: 22px;
     font-weight: bold;
-    color: #fff;
+    color: #ffffff;
 }
+
+/* موبايل */
 @media (max-width: 600px) {
     .nav-title {
         font-size: 18px;
@@ -520,73 +556,87 @@ body[dir="rtl"] {
         padding: 15px;
     }
 }
+
+/* قسم الصفوف */
 .grades-section {
     text-align: center;
     padding: 20px;
 }
 
-    .grades-section h2 {
-        margin-bottom: 25px;
-        font-size: 22px;
-    }
+.grades-section h2 {
+    margin-bottom: 25px;
+    font-size: 22px;
+    color: #1f2937;
+}
 
+/* شبكة الصفوف */
 .grades-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 18px;
 }
 
+/* كرت الصف */
 .grade-card {
     padding: 22px;
     border-radius: 18px;
     border: none;
     font-size: 17px;
+    font-weight: 600;
     cursor: pointer;
-    background: linear-gradient(135deg, #ffffff, #eef2ff);
+    color: #1f2937;
     box-shadow: 0 8px 20px rgba(0,0,0,.12);
     transition: transform .2s ease, box-shadow .2s ease;
 }
 
-    .grade-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 14px 30px rgba(0,0,0,.18);
-    }
+.grade-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0,0,0,.18);
+}
+
+/* قسم المواد */
 .subjects-section {
     text-align: center;
     padding: 20px;
 }
 
-    .subjects-section h2 {
-        font-size: 20px;
-        margin-bottom: 5px;
-    }
+.subjects-section h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    color: #1f2937;
+}
 
 .section-subtitle {
     margin-bottom: 22px;
-    color: #555;
+    color: #4b5563;
 }
 
+/* شبكة المواد */
 .subjects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 16px;
 }
-
+/* كرت المادة */
 .subject-card {
     padding: 18px;
     border-radius: 16px;
     border: none;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    background: linear-gradient(135deg, #fefefe, #f7f9ff);
+    background: linear-gradient(135deg, #ffffff, #f7f9ff);
+    color: #1f2937;
     box-shadow: 0 6px 16px rgba(0,0,0,.12);
     transition: transform .2s ease, box-shadow .2s ease;
 }
 
-    .subject-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
+.subject-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0,0,0,.18);
+}
+
+/* قسم الوحدات */
 .units-section {
     text-align: center;
     padding: 20px;
@@ -598,21 +648,26 @@ body[dir="rtl"] {
     gap: 16px;
 }
 
+/* كرت الوحدة */
 .unit-card {
     padding: 18px;
     border-radius: 16px;
     border: none;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     background: linear-gradient(135deg, #ffffff, #f3f6ff);
+    color: #1f2937;
     box-shadow: 0 6px 16px rgba(0,0,0,.12);
     transition: transform .2s ease, box-shadow .2s ease;
 }
 
-    .unit-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
+.unit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0,0,0,.18);
+}
+
+/* شبكة الدروس */
 .lessons-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -620,58 +675,50 @@ body[dir="rtl"] {
     margin-bottom: 20px;
 }
 
+/* كرت الدرس */
 .lesson-card {
     padding: 16px;
     border-radius: 14px;
     border: none;
     font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     background: linear-gradient(135deg, #ffffff, #f9faff);
+    color: #1f2937;
     box-shadow: 0 6px 16px rgba(0,0,0,.12);
     transition: transform .2s ease, box-shadow .2s ease;
 }
 
-    .lesson-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
+.lesson-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0,0,0,.18);
+}
+
+/* مسار الدرس */
 .lesson-path {
     margin-bottom: 15px;
     font-size: 14px;
-    color: #555;
+    color: #4b5563;
 }
 
-    .lesson-path strong {
-        color: #1e40af;
-    }
+.lesson-path strong {
+    color: #1e40af;
+}
+
+/* زر إظهار الدروس */
 .toggle-lessons-btn {
     background: #eef2ff;
+    color: #1f2937;
     border: none;
     padding: 8px 14px;
     border-radius: 12px;
     cursor: pointer;
     margin-bottom: 10px;
     font-size: 14px;
-}
-.dark-mode {
-    background-color: #0f172a;
-    color: #e5e7eb;
+    font-weight: 600;
 }
 
-    .dark-mode .top-nav,
-    .dark-mode .list-container,
-    .dark-mode .login-container,
-    .dark-mode .lesson-card,
-    .dark-mode .subject-card,
-    .dark-mode .unit-card {
-        background-color: #1e293b;
-        color: #e5e7eb;
-    }
-
-    .dark-mode button {
-        background-color: #334155;
-        color: #fff;
-    }
+/* شريط التقدم */
 .progress-box {
     width: 100%;
     height: 10px;
@@ -679,63 +726,75 @@ body[dir="rtl"] {
     border-radius: 10px;
     margin: 10px 0;
 }
-
+/* شريط التقدم */
 .progress-bar {
     height: 100%;
     width: 0%;
     background: #22c55e;
     border-radius: 10px;
-    transition: width 0.4s;
+    transition: width 0.4s ease;
 }
+
+/* زر تثبيت التطبيق */
 .install-btn {
     position: fixed;
-    bottom: 80px; /* 👈 فوق زر تسجيل الخروج */
+    bottom: 80px; /* فوق زر تسجيل الخروج */
     left: 15px;
     background: #1e40af;
-    color: white;
+    color: #ffffff;
     border: none;
     padding: 12px 16px;
     border-radius: 12px;
     font-size: 16px;
+    font-weight: 700;
     cursor: pointer;
     z-index: 9999;
 }
 
-
-.hidden {
-    display: none;
+.install-btn:hover {
+    background: #1e3a8a;
 }
+
+/* إخفاء */
+.hidden {
+    display: none !important;
+}
+
 /* ==========================
-   Login Layout (Center)
+   Login Layout
 ========================== */
 
-
+.login-container h1 {
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+    font-weight: 800;
+    color: #1e293b;
 }
 
-    .login-container h1 {
-        font-size: 1.1rem;
-        margin-bottom: 18px;
-        font-weight: 800;
-        color: #1e293b;
-    }
+/* حقول الإدخال */
+.login-container input {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 10px 0;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #1f2937;
+    outline: none;
+    font-size: 0.95rem;
+}
 
-    .login-container input {
-        width: 100%;
-        padding: 12px 14px;
-        margin: 10px 0;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        outline: none;
-        font-size: 0.95rem;
-    }
+.login-container input::placeholder {
+    color: #6b7280;
+}
 
-        .login-container input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
-        }
+.login-container input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
+}
 
 /* ==========================
-   Auth Buttons (Modern)
+   Auth Buttons
 ========================== */
 
 .auth-buttons {
@@ -747,30 +806,32 @@ body[dir="rtl"] {
     flex-wrap: wrap;
 }
 
+/* زر الدخول */
 .login-btn {
     min-width: 150px;
     padding: 12px 20px;
     font-size: 0.95rem;
     font-weight: 800;
     background: #22c55e;
-    color: white;
+    color: #ffffff;
     border: none;
     border-radius: 999px;
     cursor: pointer;
     transition: 0.2s ease;
 }
 
-    .login-btn:hover {
-        background: #16a34a;
-        transform: translateY(-1px);
-    }
+.login-btn:hover {
+    background: #16a34a;
+    transform: translateY(-1px);
+}
 
+/* زر التسجيل */
 .register-btn.secondary {
     min-width: 150px;
     padding: 12px 20px;
     font-size: 0.9rem;
     font-weight: 800;
-    background: #fff;
+    background: #ffffff;
     color: #1e40af;
     border: 2px solid #1e40af;
     border-radius: 999px;
@@ -779,14 +840,19 @@ body[dir="rtl"] {
 }
 
 
-    .register-btn.secondary:hover {
-        background: rgba(30, 64, 175, 0.08);
-        transform: translateY(-1px);
-    }
+/* Hover زر التسجيل */
+.register-btn.secondary:hover {
+    background: rgba(30, 64, 175, 0.08);
+    transform: translateY(-1px);
+}
+
+/* صفحة التسجيل */
 #registerPage {
     max-width: 420px;
     margin: 70px auto;
 }
+
+/* إعدادات عامة */
 * {
     box-sizing: border-box;
 }
@@ -798,72 +864,153 @@ body {
     max-width: 100%;
 }
 
-img, video {
+/* وسائط */
+img,
+video {
     max-width: 100%;
     height: auto;
 }
 
-.container, .content, .card, .box {
+.container,
+.content,
+.card,
+.box {
     max-width: 100%;
 }
+
 /* =========================
-   Fix Login/Register Size on Mobile
+   Fix Login/Register (Mobile)
 ========================= */
 @media (max-width: 480px) {
 
-  /* تصغير المسافة العلوية */
-  .login-container {
-    max-width: 340px;
-    margin: 20px 12px;   /* بدل 60px */
-    padding: 18px;       /* بدل 32px */
-    border-radius: 14px;
-  }
+    .login-container {
+        max-width: 340px;
+        margin: 20px 12px;
+        padding: 18px;
+        border-radius: 14px;
+    }
 
-  /* تصغير عنوان الصفحة */
-  .login-container h1,
-  .register-title {
-    font-size: 1.05rem;
-    margin-bottom: 14px;
-  }
+    .login-container h1,
+    .register-title {
+        font-size: 1.05rem;
+        margin-bottom: 14px;
+    }
 
-  /* تصغير حقول الإدخال */
-  .login-container input {
-    padding: 10px 14px;
-    font-size: 0.95rem;
-    margin: 8px 0;
-  }
+    .login-container input {
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        margin: 8px 0;
+    }
 
-  /* الأزرار تكون تحت بعض + أصغر */
-  .auth-buttons {
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 12px;
-  }
+    .auth-buttons {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 12px;
+    }
 
-  /* زر الدخول */
-  #loginBtn {
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-  }
+    #loginBtn {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+    }
 
-  /* زر تسجيل حساب جديد */
-  .register-btn.secondary {
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-  }
+    .register-btn.secondary {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+    }
 
-  /* صفحة التسجيل نفسها */
-  #registerPage {
-    margin: 20px 12px;
-    padding: 18px;
-    max-width: 340px;
-  }
+    #registerPage {
+        margin: 20px 12px;
+        padding: 18px;
+        max-width: 340px;
+    }
 
-  /* تصغير رسالة الأمان */
-  .trust-message {
-    font-size: 0.85rem;
-    margin-top: 12px;
-  }
+    .trust-message {
+        font-size: 0.85rem;
+        margin-top: 12px;
+    }
+}
+
+/* =====================
+   DARK MODE – مضبوط بدون بهتان
+===================== */
+.dark-mode {
+    background-color: #0f172a;
+    color: #e5e7eb;
+}
+
+/* النصوص */
+.dark-mode p,
+.dark-mode span,
+.dark-mode li,
+.dark-mode label {
+    color: #e5e7eb !important;
+}
+
+/* العناوين */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3 {
+    color: #f9fafb !important;
+}
+
+/* الكروت */
+.dark-mode .card,
+.dark-mode .custom-btn,
+.dark-mode .lesson-card,
+.dark-mode .subject-card,
+.dark-mode .unit-card,
+.dark-mode .grade-card,
+.dark-mode #lessonTitle,
+.dark-mode #lessonPageContent {
+    background-color: #020617 !important;
+    color: #e5e7eb !important;
+}
+
+/* الأزرار */
+.dark-mode button,
+.dark-mode .login-btn,
+.dark-mode .register-btn {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* حقول الإدخال */
+.dark-mode input {
+    background-color: #020617 !important;
+    color: #e5e7eb !important;
+    border-color: #334155 !important;
+}
+
+/* منع أي تعتيم أو فلاتر */
+.dark-mode *,
+.dark-mode *::before,
+.dark-mode *::after {
+    opacity: 1 !important;
+    filter: none !important;
+}
+/* =====================
+   FINAL CLEAN OVERRIDES
+===================== */
+
+/* توحيد body */
+body {
+    margin: 0;
+    overflow-x: hidden;
+    font-family: "Cairo", "Segoe UI", Tahoma, Arial, sans-serif;
+    background: linear-gradient(180deg, #f5f7fb, #ffffff);
+    color: #111827;
+}
+
+/* توحيد custom-btn */
+.custom-btn {
+    background: #ffffff;
+    color: #1f2937;
+}
+
+/* توحيد hover زر التسجيل */
+.register-btn.secondary:hover {
+    background: rgba(30, 64, 175, 0.08);
+    transform: translateY(-1px);
 }
