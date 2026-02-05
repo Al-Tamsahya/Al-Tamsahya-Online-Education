@@ -1,4 +1,5 @@
-const CACHE_NAME = "edu-platform-v3";
+const CACHE_NAME = "edu-platform-v4";
+
 
 // نكاش الملفات الثابتة فقط
 const FILES_TO_CACHE = [
@@ -29,12 +30,13 @@ self.addEventListener("activate", (event) => {
 
 // Fetch
 self.addEventListener("fetch", (event) => {
-  // تجاهل أي طلب غير GET
-  if (event.request.method !== "GET") return;
+  if (event.request.method !== "GET") {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   const url = new URL(event.request.url);
 
-  // تجاهل Firestore/Firebase/API
   if (
     url.hostname.includes("googleapis.com") ||
     url.hostname.includes("gstatic.com") ||
@@ -42,6 +44,7 @@ self.addEventListener("fetch", (event) => {
     url.pathname.includes("login") ||
     url.pathname.includes("api")
   ) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
@@ -49,7 +52,9 @@ self.addEventListener("fetch", (event) => {
     fetch(event.request)
       .then((res) => {
         const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        caches.open(CACHE_NAME).then((cache) =>
+          cache.put(event.request, copy)
+        );
         return res;
       })
       .catch(async () => {
