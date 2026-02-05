@@ -652,22 +652,8 @@ body[dir="rtl"] {
     cursor: pointer;
     margin-bottom: 10px;
     font-size: 14px;
+}
 
-
-    .dark-mode .top-nav,
-    .dark-mode .list-container,
-    .dark-mode .login-container,
-    .dark-mode .lesson-card,
-    .dark-mode .subject-card,
-    .dark-mode .unit-card {
-        background-color: #1e293b;
-        color: #e5e7eb;
-    }
-
-    .dark-mode button {
-        background-color: #334155;
-        color: #fff;
-    }
 .progress-box {
     width: 100%;
     height: 10px;
@@ -894,25 +880,32 @@ img, video {
 }
 
 /* الحقول */
-.dark-mode input {
+/* ===== DARK MODE ===== */
+
+body.dark-mode {
   background: #020617;
   color: #ffffff;
-  border: 1px solid #334155;
 }
 
-/* placeholder */
-.dark-mode input::placeholder {
-  color: #94a3b8;
+body.dark-mode h2 {
+  color: #ffffff;
 }
 
-/* الأزرار */
-.dark-mode button {
+body.dark-mode .grades-section {
+  background: #020617;
+}
+
+body.dark-mode .grade-card {
+  background: #020617;
+  color: #ffffff;
+}
+
+body.dark-mode .grade-card * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body.dark-mode button {
   background: #1d4ed8;
   color: #ffffff;
 }
-body.dark-mode {
-  background: red !important;
-}
-
-
-
