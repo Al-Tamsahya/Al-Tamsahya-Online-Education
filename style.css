@@ -1007,7 +1007,32 @@ body.dark-mode .custom-btn:hover {
 body.dark-mode .logout-btn {
   background: #dc2626;
 }
+/* ==========================
+   إصلاح النصوص في Dark Mode
+========================== */
 
+/* عنوان اختر الصف الدراسي */
+body.dark-mode .section-title,
+body.dark-mode h2 {
+  color: #e5e7eb !important;
+}
 
+/* كروت / أزرار الصفوف */
+body.dark-mode .grade-card,
+body.dark-mode .grade-btn,
+body.dark-mode .card {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
 
+/* النص داخل الأزرار */
+body.dark-mode .grade-card *,
+body.dark-mode .grade-btn *,
+body.dark-mode .card * {
+  color: #ffffff !important;
+}
 
+/* hover */
+body.dark-mode .grade-card:hover {
+  background-color: #334155 !important;
+}
