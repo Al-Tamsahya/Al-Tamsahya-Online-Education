@@ -1,6 +1,5 @@
 const CACHE_NAME = "edu-platform-v4";
 
-
 // نكاش الملفات الثابتة فقط
 const FILES_TO_CACHE = [
   "./",
@@ -75,3 +74,4 @@ self.addEventListener("fetch", (event) => {
       })
   );
 });
+
