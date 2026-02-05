@@ -1535,15 +1535,33 @@ async function editStudent(studentEmail) {
 <!-- Firebase init -->
 <script src="./js/firebase.js"></script>
 
-<!-- Service Worker -->
+<!-- Service Worker + PWA Install -->
 <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch(err => console.log("SW registration failed:", err));
-  }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js")
+    .then((reg) => {
+      console.log("Service Worker Registered");
 
-    let deferredPrompt;
+      // إجبار التحديث
+      reg.update();
+
+      // لو فيه نسخة جديدة جاهزة
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      }
+
+      // عند التبديل → إعادة تحميل
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+    })
+    .catch(err => console.log("SW registration failed:", err));
+}
+
+// ==================
+// PWA Install Button
+// ==================
+let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
 window.addEventListener("beforeinstallprompt", (e) => {
@@ -1570,12 +1588,12 @@ if (installBtn) {
     installBtn.classList.add("hidden");
   });
 }
-
 </script>
 
 
 </body>
 </html>
+
 
 
 
