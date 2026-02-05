@@ -1,10 +1,10 @@
-const CACHE_NAME = "Al-Tamsahya-cache-v4";
+const CACHE_NAME = "Al-Tamsahya-cache-auto";
 
-const urlsToCache = [
+const CORE_FILES = [
   "./",
   "./index.html",
-  "./css/style.css",
   "./manifest.json",
+  "./css/style.css",
   "./icon-192.png"
 ];
 
@@ -14,7 +14,7 @@ const urlsToCache = [
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_FILES))
   );
 });
 
@@ -23,11 +23,11 @@ self.addEventListener("install", (event) => {
 // ==================
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((names) =>
+    caches.keys().then((keys) =>
       Promise.all(
-        names.map((name) => {
-          if (name !== CACHE_NAME) {
-            return caches.delete(name);
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
         })
       )
@@ -37,13 +37,10 @@ self.addEventListener("activate", (event) => {
 });
 
 // ==================
-// FETCH
+// FETCH (Network First)
 // ==================
 self.addEventListener("fetch", (event) => {
-  // ❌ لا تطبق على admin
-  if (event.request.url.includes("/admin")) {
-    return;
-  }
+  if (event.request.url.includes("/admin")) return;
 
   event.respondWith(
     fetch(event.request)
