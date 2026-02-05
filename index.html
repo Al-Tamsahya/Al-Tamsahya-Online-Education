@@ -69,9 +69,10 @@
 
     <!-- شريط تنقل عام -->
     <div id="globalNav" class="nav-btns hidden">
-        <button id="backBtn" onclick="smartBack()">⬅️ رجوع</button>
-        <button onclick="goHome()">🏠 الصفحة الرئيسية</button>
-    </div>
+    <button id="backBtn" onclick="smartBack()">⬅️ رجوع</button>
+    <button id="homeBtn" onclick="goHome()">🏠 الصفحة الرئيسية</button>
+</div>
+
     <!-- صفحة تسجيل الدخول -->
     <div id="loginPage" class="login-container">
 
@@ -367,19 +368,23 @@ function drawStudentsTable(students) {
 // ===== باقي كودك =====
 function updateBackButton() {
   const backBtn = document.getElementById("backBtn");
+  const homeBtn = document.getElementById("homeBtn");
   const globalNav = document.getElementById("globalNav");
 
-  if (!backBtn || !globalNav) return;
+  if (!backBtn || !homeBtn || !globalNav) return;
 
-  // إظهار شريط الرجوع
-  globalNav.classList.remove("hidden");
-
-  // إخفاء الزر في الصفحة الرئيسية فقط
+  // لو في الصفحة الرئيسية (اختيار الصفوف)
   if (!currentGrade) {
-    backBtn.style.display = "none";
-  } else {
-    backBtn.style.display = "inline-block";
+    globalNav.classList.add("hidden");   // ❌ اخفاء الشريط كله
+    return;
   }
+
+  // في أي صفحة داخلية
+  globalNav.classList.remove("hidden");
+  backBtn.style.display = "inline-block";
+  homeBtn.style.display = "inline-block";
+}
+
 }
 
     
@@ -1544,6 +1549,7 @@ async function editStudent(studentEmail) {
 
 </body>
 </html>
+
 
 
 
