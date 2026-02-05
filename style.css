@@ -910,77 +910,9 @@ img, video {
   background: #1d4ed8;
   color: #ffffff;
 }
-/* ===================== */
-/* 🌙 Dark Mode Styling */
-/* ===================== */
-
-
-
-/* العناوين */
-body.dark-mode h1,
-body.dark-mode h2,
-body.dark-mode h3,
-body.dark-mode h4,
-body.dark-mode p {
-  color: #ffffff !important;
-}
-
-/* النص تحت "اختر الصف الدراسي" */
-body.dark-mode .section-title {
-  color: #ffffff !important;
-}
-
-/* كروت الصفوف */
-body.dark-mode .card,
-body.dark-mode .grade-card {
-  background-color: #334155;
-  color: #ffffff;
-}
-
-/* أزرار */
-body.dark-mode button {
-  background-color: #475569;
-  color: #ffffff;
-}
-
-/* زر تسجيل الخروج */
-body.dark-mode .logout-btn {
-  background-color: #dc2626;
-  color: #ffffff;
-}
-/* نص المرحلة تحت عنوان تسجيل الدخول */
-.login-container p {
-  color: #000 !important;
-}
-/* ===== Dark Mode ===== */
 body.dark-mode {
-  background-color: #1b2430;
-  color: #ffffff;
+  background: red !important;
 }
 
-/* العنوان العلوي */
-body.dark-mode header,
-body.dark-mode .top-bar {
-  background: linear-gradient(135deg, #1f3c88, #162447);
-}
 
-/* العناوين */
-body.dark-mode h1,
-body.dark-mode h2,
-body.dark-mode h3,
-body.dark-mode p {
-  color: #ffffff;
-}
 
-/* أزرار الصفوف */
-body.dark-mode .grade-card,
-body.dark-mode .card,
-body.dark-mode button {
-  background-color: #2a3442;
-  color: #ffffff;
-}
-
-/* تأثير خفيف */
-body.dark-mode .grade-card:hover {
-  background-color: #334155;
-}
