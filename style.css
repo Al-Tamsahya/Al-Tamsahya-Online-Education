@@ -1,458 +1,133 @@
-﻿body {
-   
-}
-
 /* =====================
-   Global Styles
+   RESET & BASE
 ===================== */
+
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-    margin: 0;
-    background: #f3f4f6;
-    color: #111827;
+    font-family: "Cairo", sans-serif;
+    background: linear-gradient(180deg, #f5f7fb, #ffffff);
+    color: #1f2937;
+    overflow-x: hidden;
 }
 
-h1, h2, h3 {
-    line-height: 1.4;
+body[dir="ltr"] { text-align: left; }
+body[dir="rtl"] { text-align: right; }
+
+/* =====================
+   TYPOGRAPHY
+===================== */
+
+h1, h2, h3, h4 {
+    margin-bottom: 15px;
+    color: #2c3e50;
 }
 
 p {
-    line-height: 1.3;
+    line-height: 1.8;
     color: #444;
 }
 
-.hidden {
-    display: none !important;
-}
-
 /* =====================
-   Navigation
-===================== */
-nav {
-    background: #2563eb;
-    color: white;
-    padding: 12px 16px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2em;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-
-/* =====================
-   Footer
-===================== */
-footer {
-    text-align: center;
-    padding: 12px;
-    color: #666;
-    margin-top: 50px;
-}
-
-/* =====================
-   Login / Register Container
-===================== */
-.login-container {
-    max-width: 360px;
-    margin: 60px auto;
-    padding: 32px;
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    text-align: center;
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    color: white;
-}
-
-    /* العنوان */
-    .login-container h1,
-    .register-title {
-        margin-bottom: 22px;
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #ffffff;
-        text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-    }
-
-    /* =====================
-   Inputs
-===================== */
-    .login-container input {
-        width: 100%;
-        padding: 12px 16px;
-        margin: 10px 0;
-        border-radius: 999px;
-        border: none;
-        font-size: 1rem;
-    }
-
-        .login-container input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(34,197,94,0.35);
-        }
-
-/* =====================
-   Buttons (General)
-===================== */
-button {
-    cursor: pointer;
-    border: none;
-    transition: background 0.2s ease, transform 0.1s ease;
-}
-
-    button:active {
-        transform: scale(0.97);
-    }
-
-/* =====================
-   Buttons Layout (دخول + تسجيل)
-===================== */
-.auth-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-    justify-content: center;
-}
-
-/* =====================
-   Login Button (دخول)
-===================== */
-.login-btn {
-    min-width: 140px;
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    background: #22c55e;
-    color: white;
-    border-radius: 999px;
-}
-
-    .login-btn:hover {
-        background: #16a34a;
-    }
-
-/* =====================
-   Register Buttons
-===================== */
-.register-btn {
-    min-width: 180px;
-    padding: 12px 20px;
-    font-size: 1.05rem;
-    font-weight: 800;
-    border-radius: 999px;
-}
-
-    /* إرسال طلب التسجيل */
-    .register-btn.primary {
-        background: #22c55e;
-        color: white;
-    }
-
-        .register-btn.primary:hover {
-            background: #16a34a;
-        }
-
-    /* رجوع / تسجيل حساب جديد */
-    .register-btn.secondary {
-        background: #ffffff;
-        color: #2563eb;
-        border: 2px solid #2563eb;
-    }
-
-        .register-btn.secondary:hover {
-            background: #e0e7ff;
-        }
-
-/* =====================
-   Trust Message
-===================== */
-.trust-message {
-    margin-top: 18px;
-    font-size: 0.9rem;
-    color: black;
-    opacity: 0.95;
-}
-
-/* =====================
-   Cards & Lists
-===================== */
-.list-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.card,
-.custom-btn {
-    background: white;
-    border-radius: 18px;
-    padding: 25px;
-    font-size: 18px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-}
-
-    .card:hover,
-    .custom-btn:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 35px rgba(0,0,0,0.15);
-        background: linear-gradient(135deg, #2f6df6, #1e4fd8);
-        color: white;
-    }
-
-/* =====================
-   Admin Box
-===================== */
-.admin-box {
-    background: #e2e8f0;
-    padding: 18px;
-    border-radius: 10px;
-    margin-top: 20px;
-    text-align: center;
-}
-
-/* =====================
-   Logout Button
-===================== */
-.logout-btn {
-    position: fixed;
-    bottom: 15px;
-    left: 15px;
-    padding: 10px 16px;
-    border-radius: 10px;
-    background: #ef4444;
-    color: white;
-    font-weight: bold;
-    z-index: 100;
-}
-
-    .logout-btn:hover {
-        background: #dc2626;
-    }
-
-/* =====================
-   Modal
-===================== */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 22px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 420px;
-    text-align: center;
-}
-
-/* =====================
-   Mobile
-===================== */
-@media (max-width: 768px) {
-    .login-container {
-        margin: 30px 12px;
-        padding: 24px;
-    }
-
-    nav {
-        font-size: 1rem;
-    }
-
-    .auth-buttons {
-        flex-direction: column;
-    }
-
-    .login-btn,
-    .register-btn {
-        width: 100%;
-    }
-}
-/* =====================
-   Auth Page ONLY
+   LAYOUTS
 ===================== */
 
-.auth-page {
-    display: flex;
-    justify-content: center;
-    margin-top: 60px;
-}
-
-    /* كل شيء مقيد بصفحة الدخول */
-    .auth-page .login-container {
-        max-width: 360px;
-        padding: 32px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #2563eb, #1e40af);
-        color: white;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-        text-align: center;
-    }
-
-    /* العناوين */
-    .auth-page h1 {
-        font-size: 1.6rem;
-        margin-bottom: 22px;
-        font-weight: 800;
-    }
-
-    /* الأزرار جنب بعض */
-    .auth-page .auth-buttons {
-        display: flex;
-        gap: 14px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    /* زر دخول */
-    .auth-page .login-btn {
-        background: #22c55e;
-        color: white;
-        padding: 12px 22px;
-        border-radius: 999px;
-        font-size: 0.95rem;
-        font-weight: 700;
-    }
-
-    /* زر تسجيل */
-    .auth-page .register-btn.secondary {
-        background: #ffffff;
-        color: #2563eb;
-        border: 2px solid #2563eb;
-        padding: 12px 26px;
-        border-radius: 999px;
-        font-size: 1.05rem;
-        font-weight: 800;
-    }
-.btn {
-    padding: 12px 20px;
-    border-radius: 999px;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-}
-
-.btn-primary {
-    background: #22c55e;
-    color: white;
-}
-
-.btn-secondary {
-    background: #ffffff;
-    color: #2563eb;
-    border: 2px solid #2563eb;
-}
-button,
-.custom-btn {
-    min-height: 48px; /* حجم لمس مريح */
-    font-size: 1rem;
-    padding: 12px 16px;
-    border-radius: 10px;
-}
-@media (max-width: 768px) {
-    #globalNav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #fff;
-        padding: 10px;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        display: flex;
-        justify-content: space-between;
-        z-index: 1000;
-    }
-
-    body {
-        padding-bottom: 80px; /* علشان المحتوى ما يستخباش */
-    }
-}
-@media (max-width: 768px) {
-    .nav-title {
-        font-size: 0.9rem;
-        text-align: center;
-    }
-
-    footer {
-        font-size: 0.8rem;
-        padding: 10px;
-    }
-}
-/* كروت عامة */
-.custom-btn {
-    background: #ffffff;
-    border: none;
-    border-radius: 16px;
-    padding: 18px;
-    margin: 12px 0;
-    width: 100%;
-    font-size: 1.05rem;
-    font-weight: 600;
-    text-align: right;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: all 0.25s ease;
-    cursor: pointer;
-}
-
-    .custom-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(0,0,0,0.12);
-    }
-
-    .custom-btn:active {
-        transform: scale(0.97);
-    }
 .list-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     padding: 30px;
 }
-body {
-    background: linear-gradient(180deg, #f5f7fb, #ffffff);
-    font-family: "Cairo", sans-serif;
-}
-h2, h3 {
-    margin-bottom: 15px;
-    color: #2c3e50;
+
+/* =====================
+   NAVBAR
+===================== */
+
+.top-nav {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    padding: 8px;
+    text-align: center;
 }
 
-#lessonTitle {
-    background: #ffffff;
-    padding: 14px;
-    border-radius: 14px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-    margin-bottom: 15px;
+.nav-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
 }
-#lessonPageContent {
+
+/* =====================
+   BUTTONS
+===================== */
+
+.custom-btn {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.custom-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+.custom-btn:active {
+    transform: scale(0.97);
+}
+
+/* =====================
+   CONTENT CARDS
+===================== */
+
+#lessonTitle,
+#lessonPageContent,
+.grade-card,
+.subject-card,
+.unit-card,
+.lesson-card,
+.login-container,
+.admin-section {
     background: #ffffff;
     padding: 16px;
     border-radius: 18px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 #lessonText {
     margin-top: 15px;
-    line-height: 1.8;
-    color: #444;
 }
 
+/* =====================
+   ADMIN
+===================== */
+
+.admin-section {
+    margin: 40px;
+}
+
+.admin-section h2 {
+    text-align: center;
+    color: #1e3a8a;
+}
+
+.admin-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+}
+
+/* =====================
+   ANIMATION
+===================== */
 
 .list-container,
 #lessonPage {
@@ -464,48 +139,67 @@ h2, h3 {
         opacity: 0;
         transform: translateY(12px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
-body[dir="ltr"] {
-    text-align: left;
+
+/* =====================
+   DARK MODE (FINAL)
+===================== */
+
+body.dark-mode {
+    background: #020617;
+    color: #e5e7eb;
 }
 
-body[dir="rtl"] {
-    text-align: right;
-}
-.admin-section {
-    background: #f4f7fb;
-    margin: 40px;
-    padding: 30px;
-    border-radius: 20px;
-}
-
-.admin-section h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #1e3a8a;
+/* Text */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode p,
+body.dark-mode span {
+    color: #e5e7eb;
 }
 
-.admin-buttons {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 18px;
-}
-.top-nav {
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    padding: 5px;
-    text-align: center;
+/* Navbar */
+body.dark-mode .top-nav {
+    background: #020617;
 }
 
-.nav-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #fff;
+/* Cards */
+body.dark-mode #lessonTitle,
+body.dark-mode #lessonPageContent,
+body.dark-mode .grade-card,
+body.dark-mode .subject-card,
+body.dark-mode .unit-card,
+body.dark-mode .lesson-card,
+body.dark-mode .login-container,
+body.dark-mode .admin-section {
+    background: #020617;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
+
+/* Buttons */
+body.dark-mode .custom-btn {
+    background: #1e40af;
+}
+
+/* Inputs */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: #020617;
+    color: #ffffff;
+    border: 1px solid #334155;
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+
 @media (max-width: 600px) {
     .nav-title {
         font-size: 18px;
@@ -513,399 +207,14 @@ body[dir="rtl"] {
 
     .custom-btn {
         font-size: 16px;
-        padding: 18px;
+        padding: 16px;
     }
 
     .list-container {
         padding: 15px;
     }
-}
-.grades-section {
-    text-align: center;
-    padding: 20px;
-}
 
-    .grades-section h2 {
-        margin-bottom: 25px;
-        font-size: 22px;
+    .admin-section {
+        margin: 20px;
     }
-
-.grades-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-}
-
-.grade-card {
-    padding: 22px;
-    border-radius: 18px;
-    border: none;
-    font-size: 17px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #ffffff, #eef2ff);
-    box-shadow: 0 8px 20px rgba(0,0,0,.12);
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-    .grade-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 14px 30px rgba(0,0,0,.18);
-    }
-.subjects-section {
-    text-align: center;
-    padding: 20px;
-}
-
-    .subjects-section h2 {
-        font-size: 20px;
-        margin-bottom: 5px;
-    }
-
-.section-subtitle {
-    margin-bottom: 22px;
-    color: #555;
-}
-
-.subjects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-}
-
-.subject-card {
-    padding: 18px;
-    border-radius: 16px;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #fefefe, #f7f9ff);
-    box-shadow: 0 6px 16px rgba(0,0,0,.12);
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-    .subject-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
-.units-section {
-    text-align: center;
-    padding: 20px;
-}
-
-.units-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-}
-
-.unit-card {
-    padding: 18px;
-    border-radius: 16px;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #ffffff, #f3f6ff);
-    box-shadow: 0 6px 16px rgba(0,0,0,.12);
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-    .unit-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
-.lessons-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-bottom: 20px;
-}
-
-.lesson-card {
-    padding: 16px;
-    border-radius: 14px;
-    border: none;
-    font-size: 15px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #ffffff, #f9faff);
-    box-shadow: 0 6px 16px rgba(0,0,0,.12);
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-    .lesson-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0,0,0,.18);
-    }
-.lesson-path {
-    margin-bottom: 15px;
-    font-size: 14px;
-    color: #555;
-}
-
-    .lesson-path strong {
-        color: #1e40af;
-    }
-.toggle-lessons-btn {
-    background: #eef2ff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-.progress-box {
-    width: 100%;
-    height: 10px;
-    background: #e5e7eb;
-    border-radius: 10px;
-    margin: 10px 0;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #22c55e;
-    border-radius: 10px;
-    transition: width 0.4s;
-}
-.install-btn {
-    position: fixed;
-    bottom: 80px; /* 👈 فوق زر تسجيل الخروج */
-    left: 15px;
-    background: #1e40af;
-    color: white;
-    border: none;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    z-index: 9999;
-}
-
-
-.hidden {
-    display: none;
-}
-/* ==========================
-   Login Layout (Center)
-========================== */
-
-
-
-
-    .login-container h1 {
-        font-size: 1.1rem;
-        margin-bottom: 18px;
-        font-weight: 800;
-        color: #1e293b;
-    }
-
-    .login-container input {
-        width: 100%;
-        padding: 12px 14px;
-        margin: 10px 0;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        outline: none;
-        font-size: 0.95rem;
-    }
-
-        .login-container input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
-        }
-
-/* ==========================
-   Auth Buttons (Modern)
-========================== */
-
-.auth-buttons {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 18px;
-    flex-wrap: wrap;
-}
-
-.login-btn {
-    min-width: 150px;
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    font-weight: 800;
-    background: #22c55e;
-    color: white;
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-    .login-btn:hover {
-        background: #16a34a;
-        transform: translateY(-1px);
-    }
-
-.register-btn.secondary {
-
-    min-width: 150px;
-    padding: 12px 20px;
-    font-size: 0.9rem;
-    font-weight: 800;
-    background: #fff;
-    color: #1e40af;
-    border: 2px solid #1e40af;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-
-    .register-btn.secondary:hover {
-        background: rgba(30, 64, 175, 0.08);
-        transform: translateY(-1px);
-    }
-#registerPage {
-    max-width: 420px;
-    margin: 70px auto;
-}
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    max-width: 100%;
-}
-
-img, video {
-    max-width: 100%;
-    height: auto;
-}
-
-.container, .content, .card, .box {
-    max-width: 100%;
-}
-/* كارت الطالب */
-.student-card {
-  background: #ffffff;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-/* حالة الطالب */
-.status {
-  font-weight: bold;
-}
-
-.status.pending {
-  color: #f59e0b; /* برتقالي */
-}
-
-.status.approved {
-  color: #16a34a; /* أخضر */
-}
-
-.status.rejected {
-  color: #dc2626; /* أحمر */
-}
-
-/* الأزرار */
-.actions button {
-  margin-left: 6px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-/* ألوان الأزرار */
-.actions button:nth-child(1) {
-  background: #2563eb;
-  color: #fff;
-}
-
-.actions button:nth-child(2) {
-  background: #dc2626;
-  color: #fff;
-}
-.status {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.status.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status.approved {
-  background: #d4edda;
-  color: #155724;
-}
-
-
-
-/* الشريط العلوي */
-.dark-mode header,
-.dark-mode .top-bar {
-  background: #020617 !important;
-}
-
-/* صفحة تسجيل الدخول */
-.dark-mode .login-container {
-  background: #020617;
-  color: #ffffff;
-}
-
-/* العنوان */
-.dark-mode .login-container h1 {
-  color: #ffffff;
-}
-
-/* النص تحت العنوان */
-.dark-mode .login-container p {
-  color: #c7d2fe;
-}
-
-/* الحقول */
-/* ===== DARK MODE ===== */
-
-body.dark-mode {
-  background: #020617;
-  color: #ffffff;
-}
-
-body.dark-mode h2 {
-  color: #ffffff;
-}
-
-body.dark-mode .grades-section {
-  background: #020617;
-}
-
-body.dark-mode .grade-card {
-  background: #020617;
-  color: #ffffff;
-}
-
-body.dark-mode .grade-card * {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-body.dark-mode button {
-  background: #1d4ed8;
-  color: #ffffff;
 }
