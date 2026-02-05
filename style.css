@@ -300,3 +300,16 @@ body.dark-mode select {
 .dark-mode #globalNav {
   background: #0f172a;
 }
+
+/* ===== FIX LOGOUT BUTTON ON MOBILE ===== */
+
+@media (max-width: 768px) {
+  .logout-btn,
+  #logoutBtn,
+  .logout-button {
+    display: block !important;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 16px;
+  }
+}
