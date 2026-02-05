@@ -1542,11 +1542,41 @@ async function editStudent(studentEmail) {
       .then(() => console.log("Service Worker Registered"))
       .catch(err => console.log("SW registration failed:", err));
   }
+
+    let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  if (installBtn) {
+    installBtn.classList.remove("hidden");
+  }
+});
+
+if (installBtn) {
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+      console.log("User accepted install");
+    }
+
+    deferredPrompt = null;
+    installBtn.classList.add("hidden");
+  });
+}
+
 </script>
 
 
 </body>
 </html>
+
 
 
 
