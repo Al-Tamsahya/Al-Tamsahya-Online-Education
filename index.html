@@ -1071,7 +1071,6 @@ async function renderStudents() {
 
   if (student.approved) approvedStudents++;
   else pendingStudents++;
-});
 
       rows += `
         <tr data-email="${(student.email || "").toLowerCase()}">
@@ -1600,3 +1599,4 @@ async function installApp() {
 
 </body>
 </html>
+
