@@ -243,4 +243,45 @@ body.dark-mode select {
     font-size: 15px;
     cursor: pointer;
 }
+/* 📱 تحسين جدول الطلاب للموبايل */
+@media (max-width: 768px) {
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px; /* يمنع تكسير الجدول */
+    border-collapse: collapse;
+  }
+
+  th, td {
+    font-size: 14px;
+    padding: 10px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* الأزرار تحت بعض */
+  td:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  td:last-child button {
+    width: 100%;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* صندوق البحث */
+  #studentSearch {
+    width: 100%;
+    max-width: 100%;
+    font-size: 16px;
+  }
+}
+
 
