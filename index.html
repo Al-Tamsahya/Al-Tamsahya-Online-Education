@@ -86,9 +86,13 @@
         <div class="auth-buttons">
             <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
 
-            <button class="register-btn secondary" onclick="registerStudentPage()">
-                تسجيل حساب جديد
-            </button>
+           <button
+  type="button"
+  class="register-btn secondary"
+  onclick="registerStudentPage(); return false;">
+  تسجيل حساب جديد
+</button>
+
         </div>
 
 
@@ -1640,6 +1644,7 @@ async function installApp() {
 
 </body>
 </html>
+
 
 
 
