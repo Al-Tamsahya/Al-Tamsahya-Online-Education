@@ -642,67 +642,90 @@ function filterStudents() {
         }
 
 
-        // صفحة التسجيل
-        function registerStudentPage() {
-            document.getElementById("loginPage").classList.add("hidden");
-            document.getElementById("welcomeMessage").classList.add("hidden");
+       // صفحة التسجيل
+function registerStudentPage() {
+    console.log("registerStudentPage clicked"); // للتأكد على الموبايل
 
-            document.getElementById("registerPage").classList.remove("hidden");
+    const loginPage = document.getElementById("loginPage");
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const registerPage = document.getElementById("registerPage");
+
+    // 🔹 الكود الأصلي (لم نحذفه)
+    loginPage.classList.add("hidden");
+    welcomeMessage.classList.add("hidden");
+    registerPage.classList.remove("hidden");
+
+    // 🔹 دعم إضافي للموبايل (بدون حذف أي شيء)
+    loginPage.style.display = "none";
+    welcomeMessage.style.display = "none";
+    registerPage.style.display = "block";
+}
+
+function backToLogin() {
+    const loginPage = document.getElementById("loginPage");
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const registerPage = document.getElementById("registerPage");
+
+    // 🔹 الكود الأصلي
+    registerPage.classList.add("hidden");
+    loginPage.classList.remove("hidden");
+
+    // 🔹 دعم الموبايل
+    registerPage.style.display = "none";
+    welcomeMessage.style.display = "block";
+    loginPage.style.display = "block";
+}
+
+// تسجيل طالب جديد
+async function registerStudent() {
+    const email = document.getElementById("regEmail").value.trim().toLowerCase();
+    const password = document.getElementById("regPassword").value.trim();
+
+    if (!email || !password) {
+        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+        return;
+    }
+
+    // ✅ نفس طريقة الأدمن (compat)
+    const db = window.firestoreTools.db;
+
+    try {
+        // ✅ منع التكرار
+        const existingSnap = await db
+            .collection("students")
+            .where("email", "==", email)
+            .get();
+
+        if (!existingSnap.empty) {
+            alert("هذا البريد مسجل بالفعل ❌");
+            return;
         }
-        function backToLogin() {
-            document.getElementById("registerPage").classList.add("hidden");
-            document.getElementById("loginPage").classList.remove("hidden");
-        }
 
-        // تسجيل طالب جديد
-        async function registerStudent() {
-            const email = document.getElementById("regEmail").value.trim().toLowerCase();
-            const password = document.getElementById("regPassword").value.trim();
+        // ✅ إضافة الطالب في Firestore
+        await db.collection("students").add({
+            name: email.split("@")[0],
+            email: email,
+            password: password,
+            role: "STUDENT",
+            approved: false, // 👈 في انتظار موافقة الأدمن
+            createdAt: new Date().toISOString()
+        });
 
-            if (!email || !password) {
-                alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-                return;
-            }
+        alert("تم إنشاء الحساب بنجاح ✅\nبانتظار موافقة الإدارة");
 
-            // ✅ نفس طريقة الأدمن (compat)
-            const db = window.firestoreTools.db;
+        // تنظيف الحقول
+        document.getElementById("regEmail").value = "";
+        document.getElementById("regPassword").value = "";
 
-            try {
-                // ✅ منع التكرار
-                const existingSnap = await db
-                    .collection("students")
-                    .where("email", "==", email)
-                    .get();
+        // رجوع لصفحة تسجيل الدخول
+        backToLogin();
 
-                if (!existingSnap.empty) {
-                    alert("هذا البريد مسجل بالفعل ❌");
-                    return;
-                }
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء التسجيل ❌\n" + err.message);
+    }
+}
 
-                // ✅ إضافة الطالب في Firestore
-                await db.collection("students").add({
-                    name: email.split("@")[0],
-                    email: email,
-                    password: password,
-                    role: "STUDENT",
-                    approved: false, // 👈 في انتظار موافقة الأدمن
-                    createdAt: new Date().toISOString()
-                });
-
-                alert("تم إنشاء الحساب بنجاح ✅\nبانتظار موافقة الإدارة");
-
-                // تنظيف الحقول
-                document.getElementById("regEmail").value = "";
-                document.getElementById("regPassword").value = "";
-
-                // رجوع لصفحة تسجيل الدخول
-                backToLogin();
-
-            } catch (err) {
-                console.error(err);
-                alert("حدث خطأ أثناء التسجيل ❌\n" + err.message);
-            }
-        }
 
 
 
@@ -1617,6 +1640,7 @@ async function installApp() {
 
 </body>
 </html>
+
 
 
 
