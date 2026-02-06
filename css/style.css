@@ -1087,3 +1087,17 @@ body {
     white-space: nowrap;
   }
 }
+/* حل مشكلة عدم الضغط على زر التسجيل في الموبايل */
+.login-container {
+  position: relative;
+  z-index: 20;
+}
+
+.welcome-message {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-buttons button {
+  pointer-events: auto;
+}
