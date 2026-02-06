@@ -1061,46 +1061,68 @@ async function renderStudents() {
     let rows = "";
 
     snapshot.forEach(doc => {
-  const student = doc.data();
-  const status = student.approved ? "مفعل" : "قيد المراجعة";
+      const student = doc.data();
+      const status = student.approved ? "مفعل" : "قيد المراجعة";
 
-  // ✅ تخزين الطالب للفلترة
-  savedStudents.push({
-    id: doc.id,
-    email: student.email || "",
-    approved: student.approved === true,
-    grade: student.grade || "-"
-  });
+      // ✅ تخزين الطالب للفلترة
+      savedStudents.push({
+        id: doc.id,
+        email: student.email || "",
+        approved: student.approved === true,
+        grade: student.grade || "-"
+      });
 
-  if (student.approved) approvedStudents++;
-  else pendingStudents++;
+      if (student.approved) approvedStudents++;
+      else pendingStudents++;
 
       rows += `
         <tr data-email="${(student.email || "").toLowerCase()}">
           <td>${student.email || "-"}</td>
           <td>${status}</td>
           <td>${student.grade || "-"}</td>
-          <td class="actions-cell" style="display:flex; gap:6px; justify-content:center;">
-            ${
-              student.approved
-                ? `
-                  <button class="custom-btn"
-                    onclick="editStudent('${student.email}')">
-                    ✏️ تعديل
-                  </button>
-                `
-                : `
-                  <button class="custom-btn"
-                    onclick="setApprove('${doc.id}', true)">
-                    ✅ موافقة
-                  </button>
-                  <button class="custom-btn danger"
-                    onclick="rejectStudent('${doc.id}')">
-                    ❌ رفض
-                  </button>
-                `
-            }
-          </td>
+          <td class="actions-cell" style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
+  ${
+    // 👑 الأدمن
+    currentUser?.role === "ADMIN"
+      ? `
+        <button class="custom-btn"
+          onclick="editStudent('${student.email}')">
+          ✏️ تعديل
+        </button>
+
+        <button class="custom-btn danger"
+          onclick="deleteUser('${doc.id}', 'students')">
+          🗑 حذف
+        </button>
+
+        ${
+          !student.approved
+            ? `
+              <button class="custom-btn"
+                onclick="setApprove('${doc.id}', true)">
+                ✅ موافقة
+              </button>
+
+              <button class="custom-btn danger"
+                onclick="rejectStudent('${doc.id}')">
+                ❌ رفض
+              </button>
+            `
+            : ""
+        }
+      `
+      // 👤 المشرف (موافقة فقط)
+      : currentUser?.role === "SUPERVISOR" && !student.approved
+        ? `
+          <button class="custom-btn"
+            onclick="setApprove('${doc.id}', true)">
+            ✅ موافقة
+          </button>
+        `
+        : ""
+  }
+</td>
+
         </tr>
       `;
     });
@@ -1155,7 +1177,6 @@ async function renderStudents() {
   }
 }
 
- 
 
         // ✏️ تعديل بيانات الطالب (email + password)
 async function editStudent(studentEmail) {
@@ -1597,13 +1618,12 @@ async function installApp() {
   deferredPrompt = null;
 }
     
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-}
+
 </script>
 
 </body>
 </html>
+
 
 
 
