@@ -276,27 +276,30 @@
             "التربية الدينية": ["القرآن/الكتاب المقدس", "السلوك والقيم"],
             "النشاط الفني/الحاسب الآلي/الرياضة": ["الفنون", "الحاسب الآلي", "الرياضة"],
         };
-        let lessons = {};
-        grades.forEach((grade) => {
-            lessons[grade] = {};
-            subjectsPerGrade[grade].forEach((sub) => {
-                lessons[grade][sub] = {};
-                unitsPerSubject[sub].forEach((unit) => 
-                    lessons[grade][sub][unit] = [
-                        {
-                            title: "درس 1 " + unit,
-                            content: "شرح نصي مفصل لدرس 1 في " + unit,
-                            video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                        },
-                        {
-                            title: "درس 2 " + unit,
-                            content: "شرح نصي مفصل لدرس 2 في " + unit,
-                            video: "https://www.youtube.com/embed/9bZkp7q19f0",
-                        },
-                    ];
-                });
-            });
+   let lessons = {};
+
+grades.forEach((grade) => {
+    lessons[grade] = {};
+
+    subjectsPerGrade[grade].forEach((sub) => {
+        lessons[grade][sub] = {};
+
+        unitsPerSubject[sub].forEach((unit) => {
+            lessons[grade][sub][unit] = [
+                {
+                    title: "درس 1 " + unit,
+                    content: "شرح نصي مفصل لدرس 1 في " + unit,
+                    video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                },
+                {
+                    title: "درس 2 " + unit,
+                    content: "شرح نصي مفصل لدرس 2 في " + unit,
+                    video: "https://www.youtube.com/embed/9bZkp7q19f0",
+                },
+            ];
         });
+    });
+});
 
 
 
@@ -1644,6 +1647,7 @@ async function installApp() {
 
 </body>
 </html>
+
 
 
 
