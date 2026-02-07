@@ -284,22 +284,28 @@ grades.forEach((grade) => {
     subjectsPerGrade[grade].forEach((sub) => {
         lessons[grade][sub] = {};
 
-        const subjectsPerGrade[sub].forEach((unit) => {
-            lessons[grade][sub][unit] = [
-                {
-                    title: "درس 1 " + unit,
-                    content: "شرح نصي مفصل لدرس 1 في " + unit,
-                    video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-                },
-                {
-                    title: "درس 2 " + unit,
-                    content: "شرح نصي مفصل لدرس 2 في " + unit,
-                    video: "https://www.youtube.com/embed/9bZkp7q19f0",
-                },
-            ];
-        });
+        // التأكد أن للمادة وحدات
+        if (unitsPerSubject[sub]) {
+            unitsPerSubject[sub].forEach((unit) => {
+                lessons[grade][sub][unit] = [
+                    {
+                        title: "درس 1 " + unit,
+                        content: "شرح نصي مفصل لدرس 1 في " + unit,
+                        video: `videos/${sub}/${unit}-lesson1.mp4`,
+                    },
+                    {
+                        title: "درس 2 " + unit,
+                        content: "شرح نصي مفصل لدرس 2 في " + unit,
+                        video: `videos/${sub}/${unit}-lesson2.mp4`,
+                    },
+                ];
+            });
+        } else {
+            console.warn("لا توجد وحدات للمادة:", sub);
+        }
     });
 });
+
 
 
 
@@ -1647,6 +1653,7 @@ async function installApp() {
 
 </body>
 </html>
+
 
 
 
