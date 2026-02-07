@@ -844,7 +844,8 @@ async function registerStudent() {
 
             const grid = container.querySelector(".units-grid");
 
-            unitsPerSubject[subject].forEach((unit) => {
+            sectionsPerSubject[currentSubject].forEach((unit) => {
+
                 const btn = document.createElement("button");
                 btn.textContent = unit;
                 btn.className = "unit-card";
@@ -1647,6 +1648,7 @@ async function installApp() {
 
 </body>
 </html>
+
 
 
 
