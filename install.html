@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تثبيت تطبيق منصة التمساحية</title>
+  <title>تثبيت منصة التمساحية</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="manifest.json">
@@ -23,26 +23,37 @@
     }
     .box {
       background: rgba(255,255,255,0.15);
-      padding: 30px;
-      border-radius: 16px;
-      max-width: 400px;
+      padding: 35px 30px;
+      border-radius: 18px;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     button {
       margin-top: 20px;
       font-size: 18px;
-      padding: 14px 24px;
-      border-radius: 12px;
+      padding: 14px 28px;
+      border-radius: 14px;
       border: none;
       cursor: pointer;
+      background: white;
+      color: #1e40af;
+      font-weight: bold;
+    }
+    .success {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #a7f3d0;
+      display: none;
     }
   </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>📲 منصة التمساحية التعليمية </h2>
-  <p>
-    اضغط الزر بالأسفل لتثبيت التطبيق  
+  <h2>📲 منصة التمساحية التعليمية</h2>
+
+  <p id="desc">
+    اضغط على الزر بالأسفل لتثبيت التطبيق  
     <br>على هاتفك
   </p>
 
@@ -50,7 +61,13 @@
     ⬇️ تثبيت التطبيق
   </button>
 
-  <p style="margin-top:15px;font-size:14px">
+  <div id="successMsg" class="success">
+    ✅ تم تثبيت التطبيق بنجاح  
+    <br>
+    يمكنك فتحه الآن من شاشة هاتفك
+  </div>
+
+  <p id="hint" style="margin-top:15px;font-size:14px">
     لو الزر ما ظهرش  
     افتح القائمة ⋮ واختر  
     <b>تثبيت التطبيق</b>
@@ -59,19 +76,30 @@
 
 <script>
 let deferredPrompt = null;
+const installBtn = document.getElementById("installBtn");
+const successMsg = document.getElementById("successMsg");
+const desc = document.getElementById("desc");
+const hint = document.getElementById("hint");
 
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById("installBtn").style.display = "inline-block";
+  installBtn.style.display = "inline-block";
 });
 
-document.getElementById("installBtn").onclick = async () => {
+installBtn.onclick = async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
   deferredPrompt = null;
 };
+
+window.addEventListener("appinstalled", () => {
+  installBtn.style.display = "none";
+  hint.style.display = "none";
+  desc.style.display = "none";
+  successMsg.style.display = "block";
+});
 </script>
 
 </body>
