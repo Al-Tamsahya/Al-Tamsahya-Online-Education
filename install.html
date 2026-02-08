@@ -1,138 +1,114 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>تثبيت منصة التمساحية</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة التمساحية</title>
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2563eb">
-  <link rel="icon" href="icon-192.png">
+<style>
+body{
+  margin:0;
+  font-family: Cairo, sans-serif;
+  background:#f3f6fb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
 
-  <style>
-    body {
-      font-family: Cairo, sans-serif;
-      background: linear-gradient(180deg, #1e40af, #2563eb);
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
+.container{
+  width:100%;
+  padding:20px;
+}
 
-    .box {
-      background: #ffffff;
-      width: 100%;
-      max-width: 360px;
-      border-radius: 20px;
-      padding: 26px 22px;
-      text-align: center;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-    }
+.card{
+  background:#ffffff;
+  max-width:460px;
+  margin:auto;
+  padding:32px 28px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
 
-    h2 {
-      margin: 0 0 14px;
-      font-size: 21px;
-      color: #1e40af;
-    }
+h2{
+  margin:0 0 14px;
+  color:#1e40af;
+  font-size:22px;
+}
 
-    p {
-      margin: 0 0 18px;
-      font-size: 15px;
-      line-height: 1.7;
-      color: #334155;
-    }
+.desc{
+  font-size:16px;
+  color:#374151;
+  line-height:1.8;
+  margin-bottom:26px;
+}
 
-    button {
-      width: 100%;
-      font-size: 17px;
-      padding: 15px;
-      border-radius: 14px;
-      border: none;
-      background: linear-gradient(90deg, #2563eb, #1e40af);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 6px 15px rgba(37,99,235,0.4);
-    }
+button{
+  width:100%;
+  padding:14px;
+  font-size:17px;
+  font-weight:600;
+  border:none;
+  border-radius:12px;
+  background:#1e40af;
+  color:#fff;
+  cursor:pointer;
+}
 
-    button:active {
-      transform: scale(0.97);
-    }
+button:hover{
+  background:#1d4ed8;
+}
 
-    .hint {
-      margin-top: 16px;
-      font-size: 14px;
-      color: #64748b;
-      line-height: 1.6;
-    }
+.note{
+  margin-top:22px;
+  font-size:14px;
+  color:#6b7280;
+  line-height:1.7;
+}
 
-    .success {
-      display: none;
-      margin-top: 20px;
-      font-size: 16px;
-      color: #16a34a;
-      line-height: 1.6;
-      font-weight: bold;
-    }
-  </style>
+/* شاشات كبيرة (كمبيوتر) */
+@media (min-width: 768px){
+  .card{
+    max-width:520px;
+    padding:40px 36px;
+  }
+
+  h2{
+    font-size:24px;
+  }
+
+  .desc{
+    font-size:17px;
+  }
+
+  button{
+    font-size:18px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>👋 أهلًا بك في منصة التمساحية</h2>
+<div class="container">
+  <div class="card">
+    <h2>أهلًا بك في منصة التمساحية</h2>
 
-  <p id="desc">
-    ثبّت المنصة على هاتفك  
-    <br>
-    علشان تتابع دروسك بسهولة ومن غير تعب
-  </p>
+    <p class="desc">
+      منصة تعليمية رقمية<br>
+      تجمع الطلاب والمعلمين وأولياء الأمور<br>
+      في بيئة تعليمية منظمة وآمنة
+    </p>
 
-  <button id="installBtn" style="display:none">
-    ⬇️ تثبيت المنصة على الهاتف
-  </button>
+    <button id="installBtn">تثبيت</button>
 
-  <div id="successMsg" class="success">
-    🎉 تم تثبيت المنصة بنجاح  
-    <br>
-    ابدأ التعلّم الآن 🚀
-  </div>
-
-  <div id="hint" class="hint">
-    الخطوة بسيطة جدًا  
-    <br>
-    كم ثانية وتكون المنصة جاهزة عندك ✨
+    <p class="note">
+      يتيح التثبيت وصولًا أسرع للمنصة<br>
+      وتجربة استخدام أكثر سهولة واستقرارًا
+    </p>
   </div>
 </div>
-
-<script>
-let deferredPrompt = null;
-const installBtn = document.getElementById("installBtn");
-const successMsg = document.getElementById("successMsg");
-const desc = document.getElementById("desc");
-const hint = document.getElementById("hint");
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = "block";
-});
-
-installBtn.onclick = async () => {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-  deferredPrompt = null;
-};
-
-window.addEventListener("appinstalled", () => {
-  installBtn.style.display = "none";
-  hint.style.display = "none";
-  desc.style.display = "none";
-  successMsg.style.display = "block";
-});
-</script>
 
 </body>
 </html>
