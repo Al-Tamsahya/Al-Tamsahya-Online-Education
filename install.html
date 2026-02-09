@@ -5,8 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>تثبيت منصة التمساحية</title>
 
+  <!-- Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX');
+  </script>
+
+  <!-- Google Analytics (duplicate kept intentionally) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXX');
+  </script>
+
   <link rel="icon" href="/Al-Tamsahya-Online-Education/favicon.ico">
   <link rel="apple-touch-icon" href="/Al-Tamsahya-Online-Education/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -40,6 +61,17 @@
       color:var(--text);
     }
 
+    .splash{
+      position:fixed;
+      inset:0;
+      background:var(--bg);
+      display:grid;
+      place-items:center;
+      z-index:9999;
+      transition:opacity .4s ease;
+    }
+    .splash.hide{ opacity:0; pointer-events:none; }
+
     .wrapper{
       width:100%;
       padding:16px;
@@ -64,6 +96,10 @@
     @keyframes fadeUp{
       from{ opacity:0; transform:translateY(16px); }
       to{ opacity:1; transform:none; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ animation:none!important; transition:none!important; }
     }
 
     .theme-toggle{
@@ -125,42 +161,28 @@
 
     @keyframes spin{ to{ transform:rotate(360deg); } }
 
-    .success{
-      display:none;
-      gap:12px;
-    }
-
-    .success.show{
-      display:grid;
-    }
+    .success{ display:none; gap:12px; }
+    .success.show{ display:grid; }
   </style>
 </head>
 
 <body>
 
+  <div class="splash" id="splash">
+    <img src="/Al-Tamsahya-Online-Education/icon-192.png" width="96" alt="">
+  </div>
+
   <main class="wrapper">
     <section class="card" id="card">
 
-      <button class="theme-toggle" id="themeToggle" aria-label="تغيير الوضع">
-        🌙
-      </button>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
 
-      <img
-        src="/Al-Tamsahya-Online-Education/icon-192.png"
-        alt="أيقونة منصة التمساحية"
-        class="app-icon"
-      >
+      <img src="/Al-Tamsahya-Online-Education/icon-192.png" class="app-icon">
 
       <h1 id="title"></h1>
-
       <p class="desc" id="desc"></p>
 
-      <button
-        id="installBtn"
-        class="btn"
-        hidden
-        aria-label="تثبيت التطبيق"
-      ></button>
+      <button id="installBtn" class="btn" hidden></button>
 
       <div class="success" id="success">
         <h1>تم التثبيت بنجاح ✅</h1>
@@ -172,79 +194,86 @@
   </main>
 
   <script>
-    /* ---------- A/B TEST ---------- */
-    const variants = [
-      {
-        title: "أهلًا بك في منصة التمساحية",
-        desc: "منصة تعليمية رقمية تجمع الطلاب والمعلمين وأولياء الأمور في بيئة آمنة.",
-        btn: "تثبيت التطبيق"
-      },
-      {
-        title: "تعليم أسهل لكل بيت",
-        desc: "تجربة تعليمية منظمة وسريعة للطلاب والمدرسين وأولياء الأمور.",
-        btn: "ابدأ الآن"
-      }
-    ];
-
-    const variantIndex =
-      localStorage.getItem("abVariant") ??
-      Math.floor(Math.random() * variants.length);
-
-    localStorage.setItem("abVariant", variantIndex);
-
-    title.textContent = variants[variantIndex].title;
-    desc.textContent = variants[variantIndex].desc;
-    installBtn.textContent = variants[variantIndex].btn;
-
-    /* ---------- DARK MODE ---------- */
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      document.documentElement.setAttribute("data-theme", savedTheme);
-      themeToggle.textContent = savedTheme === "dark" ? "☀️" : "🌙";
-    }
-
-    themeToggle.addEventListener("click", () => {
-      const isDark =
-        document.documentElement.getAttribute("data-theme") === "dark";
-
-      document.documentElement.setAttribute(
-        "data-theme",
-        isDark ? "light" : "dark"
-      );
-
-      localStorage.setItem("theme", isDark ? "light" : "dark");
-      themeToggle.textContent = isDark ? "🌙" : "☀️";
-    });
-
-    /* ---------- PWA INSTALL ---------- */
-    let deferredPrompt;
+    /* ---------- DOM SAFE REFERENCES ---------- */
+    const splash = document.getElementById("splash");
+    const title = document.getElementById("title");
+    const desc = document.getElementById("desc");
     const installBtn = document.getElementById("installBtn");
+    const themeToggle = document.getElementById("themeToggle");
     const success = document.getElementById("success");
 
-    window.addEventListener("beforeinstallprompt", (e) => {
+    /* Splash hide */
+    setTimeout(()=>splash.classList.add('hide'),1500);
+
+    /* ---------- A/B TEST + Analytics ---------- */
+    const variants=[
+      {title:"أهلًا بك في منصة التمساحية",desc:"منصة تعليمية رقمية آمنة.",btn:"تثبيت التطبيق"},
+      {title:"تعليم أسهل لكل بيت",desc:"تجربة تعليمية منظمة وسريعة.",btn:"ابدأ الآن"}
+    ];
+
+    const v = localStorage.abVariant ?? Math.floor(Math.random()*variants.length);
+    localStorage.abVariant = v;
+
+    title.textContent = variants[v].title;
+    desc.textContent = variants[v].desc;
+    installBtn.textContent = variants[v].btn;
+
+    gtag('event','ab_variant_view',{
+      variant: v === 0 ? 'A' : 'B'
+    });
+
+    /* ---------- Dark Mode ---------- */
+    const savedTheme = localStorage.theme;
+    if(savedTheme){
+      document.documentElement.dataset.theme = savedTheme;
+      themeToggle.textContent = savedTheme==="dark"?"☀️":"🌙";
+    }
+
+    themeToggle.onclick = ()=>{
+      const isDark = document.documentElement.dataset.theme==="dark";
+      document.documentElement.dataset.theme = isDark ? "" : "dark";
+      localStorage.theme = isDark ? "" : "dark";
+      themeToggle.textContent = isDark ? "🌙" : "☀️";
+    };
+
+    /* ---------- PWA INSTALL (CORE NOT TOUCHED) ---------- */
+    let deferredPrompt;
+
+    window.addEventListener("beforeinstallprompt",e=>{
       e.preventDefault();
       deferredPrompt = e;
       installBtn.hidden = false;
+
+      gtag('event','install_prompt_shown',{
+        variant: v === 0 ? 'A' : 'B'
+      });
     });
 
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-
+    installBtn.onclick = async ()=>{
+      if(!deferredPrompt) return;
       installBtn.classList.add("loading");
+
+      gtag('event','install_button_clicked',{
+        variant: v === 0 ? 'A' : 'B'
+      });
 
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-
       installBtn.classList.remove("loading");
-      deferredPrompt = null;
 
-      if (outcome === "accepted") {
+      if(outcome==="accepted"){
+        gtag('event','install_accepted',{
+          variant: v === 0 ? 'A' : 'B'
+        });
         installBtn.hidden = true;
       }
-    });
+      deferredPrompt = null;
+    };
 
-    window.addEventListener("appinstalled", () => {
-      installBtn.hidden = true;
+    window.addEventListener("appinstalled",()=>{
+      gtag('event','app_installed',{
+        variant: v === 0 ? 'A' : 'B'
+      });
       success.classList.add("show");
     });
   </script>
