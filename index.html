@@ -548,6 +548,17 @@ async function login() {
 
         // ✅ إظهار لوحة الإدارة للأدمن
         document.getElementById("adminPanel").classList.remove("hidden");
+          // 🔔 إظهار مربع إدارة الإعلان + تحميل الإعلان الحالي
+const adBox = document.getElementById("adminAdBox");
+if (adBox) adBox.style.display = "block";
+
+db.collection("announcements").doc("current").get()
+  .then(doc => {
+    if (doc.exists && document.getElementById("adminAdText")) {
+      document.getElementById("adminAdText").value = doc.data().text || "";
+    }
+  });
+
 
         renderGrades();
         return;
@@ -1691,28 +1702,7 @@ async function installApp() {
 
 </script>
 
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const adBox = document.getElementById("promoAd");
-  const adText = document.getElementById("promoText");
-
-  const announcement = localStorage.getItem("announcement");
-
-  if (announcement && announcement.trim() !== "") {
-    adText.innerText = announcement;
-
-    setTimeout(() => {
-      adBox.classList.remove("hidden");
-    }, 1500);
-  } else {
-    adBox.style.display = "none";
-  }
-});
-
-function closeAd() {
-  document.getElementById("promoAd").classList.add("hidden");
-}
-</script>
+ 
 <!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
 
 <!-- 🚨 شريط إعلان متحرك للطلاب -->
@@ -1746,16 +1736,29 @@ function closeAd() {
 body { padding-top: 45px; }
 </style>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-firestore-compat.js"></script>
+<!-- Firebase init -->
+<script src="./js/firebase.js"></script>
 
+<!-- Service Worker + PWA Install -->
 <script>
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-};
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js")
+    .then((reg) => {
+      console.log("Service Worker Registered");
+      reg.update();
+
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      }
+
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+    })
+    .catch(err => console.log("SW registration failed:", err));
+}
+</script>
+
 
 // تهيئة Firebase مرة واحدة فقط
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -1767,25 +1770,11 @@ const loggedEmail = localStorage.getItem("loggedEmail"); // يتم تخزين ا
 
 let animationTimeout;
 
-// عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", () => {
 
-  // ✅ إظهار مربع إدارة الإعلان للأدمن فقط
-  if (currentUser?.role === "ADMIN") {
-    const adBox = document.getElementById("adminAdBox");
-    if (adBox) adBox.style.display = "block";
-
-    // تحميل الإعلان الحالي داخل مربع النص
-    db.collection("announcements").doc("current").get()
-      .then(doc => {
-        if (doc.exists && document.getElementById("adminAdText")) {
-          document.getElementById("adminAdText").value = doc.data().text || "";
-        }
-      });
   }
 
   // 🔔 مراقبة الإعلان وعرضه للطلاب
-  db.collection("announcements").doc("current").onSnapshot(doc => {
+  db.collection("announcements").doc("current").onSnapshot(doc => 
     if (doc.exists && doc.data().text?.trim()) {
       startAnnouncementAnimation(doc.data().text, 12000);
     } else {
@@ -1821,6 +1810,13 @@ function deleteAnnouncement() {
 function startAnnouncementAnimation(text, duration = 12000) {
   const bar = document.getElementById("announcementBar");
   const textBox = document.getElementById("announcementText");
+
+  // ✅ حماية: لو مفيش نص أو عناصر
+  if (!bar || !textBox || !text || !text.trim()) {
+    hideAnnouncementBar();
+    return;
+  }
+
   textBox.innerText = "📢 " + text + " 📢";
   bar.style.display = "flex";
 
@@ -1844,18 +1840,48 @@ function startAnnouncementAnimation(text, duration = 12000) {
 
   // إيقاف أي حركة سابقة قبل بدء الجديدة
   if (animationTimeout) clearTimeout(animationTimeout);
+
   move();
 }
 
 // إخفاء الشريط عند حذف الإعلان
 function hideAnnouncementBar() {
-  document.getElementById("announcementBar").style.display = "none";
-  if (animationTimeout) clearTimeout(animationTimeout);
+  const bar = document.getElementById("announcementBar");
+
+  if (bar) {
+    bar.style.display = "none";
+  }
+
+  if (animationTimeout) {
+    clearTimeout(animationTimeout);
+    animationTimeout = null; // ✅ تصفير التايمر
+  }
 }
+
+</script>
+<script>
+let animationTimeout;
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.firestoreTools || !window.firestoreTools.db) return;
+
+  const db = window.firestoreTools.db;
+
+  // 🔔 مراقبة الإعلان وعرضه للطلاب
+  db.collection("announcements").doc("current")
+    .onSnapshot(doc => {
+      if (doc.exists && doc.data().text?.trim()) {
+        startAnnouncementAnimation(doc.data().text, 12000);
+      } else {
+        hideAnnouncementBar();
+      }
+    });
+});
 </script>
 
 </body>
 </html>
+
 
 
 
