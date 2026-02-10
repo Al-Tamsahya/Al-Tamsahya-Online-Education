@@ -1710,16 +1710,6 @@ function closeAd() {
   </div>
 </div>
 
-<!-- 🔔 إدارة الإعلان (يظهر للأدمن فقط) -->
-<div id="adminAdBox" style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
-  <h4>📢 إعلان عام للطلاب</h4>
-  <textarea id="adminAdText" placeholder="اكتب الإعلان هنا..." style="width:100%; min-height:80px; padding:8px;"></textarea>
-  <div style="margin-top:10px;">
-    <button onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
-    <button onclick="deleteAnnouncement()">🗑 حذف الإعلان</button>
-  </div>
-</div>
-
 <!-- 🚨 شريط إعلان متحرك للطلاب -->
 <div id="announcementBar" class="announcement-bar" style="display:none;">
   <div class="announcement-text" id="announcementText"></div>
@@ -1779,8 +1769,10 @@ const loggedEmail = localStorage.getItem("loggedEmail");
 
 // عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => {
+  // إظهار حقل الإدارة إذا الأدمن
   if (loggedEmail === adminEmail) {
     document.getElementById("adminAdBox").style.display = "block";
+
     // تحميل الإعلان الحالي
     db.collection("announcements").doc("current").get()
       .then(doc => {
@@ -1788,9 +1780,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // مراقبة Firestore وعرض الشريط مباشرة
+  // مراقبة Firestore وعرض الشريط مباشرة لجميع الطلاب
   db.collection("announcements").doc("current").onSnapshot(doc => {
-    if(doc.exists) showAnnouncementBar(doc.data().text);
+    if(doc.exists && doc.data().text.trim() !== "") {
+      showAnnouncementBar(doc.data().text); // الشريط يظهر دائمًا إذا كان هناك نص
+    } else {
+      hideAnnouncementBar(); // يظهر فقط إذا لا يوجد نص
+    }
   });
 });
 
@@ -1809,7 +1805,7 @@ function deleteAnnouncement() {
   db.collection("announcements").doc("current").delete()
     .then(() => {
       document.getElementById("adminAdText").value = "";
-      showAnnouncementBar("");
+      hideAnnouncementBar();
       alert("🗑 تم حذف الإعلان");
     })
     .catch(err => console.error(err));
@@ -1819,14 +1815,16 @@ function deleteAnnouncement() {
 function showAnnouncementBar(text) {
   const bar = document.getElementById("announcementBar");
   const textBox = document.getElementById("announcementText");
-  if(text && text.trim() !== "") {
-    textBox.innerText = "📢 " + text + " 📢";
-    bar.style.display = "flex";
-  } else {
-    bar.style.display = "none";
-  }
+  textBox.innerText = "📢 " + text + " 📢";
+  bar.style.display = "flex"; // الشريط دائمًا ظاهر
+}
+
+// إخفاء الشريط (يظهر فقط عند حذف الإعلان)
+function hideAnnouncementBar() {
+  document.getElementById("announcementBar").style.display = "none";
 }
 </script>
+
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-app-compat.js"></script>
