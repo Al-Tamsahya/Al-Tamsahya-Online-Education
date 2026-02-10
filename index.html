@@ -1679,31 +1679,19 @@ async function installApp() {
     document.getElementById("promoAd").style.display = "none";
   }
 </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // يظهر الإعلان بعد 2 ثانية
+    setTimeout(() => {
+      const ad = document.getElementById("promoAd");
+      if (ad) ad.classList.remove("hidden");
+    }, 2000);
+  });
+
+  function closeAd() {
+    document.getElementById("promoAd").classList.add("hidden");
+  }
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
