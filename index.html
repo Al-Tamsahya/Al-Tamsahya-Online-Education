@@ -90,6 +90,16 @@
   </div>
 </div>
 
+<div id="ads-container">
+  <!-- هنا ستظهر الإعلانات تلقائيًا -->
+</div>
+<!-- واجهة الأدمن -->
+<div id="admin-panel" style="display:none;">
+  <h2>لوحة تحكم الأدمن</h2>
+  <input type="text" id="ad-title" placeholder="عنوان الإعلان">
+  <textarea id="ad-content" placeholder="محتوى الإعلان"></textarea>
+  <button id="add-ad-btn">إضافة إعلان</button>
+</div>
 
 
     <!-- شريط تنقل عام -->
@@ -1674,6 +1684,64 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("SW registration failed:", err));
 }
 </script>
+        
+
+<script>
+// ======= تحديد الأدمن =======
+const isAdmin = true; // ضع true إذا أنت الأدمن
+if (isAdmin) {
+  document.getElementById("admin-panel").style.display = "block";
+}
+
+// ======= إضافة إعلان =======
+const titleInput = document.getElementById("ad-title");
+const contentInput = document.getElementById("ad-content");
+const addBtn = document.getElementById("add-ad-btn");
+
+addBtn?.addEventListener("click", async () => {
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
+  
+  if (!title || !content) {
+    alert("الرجاء ملء العنوان والمحتوى!");
+    return;
+  }
+
+  await firestoreTools.addDoc(
+    firestoreTools.collection("ads"),
+    {
+      title,
+      content,
+      date: new Date()
+    }
+  );
+
+  titleInput.value = "";
+  contentInput.value = "";
+  alert("تم إضافة الإعلان بنجاح!");
+});
+
+// ======= عرض الإعلانات لجميع المستخدمين =======
+const adsContainer = document.getElementById("ads-container");
+
+firestoreTools.collection("ads")
+  .orderBy("date", "desc")
+  .onSnapshot(snapshot => {
+    adsContainer.innerHTML = "";
+    snapshot.forEach(doc => {
+      const ad = doc.data();
+      const adElement = document.createElement("div");
+      adElement.className = "ad";
+      adElement.innerHTML = `
+        <h3>${ad.title}</h3>
+        <p>${ad.content}</p>
+        <small>${ad.date.toDate().toLocaleString()}</small>
+      `;
+      adsContainer.appendChild(adElement);
+    });
+  });
+</script>
+
 
 <button id="installBtn" class="install-btn hidden" onclick="installApp()">
 📲 تثبيت التطبيق
@@ -1736,10 +1804,7 @@ async function installApp() {
 body { padding-top: 45px; }
 </style>
 
-<!-- Firebase init -->
-<script src="./js/firebase.js"></script>
 
-<!-- Service Worker + PWA Install -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js")
@@ -1881,6 +1946,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
