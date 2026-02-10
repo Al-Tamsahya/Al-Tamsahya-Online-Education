@@ -1,11 +1,41 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <script>
-    if (localStorage.getItem("isAdmin") !== "true") {
-      location.href = "./index.html";
+
+<script>
+/*
+  🔐 حماية admin.html
+  - لا نحذف أي كود
+  - ننتظر Firebase
+  - نتحقق من الإيميل
+*/
+document.addEventListener("DOMContentLoaded", async function () {
+
+  let waitCount = 0;
+
+  const waitForFirebase = setInterval(() => {
+    waitCount++;
+
+    if (window.firestoreTools && window.firestoreTools.db) {
+      clearInterval(waitForFirebase);
+
+      const ADMIN_EMAIL = "admin@gmail.com";
+      const email = localStorage.getItem("loggedEmail");
+
+      if (!email || email !== ADMIN_EMAIL) {
+        location.href = "index.html";
+      }
     }
-  </script>
+
+    // لو Firebase لم يجهز بعد 3 ثواني
+    if (waitCount > 30) {
+      clearInterval(waitForFirebase);
+      location.href = "index.html";
+    }
+
+  }, 100);
+});
+</script>
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,31 +65,62 @@
 
 <script>
   function logoutAdmin() {
-    // ✅ حذف صلاحية الأدمن حتى لا يظل يفتح admin.html تلقائياً
+    // ⛔ لا نحذف الكود القديم
     localStorage.removeItem("isAdmin");
 
-    // رجوع لصفحة تسجيل الدخول
+    // ✅ نضيف الإيميل (الجديد)
+    localStorage.removeItem("loggedEmail");
+
     window.location.href = "./index.html";
   }
 </script>
 
 <script>
-  const textarea = document.getElementById("announcement");
+async function saveAnnouncement() {
+  const text = document.getElementById("announcement").value.trim();
 
-  // تحميل الإعلان لو موجود
-  textarea.value = localStorage.getItem("announcement") || "";
-
-  function saveAnnouncement() {
-    localStorage.setItem("announcement", textarea.value);
-    alert("✅ تم حفظ الإعلان المتحرك");
+  if (!text) {
+    alert("اكتب الإعلان أولًا");
+    return;
   }
 
-  function clearAnnouncement() {
-    localStorage.removeItem("announcement");
-    textarea.value = "";
-    alert("🗑️ تم حذف الإعلان");
+  if (!window.firestoreTools || !window.firestoreTools.db) {
+    alert("Firebase غير جاهز");
+    return;
   }
+
+  const db = window.firestoreTools.db;
+
+  await db.collection("settings").doc("announcement").set({
+    text: text,
+    active: true,
+    updatedAt: new Date().toISOString()
+  });
+
+  alert("✅ تم نشر الإعلان لكل الطلاب");
+}
+
+async function clearAnnouncement() {
+  if (!window.firestoreTools || !window.firestoreTools.db) {
+    alert("Firebase غير جاهز");
+    return;
+  }
+
+  const db = window.firestoreTools.db;
+
+  await db.collection("settings").doc("announcement").set({
+    text: "",
+    active: false
+  });
+
+  document.getElementById("announcement").value = "";
+  alert("🗑️ تم حذف الإعلان");
+}
 </script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="./js/firebase.js"></script>
 
 </body>
 </html>
