@@ -59,6 +59,9 @@
         </nav>
         
     </div>
+<div id="studentAnnouncement"
+     style="display:none; background:#fff3cd; padding:15px; margin:15px; border-radius:8px;">
+</div>
 
     <!-- 🧑‍🎓 رسالة ترحيب رسمية -->
     <section class="welcome-message" id="welcomeMessage">
@@ -739,7 +742,7 @@ async function registerStudent() {
             createdAt: new Date().toISOString()
         });
 
-        alert("تم إنشاء الحساب بنجاح ✅\nبانتظار موافقة الإدارة");
+        alert("تم إنشاء الحساب بنجاح ✅\بانتظار موافقة الإدارة");
 
         // تنظيف الحقول
         document.getElementById("regEmail").value = "";
@@ -1689,8 +1692,99 @@ function closeAd() {
   document.getElementById("promoAd").classList.add("hidden");
 }
 </script>
+<!-- 🔔 إدارة الإعلان (يظهر للأدمن فقط) -->
+<div id="adminAdBox"
+     style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
+  
+  <h4>📢 إعلان عام للطلاب</h4>
+
+  <textarea
+    id="adminAdText"
+    placeholder="اكتب الإعلان هنا..."
+    style="width:100%; min-height:80px; padding:8px;"
+  ></textarea>
+
+  <div style="margin-top:10px;">
+    <button onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
+    <button onclick="deleteAnnouncement()">🗑 حذف الإعلان</button>
+  </div>
+</div>
+
+<!-- 📢 مكان ظهور الإعلان للطلاب -->
+<div id="studentAnnouncement"
+     style="display:none; background:#fff3cd; padding:15px; margin:20px; border-radius:8px;">
+</div>
+
+<script>
+/* =========================
+   إعدادات الأدمن
+========================= */
+const adminEmail = "admin@gmail.com"; // ← غيّره لإيميل الأدمن
+const loggedEmail = localStorage.getItem("loggedEmail");
+
+/* =========================
+   إظهار صندوق الإدارة للأدمن فقط
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  if (loggedEmail === adminEmail) {
+    const adminBox = document.getElementById("adminAdBox");
+    adminBox.style.display = "block";
+
+    // تحميل الإعلان القديم داخل textarea
+    const savedAd = localStorage.getItem("siteAnnouncement");
+    if (savedAd) {
+      document.getElementById("adminAdText").value = savedAd;
+    }
+  }
+
+  showAnnouncement();
+});
+
+/* =========================
+   حفظ الإعلان
+========================= */
+function saveAnnouncement() {
+  const text = document.getElementById("adminAdText").value.trim();
+
+  if (text === "") {
+    alert("⚠️ لا يمكن حفظ إعلان فارغ");
+    return;
+  }
+
+  localStorage.setItem("siteAnnouncement", text);
+  alert("✅ تم حفظ الإعلان");
+  showAnnouncement();
+}
+
+/* =========================
+   حذف الإعلان
+========================= */
+function deleteAnnouncement() {
+  localStorage.removeItem("siteAnnouncement");
+  document.getElementById("adminAdText").value = "";
+  alert("🗑 تم حذف الإعلان");
+  showAnnouncement();
+}
+
+/* =========================
+   عرض الإعلان للطلاب
+========================= */
+function showAnnouncement() {
+  const text = localStorage.getItem("siteAnnouncement");
+  const box = document.getElementById("studentAnnouncement");
+
+  if (text && text.trim() !== "") {
+    box.innerText = text;
+    box.style.display = "block";
+  } else {
+    box.style.display = "none";
+  }
+}
+</script>
 
 </body>
 </html>
+
+
 
 
