@@ -1710,6 +1710,16 @@ function closeAd() {
   </div>
 </div>
 
+<!-- 🔔 إدارة الإعلان (يظهر للأدمن فقط) -->
+<div id="adminAdBox" style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
+  <h4>📢 إعلان عام للطلاب</h4>
+  <textarea id="adminAdText" placeholder="اكتب الإعلان هنا..." style="width:100%; min-height:80px; padding:8px;"></textarea>
+  <div style="margin-top:10px;">
+    <button onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
+    <button onclick="deleteAnnouncement()">🗑 حذف الإعلان</button>
+  </div>
+</div>
+
 <!-- 🚨 شريط إعلان متحرك للطلاب -->
 <div id="announcementBar" class="announcement-bar" style="display:none;">
   <div class="announcement-text" id="announcementText"></div>
@@ -1742,80 +1752,74 @@ function closeAd() {
 
 /* حركة من الشمال لليمين */
 @keyframes moveText {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* مسافة تحت الشريط علشان الصفحة ما تتغطّيش */
-body {
-  padding-top: 45px;
-}
+body { padding-top: 45px; }
 </style>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-firestore-compat.js"></script>
+
 <script>
-/* =========================
-   إعدادات الأدمن
-========================= */
-const adminEmail = "admin@gmail.com"; // ← غيره لإيميل الأدمن
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// إعدادات الأدمن
+const adminEmail = "admin@gmail.com";
 const loggedEmail = localStorage.getItem("loggedEmail");
 
-/* =========================
-   عند تحميل الصفحة
-========================= */
+// عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => {
-
-  // إظهار لوحة الإدارة للأدمن فقط
   if (loggedEmail === adminEmail) {
     document.getElementById("adminAdBox").style.display = "block";
-
-    const savedAd = localStorage.getItem("siteAnnouncement");
-    if (savedAd) {
-      document.getElementById("adminAdText").value = savedAd;
-    }
+    // تحميل الإعلان الحالي
+    db.collection("announcements").doc("current").get()
+      .then(doc => {
+        if(doc.exists) document.getElementById("adminAdText").value = doc.data().text;
+      });
   }
 
-  showAnnouncementBar();
+  // مراقبة Firestore وعرض الشريط مباشرة
+  db.collection("announcements").doc("current").onSnapshot(doc => {
+    if(doc.exists) showAnnouncementBar(doc.data().text);
+  });
 });
 
-/* =========================
-   حفظ الإعلان
-========================= */
+// حفظ الإعلان للأدمن
 function saveAnnouncement() {
   const text = document.getElementById("adminAdText").value.trim();
+  if(text === "") return alert("⚠️ لا يمكن حفظ إعلان فارغ");
 
-  if (text === "") {
-    alert("⚠️ لا يمكن حفظ إعلان فارغ");
-    return;
-  }
-
-  localStorage.setItem("siteAnnouncement", text);
-  alert("✅ تم حفظ الإعلان");
-  showAnnouncementBar();
+  db.collection("announcements").doc("current").set({ text })
+    .then(() => alert("✅ تم حفظ الإعلان"))
+    .catch(err => console.error(err));
 }
 
-/* =========================
-   حذف الإعلان
-========================= */
+// حذف الإعلان
 function deleteAnnouncement() {
-  localStorage.removeItem("siteAnnouncement");
-  document.getElementById("adminAdText").value = "";
-  showAnnouncementBar();
-  alert("🗑 تم حذف الإعلان");
+  db.collection("announcements").doc("current").delete()
+    .then(() => {
+      document.getElementById("adminAdText").value = "";
+      showAnnouncementBar("");
+      alert("🗑 تم حذف الإعلان");
+    })
+    .catch(err => console.error(err));
 }
 
-/* =========================
-   عرض شريط الإعلان
-========================= */
-function showAnnouncementBar() {
-  const text = localStorage.getItem("siteAnnouncement");
+// عرض الشريط
+function showAnnouncementBar(text) {
   const bar = document.getElementById("announcementBar");
   const textBox = document.getElementById("announcementText");
-
-  if (text && text.trim() !== "") {
+  if(text && text.trim() !== "") {
     textBox.innerText = "📢 " + text + " 📢";
     bar.style.display = "flex";
   } else {
@@ -1824,5 +1828,21 @@ function showAnnouncementBar() {
 }
 </script>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.15.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+
 </body>
 </html>
+
