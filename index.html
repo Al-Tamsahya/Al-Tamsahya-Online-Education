@@ -1665,6 +1665,7 @@ async function editStudent(studentEmail) {
 
 <!-- Firebase init -->
 <script src="./js/firebase.js"></script>
+
 <!-- Service Worker + PWA Install -->
 <script>
 if ("serviceWorker" in navigator) {
@@ -1684,63 +1685,121 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("SW registration failed:", err));
 }
 </script>
-        
-function showAdminPanel() {
-    if (currentUser && currentUser.role === "ADMIN") {
-        // إظهار لوحة تحكم الأدمن
-        document.getElementById("admin-panel").style.display = "block";
-    }
-}
 
+<!-- جميع وظائف الأدمن والإعلانات -->
+<script>
+const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
+const loggedEmail = localStorage.getItem("loggedEmail"); // البريد بعد تسجيل الدخول
+const currentUser = {
+  email: loggedEmail,
+  role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+};
 
-// ======= إضافة إعلان =======
-const titleInput = document.getElementById("ad-title");
-const contentInput = document.getElementById("ad-content");
-const addBtn = document.getElementById("add-ad-btn");
+let animationTimeout;
 
-addBtn?.addEventListener("click", async () => {
-  const title = titleInput.value.trim();
-  const content = contentInput.value.trim();
-  
-  if (!title || !content) {
-    alert("الرجاء ملء العنوان والمحتوى!");
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ======= لوحة الأدمن =======
+  if (currentUser.role === "ADMIN") {
+    const adminPanel = document.getElementById("admin-panel");
+    if (adminPanel) adminPanel.style.display = "block";
+
+    const titleInput = document.getElementById("ad-title");
+    const contentInput = document.getElementById("ad-content");
+    const addBtn = document.getElementById("add-ad-btn");
+
+    addBtn?.addEventListener("click", async () => {
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      if (!title || !content) return alert("الرجاء ملء العنوان والمحتوى!");
+
+      await firestoreTools.addDoc(
+        firestoreTools.collection("ads"),
+        { title, content, date: new Date() }
+      );
+
+      titleInput.value = "";
+      contentInput.value = "";
+      alert("تم إضافة الإعلان بنجاح!");
+    });
+  }
+
+  // ======= عرض الإعلانات لجميع المستخدمين =======
+  const adsContainer = document.getElementById("ads-container");
+  firestoreTools.collection("ads")
+    .orderBy("date", "desc")
+    .onSnapshot(snapshot => {
+      adsContainer.innerHTML = "";
+      snapshot.forEach(doc => {
+        const ad = doc.data();
+        const adElement = document.createElement("div");
+        adElement.className = "ad";
+        adElement.innerHTML = `
+          <h3>${ad.title}</h3>
+          <p>${ad.content}</p>
+          <small>${ad.date.toDate().toLocaleString()}</small>
+        `;
+        adsContainer.appendChild(adElement);
+      });
+    });
+
+  // ======= شريط إعلان متحرك للطلاب =======
+  if (window.firestoreTools && window.firestoreTools.db) {
+    const db = window.firestoreTools.db;
+    db.collection("announcements").doc("current")
+      .onSnapshot(doc => {
+        if (doc.exists && doc.data().text?.trim()) {
+          startAnnouncementAnimation(doc.data().text, 12000);
+        } else {
+          hideAnnouncementBar();
+        }
+      });
+  }
+});
+
+// ======= وظائف الشريط المتحرك =======
+function startAnnouncementAnimation(text, duration = 12000) {
+  const bar = document.getElementById("announcementBar");
+  const textBox = document.getElementById("announcementText");
+
+  if (!bar || !textBox || !text || !text.trim()) {
+    hideAnnouncementBar();
     return;
   }
 
-  await firestoreTools.addDoc(
-    firestoreTools.collection("ads"),
-    {
-      title,
-      content,
-      date: new Date()
-    }
-  );
+  textBox.innerText = "📢 " + text + " 📢";
+  bar.style.display = "flex";
 
-  titleInput.value = "";
-  contentInput.value = "";
-  alert("تم إضافة الإعلان بنجاح!");
-});
+  const screenWidth = bar.offsetWidth;
+  const textWidth = textBox.offsetWidth;
 
-// ======= عرض الإعلانات لجميع المستخدمين =======
-const adsContainer = document.getElementById("ads-container");
+  function move() {
+    textBox.style.transition = "none";
+    textBox.style.left = -textWidth + "px";
 
-firestoreTools.collection("ads")
-  .orderBy("date", "desc")
-  .onSnapshot(snapshot => {
-    adsContainer.innerHTML = "";
-    snapshot.forEach(doc => {
-      const ad = doc.data();
-      const adElement = document.createElement("div");
-      adElement.className = "ad";
-      adElement.innerHTML = `
-        <h3>${ad.title}</h3>
-        <p>${ad.content}</p>
-        <small>${ad.date.toDate().toLocaleString()}</small>
-      `;
-      adsContainer.appendChild(adElement);
-    });
-  });
+    setTimeout(() => {
+      textBox.style.transition = `left ${duration}ms linear`;
+      textBox.style.left = screenWidth + "px";
+    }, 50);
+
+    animationTimeout = setTimeout(move, duration + 2000);
+  }
+
+  if (animationTimeout) clearTimeout(animationTimeout);
+  move();
+}
+
+function hideAnnouncementBar() {
+  const bar = document.getElementById("announcementBar");
+  if (bar) bar.style.display = "none";
+
+  if (animationTimeout) {
+    clearTimeout(animationTimeout);
+    animationTimeout = null;
+  }
+}
 </script>
+
 
 
 <button id="installBtn" class="install-btn hidden" onclick="installApp()">
@@ -1956,6 +2015,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
