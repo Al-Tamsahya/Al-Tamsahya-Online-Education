@@ -81,12 +81,12 @@
     <!-- 🔔 إعلان متحرك -->
 <div id="promoAd" class="promo-ad hidden">
   <div class="promo-content">
-    🎉 عرض خاص! <br>
-    اشترك الآن واحصل على محتوى مميز
+    <div id="promoText"></div>
     <br>
     <button onclick="closeAd()">✖ إغلاق</button>
   </div>
 </div>
+
 
 
     <!-- شريط تنقل عام -->
@@ -1667,26 +1667,30 @@ async function installApp() {
 
 </script>
 
-    <script>
-  // إظهار الإعلان بعد تحميل الصفحة
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      document.getElementById("promoAd")?.classList.remove("hidden");
-    }, 1500); // بعد 1.5 ثانية
-  });
+   <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const adBox = document.getElementById("promoAd");
+  const adText = document.getElementById("promoText");
 
-  function closeAd() {
-    document.getElementById("promoAd").style.display = "none";
-  }
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // يظهر الإعلان بعد 2 ثانية
+  const announcement = localStorage.getItem("announcement");
+
+  if (announcement && announcement.trim() !== "") {
+    adText.innerText = announcement;
+
     setTimeout(() => {
-      const ad = document.getElementById("promoAd");
-      if (ad) ad.classList.remove("hidden");
-    }, 2000);
-  });
+      adBox.classList.remove("hidden");
+    }, 1500);
+  } else {
+    adBox.style.display = "none";
+  }
+});
+
+function closeAd() {
+  document.getElementById("promoAd").classList.add("hidden");
+}
+</script>
+
+
 
   function closeAd() {
     document.getElementById("promoAd").classList.add("hidden");
@@ -1695,3 +1699,4 @@ async function installApp() {
 
 </body>
 </html>
+
