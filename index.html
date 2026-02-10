@@ -1883,12 +1883,14 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
-
-// تهيئة Firebase مرة واحدة فقط
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+<!-- تحميل Firebase -->
+<script src="./js/firebase.js"></script>
 
 <script>
+  // تهيئة Firebase مرة واحدة فقط
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
 // 👨‍💼 إعدادات الأدمن
 const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
 const loggedEmail = localStorage.getItem("loggedEmail"); // يتم تخزين البريد عند تسجيل الدخول
@@ -2015,6 +2017,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
