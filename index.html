@@ -206,24 +206,45 @@
 
 
         <!-- لوحة التحكم للمدير والمشرف -->
-        <div id="adminPanel" class="admin-box hidden">
-            <h3>الإدارة</h3>
-            <div class="nav-btns">
-                <button class="custom-btn" onclick="showAdminSection('students')">قائمة الطلاب</button>
-                <button class="custom-btn" onclick="showAdminSection('supervisors')">المشرفون</button>
-                <button class="custom-btn" onclick="showAdminSection('tests')">الاختبارات</button>
-                <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
+      
+   <div id="adminPanel" class="admin-box hidden">
+    <h3>الإدارة</h3>
 
+    <div class="nav-btns">
+        <button class="custom-btn" onclick="showAdminSection('students')">قائمة الطلاب</button>
+        <button class="custom-btn" onclick="showAdminSection('supervisors')">المشرفون</button>
+        <button class="custom-btn" onclick="showAdminSection('tests')">الاختبارات</button>
+        <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
+    </div>
 
-            </div>
-            <div id="adminContent">
-                <div id="studentsList" class="table-container hidden"></div>
-                <div id="supervisorsList" class="table-container hidden"></div>
-                <div id="testsList" class="table-container hidden"></div>
-                <div id="resultsList" class="table-container hidden"></div>
-            </div>
+    <!-- 🔔 إدارة الإعلان (يظهر فقط عند دخول ADMIN) -->
+    <div id="adminAdBox"
+         style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
+        
+        <h4>📢 إعلان عام للطلاب</h4>
+
+        <textarea
+            id="adminAdText"
+            placeholder="اكتب الإعلان هنا..."
+            style="width:100%; min-height:80px; padding:8px;">
+        </textarea>
+
+        <div style="margin-top:10px;">
+            <button class="custom-btn" onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
+            <button class="custom-btn danger" onclick="deleteAnnouncement()">🗑 إيقاف الإعلان</button>
         </div>
     </div>
+
+    <!-- محتوى الإدارة -->
+    <div id="adminContent">
+        <div id="studentsList" class="table-container hidden"></div>
+        <div id="supervisorsList" class="table-container hidden"></div>
+        <div id="testsList" class="table-container hidden"></div>
+        <div id="resultsList" class="table-container hidden"></div>
+    </div>
+</div>
+
+
 
     <!-- النماذج المنبثقة -->
     <div id="studentModal" class="modal">
@@ -1693,15 +1714,6 @@ function closeAd() {
 }
 </script>
 <!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
-<div id="adminAdBox"
-     style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
-  <h4>📢 إدارة إعلان عام للطلاب</h4>
-  <textarea id="adminAdText" placeholder="اكتب الإعلان هنا..." style="width:100%; min-height:80px; padding:8px;"></textarea>
-  <div style="margin-top:10px;">
-    <button onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
-    <button onclick="deleteAnnouncement()">🗑 إيقاف/حذف الإعلان</button>
-  </div>
-</div>
 
 <!-- 🚨 شريط إعلان متحرك للطلاب -->
 <div id="announcementBar" class="announcement-bar" style="display:none;">
@@ -1757,26 +1769,32 @@ let animationTimeout;
 
 // عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => {
-  // إظهار مربع إدارة الإعلان داخل لوحة الأدمن مباشرة بعد تسجيل الدخول
-  if (loggedEmail === adminEmail) {
-    document.getElementById("adminAdBox").style.display = "block";
 
-    // تحميل الإعلان الحالي من Firestore مباشرة في مربع النص
+  // ✅ إظهار مربع إدارة الإعلان للأدمن فقط
+  if (currentUser?.role === "ADMIN") {
+    const adBox = document.getElementById("adminAdBox");
+    if (adBox) adBox.style.display = "block";
+
+    // تحميل الإعلان الحالي داخل مربع النص
     db.collection("announcements").doc("current").get()
       .then(doc => {
-        if(doc.exists) document.getElementById("adminAdText").value = doc.data().text;
+        if (doc.exists && document.getElementById("adminAdText")) {
+          document.getElementById("adminAdText").value = doc.data().text || "";
+        }
       });
   }
 
-  // مراقبة Firestore وعرض الشريط مباشرة للطلاب والأدمن
+  // 🔔 مراقبة الإعلان وعرضه للطلاب
   db.collection("announcements").doc("current").onSnapshot(doc => {
-    if(doc.exists && doc.data().text.trim() !== "") {
-      startAnnouncementAnimation(doc.data().text, 12000); // مدة الحركة 12 ثانية
+    if (doc.exists && doc.data().text?.trim()) {
+      startAnnouncementAnimation(doc.data().text, 12000);
     } else {
       hideAnnouncementBar();
     }
   });
+
 });
+
 
 // حفظ الإعلان مباشرة من مربع النص داخل لوحة الأدمن
 function saveAnnouncement() {
@@ -1838,6 +1856,7 @@ function hideAnnouncementBar() {
 
 </body>
 </html>
+
 
 
 
