@@ -453,3 +453,8 @@ button {
     opacity: 1;
   }
 }
+@keyframes scrollText {
+  from { left: 100%; }
+  to { left: -100%; }
+}
+
