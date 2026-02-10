@@ -1685,13 +1685,13 @@ if ("serviceWorker" in navigator) {
 }
 </script>
         
-
-<script>
-// ======= تحديد الأدمن =======
-const isAdmin = true; // ضع true إذا أنت الأدمن
-if (isAdmin) {
-  document.getElementById("admin-panel").style.display = "block";
+function showAdminPanel() {
+    if (currentUser && currentUser.role === "ADMIN") {
+        // إظهار لوحة تحكم الأدمن
+        document.getElementById("admin-panel").style.display = "block";
+    }
 }
+
 
 // ======= إضافة إعلان =======
 const titleInput = document.getElementById("ad-title");
@@ -1833,20 +1833,23 @@ const db = firebase.firestore();
 const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
 const loggedEmail = localStorage.getItem("loggedEmail"); // يتم تخزين البريد عند تسجيل الدخول
 
+<script>
 let animationTimeout;
 
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.firestoreTools || !window.firestoreTools.db) return;
 
-  }
+  const db = window.firestoreTools.db;
 
   // 🔔 مراقبة الإعلان وعرضه للطلاب
-  db.collection("announcements").doc("current").onSnapshot(doc => 
-    if (doc.exists && doc.data().text?.trim()) {
-      startAnnouncementAnimation(doc.data().text, 12000);
-    } else {
-      hideAnnouncementBar();
-    }
-  });
-
+  db.collection("announcements").doc("current")
+    .onSnapshot(doc => {
+      if (doc.exists && doc.data().text?.trim()) {
+        startAnnouncementAnimation(doc.data().text, 12000);
+      } else {
+        hideAnnouncementBar();
+      }
+    });
 });
 
 
@@ -1942,10 +1945,55 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 });
+
+// بدء حركة الإعلان
+function startAnnouncementAnimation(text, duration = 12000) {
+  const bar = document.getElementById("announcementBar");
+  const textBox = document.getElementById("announcementText");
+
+  if (!bar || !textBox || !text || !text.trim()) {
+    hideAnnouncementBar();
+    return;
+  }
+
+  textBox.innerText = "📢 " + text + " 📢";
+  bar.style.display = "flex";
+
+  const screenWidth = bar.offsetWidth;
+  const textWidth = textBox.offsetWidth;
+
+  function move() {
+    textBox.style.transition = "none";
+    textBox.style.left = -textWidth + "px";
+
+    setTimeout(() => {
+      textBox.style.transition = `left ${duration}ms linear`;
+      textBox.style.left = screenWidth + "px";
+    }, 50);
+
+    animationTimeout = setTimeout(move, duration + 2000);
+  }
+
+  if (animationTimeout) clearTimeout(animationTimeout);
+
+  move();
+}
+
+function hideAnnouncementBar() {
+  const bar = document.getElementById("announcementBar");
+  if (bar) bar.style.display = "none";
+
+  if (animationTimeout) {
+    clearTimeout(animationTimeout);
+    animationTimeout = null;
+  }
+}
 </script>
+
 
 </body>
 </html>
+
 
 
 
