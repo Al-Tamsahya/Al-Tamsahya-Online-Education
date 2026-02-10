@@ -1692,21 +1692,14 @@ function closeAd() {
   document.getElementById("promoAd").classList.add("hidden");
 }
 </script>
-<!-- 🔔 إدارة الإعلان (يظهر للأدمن فقط) -->
+<!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
 <div id="adminAdBox"
      style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
-  
-  <h4>📢 إعلان عام للطلاب</h4>
-
-  <textarea
-    id="adminAdText"
-    placeholder="اكتب الإعلان هنا..."
-    style="width:100%; min-height:80px; padding:8px;"
-  ></textarea>
-
+  <h4>📢 إدارة إعلان عام للطلاب</h4>
+  <textarea id="adminAdText" placeholder="اكتب الإعلان هنا..." style="width:100%; min-height:80px; padding:8px;"></textarea>
   <div style="margin-top:10px;">
     <button onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
-    <button onclick="deleteAnnouncement()">🗑 حذف الإعلان</button>
+    <button onclick="deleteAnnouncement()">🗑 إيقاف/حذف الإعلان</button>
   </div>
 </div>
 
@@ -1716,7 +1709,6 @@ function closeAd() {
 </div>
 
 <style>
-/* شريط الإعلان */
 .announcement-bar {
   position: fixed;
   top: 0;
@@ -1731,22 +1723,14 @@ function closeAd() {
   align-items: center;
 }
 
-/* النص المتحرك */
 .announcement-text {
   white-space: nowrap;
   font-weight: bold;
   font-size: 16px;
-  padding-left: 100%;
-  animation: moveText 15s linear infinite;
+  position: relative;
+  left: -100%;
 }
 
-/* حركة من الشمال لليمين */
-@keyframes moveText {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* مسافة تحت الشريط */
 body { padding-top: 45px; }
 </style>
 
@@ -1762,39 +1746,39 @@ const firebaseConfig = {
 };
 
 // تهيئة Firebase مرة واحدة فقط
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // إعدادات الأدمن
-const adminEmail = "admin@gmail.com";
-const loggedEmail = localStorage.getItem("loggedEmail");
+const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
+const loggedEmail = localStorage.getItem("loggedEmail"); // يتم تخزين البريد عند تسجيل الدخول
+
+let animationTimeout;
 
 // عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => {
-  // إظهار حقل الإدارة إذا الأدمن
+  // إظهار مربع إدارة الإعلان داخل لوحة الأدمن مباشرة بعد تسجيل الدخول
   if (loggedEmail === adminEmail) {
     document.getElementById("adminAdBox").style.display = "block";
 
-    // تحميل الإعلان الحالي
+    // تحميل الإعلان الحالي من Firestore مباشرة في مربع النص
     db.collection("announcements").doc("current").get()
       .then(doc => {
         if(doc.exists) document.getElementById("adminAdText").value = doc.data().text;
       });
   }
 
-  // مراقبة Firestore وعرض الشريط مباشرة لجميع الطلاب
+  // مراقبة Firestore وعرض الشريط مباشرة للطلاب والأدمن
   db.collection("announcements").doc("current").onSnapshot(doc => {
     if(doc.exists && doc.data().text.trim() !== "") {
-      showAnnouncementBar(doc.data().text); // الشريط يظهر دائمًا إذا كان هناك نص
+      startAnnouncementAnimation(doc.data().text, 12000); // مدة الحركة 12 ثانية
     } else {
-      hideAnnouncementBar(); // يظهر فقط إذا لا يوجد نص
+      hideAnnouncementBar();
     }
   });
 });
 
-// حفظ الإعلان للأدمن
+// حفظ الإعلان مباشرة من مربع النص داخل لوحة الأدمن
 function saveAnnouncement() {
   const text = document.getElementById("adminAdText").value.trim();
   if(text === "") return alert("⚠️ لا يمكن حفظ إعلان فارغ");
@@ -1804,33 +1788,56 @@ function saveAnnouncement() {
     .catch(err => console.error(err));
 }
 
-// حذف الإعلان
+// حذف أو إيقاف الإعلان
 function deleteAnnouncement() {
   db.collection("announcements").doc("current").delete()
     .then(() => {
       document.getElementById("adminAdText").value = "";
       hideAnnouncementBar();
-      alert("🗑 تم حذف الإعلان");
+      alert("🗑 تم إيقاف الإعلان");
     })
     .catch(err => console.error(err));
 }
 
-// عرض الشريط
-function showAnnouncementBar(text) {
+// بدء حركة الإعلان
+function startAnnouncementAnimation(text, duration = 12000) {
   const bar = document.getElementById("announcementBar");
   const textBox = document.getElementById("announcementText");
   textBox.innerText = "📢 " + text + " 📢";
-  bar.style.display = "flex"; // الشريط دائمًا ظاهر
+  bar.style.display = "flex";
+
+  const screenWidth = bar.offsetWidth;
+  const textWidth = textBox.offsetWidth;
+
+  function move() {
+    // إعادة النص للبداية
+    textBox.style.transition = "none";
+    textBox.style.left = -textWidth + "px";
+
+    // بدء الحركة بعد قليل
+    setTimeout(() => {
+      textBox.style.transition = `left ${duration}ms linear`;
+      textBox.style.left = screenWidth + "px";
+    }, 50);
+
+    // بعد انتهاء الحركة + 2 ثانية توقف، أعد الحركة
+    animationTimeout = setTimeout(move, duration + 2000);
+  }
+
+  // إيقاف أي حركة سابقة قبل بدء الجديدة
+  if (animationTimeout) clearTimeout(animationTimeout);
+  move();
 }
 
-// إخفاء الشريط (يظهر فقط عند حذف الإعلان)
+// إخفاء الشريط عند حذف الإعلان
 function hideAnnouncementBar() {
   document.getElementById("announcementBar").style.display = "none";
+  if (animationTimeout) clearTimeout(animationTimeout);
 }
 </script>
 
-
 </body>
 </html>
+
 
 
