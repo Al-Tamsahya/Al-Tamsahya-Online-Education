@@ -1780,7 +1780,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ======= تثبيت التطبيق PWA =======
- <script>
+<!-- زر تثبيت التطبيق PWA -->
+<script>
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
@@ -1791,7 +1792,11 @@ window.addEventListener("beforeinstallprompt", (e) => {
 });
 
 installBtn.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
+  if (!deferredPrompt) {
+    alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
+    return;
+  }
+
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
   if (outcome === "accepted") {
@@ -1799,11 +1804,15 @@ installBtn.addEventListener("click", async () => {
   }
   deferredPrompt = null;
 });
-</script>
 
-
+// عند تثبيت التطبيق
+window.addEventListener("appinstalled", () => {
+  installBtn.hidden = true;
+  alert("تم تثبيت التطبيق بنجاح ✅");
 });
 </script>
+
+
 
 <!-- ======= وظائف الشريط المتحرك ======= -->
 <script>
@@ -2032,6 +2041,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
