@@ -1938,21 +1938,25 @@ body { padding-top: 45px; }
 
   // 🔹 إعادة تشغيل حركة الإعلان مع سرعة مناسبة
   function restartAnimation() {
-    const announcementText = document.getElementById("announcementText");
+  const announcementText = document.getElementById("announcementText");
 
-    // أوقف الحركة مؤقتًا
-    announcementText.style.animation = "none";
+  // أوقف الحركة مؤقتًا
+  announcementText.style.animation = "none";
 
-    // إعادة حساب CSS
-    announcementText.offsetHeight;
+  // ضع النص مباشرة على الشمال (خارج الشاشة) حتى يظهر فورًا
+  announcementText.style.left = "-100%";
 
-    // حساب مدة الحركة بناءً على طول النص
-    const textLength = announcementText.offsetWidth;
-    const duration = Math.max(10, textLength / 50); // الحد الأدنى 10 ثوانٍ
+  // إعادة حساب CSS
+  announcementText.offsetHeight;
 
-    // أعد تشغيل الحركة من الشمال إلى اليمين
-    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-  }
+  // حساب مدة الحركة بناءً على طول النص
+  const textLength = announcementText.offsetWidth;
+  const duration = Math.max(15, textLength / 50); // الحد الأدنى 15 ثانية
+
+  // أعد تشغيل الحركة من الشمال إلى اليمين
+  announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+}
+
 
   // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
   async function loadAnnouncement() {
@@ -2022,6 +2026,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
