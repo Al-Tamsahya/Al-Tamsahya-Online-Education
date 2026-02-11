@@ -1,4 +1,4 @@
-const CACHE_NAME = "edu-platform-v4";
+const CACHE_NAME = "edu-platform-v5"; // تم تحديث الإصدار لإجبار المتصفح على التحديث
 
 // نكاش الملفات الثابتة فقط
 const FILES_TO_CACHE = [
@@ -21,7 +21,11 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null)))
+      Promise.all(
+        keys.map((key) =>
+          key !== CACHE_NAME ? caches.delete(key) : null
+        )
+      )
     )
   );
   self.clients.claim();
@@ -29,6 +33,7 @@ self.addEventListener("activate", (event) => {
 
 // Fetch
 self.addEventListener("fetch", (event) => {
+
   if (event.request.method !== "GET") {
     event.respondWith(fetch(event.request));
     return;
@@ -36,6 +41,13 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(event.request.url);
 
+  // 🔥 مهم جداً: لا نكاش صفحة التثبيت نهائيًا
+  if (url.pathname.includes("install.html")) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // لا نكاش Firebase أو API
   if (
     url.hostname.includes("googleapis.com") ||
     url.hostname.includes("gstatic.com") ||
@@ -47,13 +59,19 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Network First Strategy
   event.respondWith(
     fetch(event.request)
       .then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) =>
-          cache.put(event.request, copy)
-        );
+
+        // لا نخزن install.html حتى لو جاء بطريقة غير مباشرة
+        if (!url.pathname.includes("install.html")) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) =>
+            cache.put(event.request, copy)
+          );
+        }
+
         return res;
       })
       .catch(async () => {
