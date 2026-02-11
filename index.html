@@ -1859,7 +1859,7 @@ async function installApp() {
 
 <!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
 
-<!-- 🔔 شريط إعلان متحرك للطلاب -->
+<!-- 🚨 شريط إعلان متحرك للطلاب -->
 <div id="announcementBar" class="announcement-bar" style="display:none;">
   <div class="announcement-text" id="announcementText"></div>
 </div>
@@ -1894,9 +1894,21 @@ async function installApp() {
   height: 45px;
   display: flex;
   align-items: center;
-  padding-left: 10px;
+}
+
+.announcement-text {
+  white-space: nowrap;
   font-weight: bold;
   font-size: 16px;
+  display: inline-block;
+  position: relative;
+  left: 100%; /* البداية خارج الشاشة على اليمين */
+  animation: slide-left 15s linear infinite; /* الحركة المستمرة */
+}
+
+@keyframes slide-left {
+  0% { left: 100%; }
+  100% { left: -100%; }
 }
 
 body { padding-top: 45px; }
@@ -1907,7 +1919,7 @@ body { padding-top: 45px; }
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // دوال عالمية حتى يعمل onclick إذا احتجت
+  // دوال مساعدة لإظهار وإخفاء شريط الإعلان
   function showAnnouncementBar() {
     const bar = document.getElementById("announcementBar");
     if (bar) bar.style.display = "flex";
@@ -1918,6 +1930,32 @@ body { padding-top: 45px; }
     if (bar) bar.style.display = "none";
   }
 
+  // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
+  async function loadAnnouncement() {
+    try {
+      const doc = await firestoreTools.collection("announcements").doc("current").get();
+      if (doc.exists) {
+        const text = doc.data().text || "";
+        if (text) {
+          const announcementText = document.getElementById("announcementText");
+          announcementText.innerText = text;
+
+          // إعادة تشغيل حركة الإعلان
+          announcementText.style.animation = "none";
+          announcementText.offsetHeight; // إعادة حساب CSS
+          announcementText.style.animation = "slide-left 15s linear infinite";
+
+          showAnnouncementBar();
+        }
+      }
+    } catch (err) {
+      console.error("خطأ أثناء تحميل الإعلان:", err);
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", loadAnnouncement);
+
+  // 🔹 دوال الأدمن
   async function saveAnnouncement() {
     const text = document.getElementById("adminAdText").value.trim();
     if (!text) {
@@ -1926,7 +1964,15 @@ body { padding-top: 45px; }
     }
     try {
       await firestoreTools.collection("announcements").doc("current").set({ text });
-      document.getElementById("announcementText").innerText = text;
+
+      const announcementText = document.getElementById("announcementText");
+      announcementText.innerText = text;
+
+      // إعادة تشغيل حركة الإعلان بعد التحديث
+      announcementText.style.animation = "none";
+      announcementText.offsetHeight; 
+      announcementText.style.animation = "slide-left 15s linear infinite";
+
       showAnnouncementBar();
       alert("تم حفظ الإعلان ✅");
     } catch (err) {
@@ -1946,7 +1992,7 @@ body { padding-top: 45px; }
     }
   }
 
-  // ربط الأزرار بالأحداث
+  // 🔹 ربط الأزرار بالأحداث
   const saveAdBtn = document.getElementById("saveAdBtn");
   if (saveAdBtn) saveAdBtn.addEventListener("click", saveAnnouncement);
 
@@ -1956,6 +2002,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
