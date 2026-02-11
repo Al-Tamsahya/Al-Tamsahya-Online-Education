@@ -1672,7 +1672,8 @@ async function editStudent(studentEmail) {
 <!-- Service Worker + PWA Install -->
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js")
+  navigator.serviceWorker.register("./service-worker.js")
+
     .then((reg) => {
       console.log("Service Worker Registered");
       reg.update();
@@ -1776,25 +1777,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ======= تثبيت التطبيق PWA =======
-  const installBtn = document.getElementById("installBtn");
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installBtn) installBtn.classList.remove("hidden");
-  });
+ <script>
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
 
-  if (installBtn) {
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) { 
-        alert("📌 افتح القائمة ⋮ ثم اختر (تثبيت التطبيق)"); 
-        return; 
-      }
-      await deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.classList.add("hidden");
-    });
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.hidden = false;
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === "accepted") {
+    installBtn.hidden = true;
   }
+  deferredPrompt = null;
+});
+</script>
+
 
 });
 </script>
@@ -1844,7 +1847,8 @@ function hideAnnouncementBar() {
 </script>
 
 <!-- زر تثبيت التطبيق -->
-<button id="installBtn" class="install-btn hidden" onclick="installApp()">
+<button id="installBtn" hidden>تثبيت التطبيق</button>
+
 📲 تثبيت التطبيق
 </button>
 
@@ -2027,6 +2031,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
