@@ -5,15 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>تثبيت منصة التمساحية</title>
 
-  <!-- Google Analytics GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4BFPGRT2R"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-الكود-الحقيقي');
-  </script>
-
   <link rel="icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="icon-192.png">
 
@@ -52,17 +43,6 @@
       color:var(--text);
     }
 
-    .splash{
-      position:fixed;
-      inset:0;
-      background:var(--bg);
-      display:grid;
-      place-items:center;
-      z-index:9999;
-      transition:opacity .4s ease;
-    }
-    .splash.hide{ opacity:0; pointer-events:none; }
-
     .wrapper{
       width:100%;
       padding:16px;
@@ -81,16 +61,6 @@
       box-shadow:0 10px 28px rgba(0,0,0,.15);
       display:grid;
       gap:16px;
-      animation:fadeUp .5s ease both;
-    }
-
-    @keyframes fadeUp{
-      from{ opacity:0; transform:translateY(16px); }
-      to{ opacity:1; transform:none; }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none!important; transition:none!important; }
     }
 
     .theme-toggle{
@@ -132,26 +102,6 @@
     .btn:active{ transform:scale(.97); }
     .btn[hidden]{ display:none; }
 
-    .btn.loading{
-      pointer-events:none;
-      color:transparent;
-    }
-
-    .btn.loading::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      margin:auto;
-      width:22px;
-      height:22px;
-      border:3px solid rgba(255,255,255,.4);
-      border-top-color:#fff;
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-    }
-
-    @keyframes spin{ to{ transform:rotate(360deg); } }
-
     .success{ display:none; gap:12px; }
     .success.show{ display:grid; }
   </style>
@@ -159,112 +109,71 @@
 
 <body>
 
-  <div class="splash" id="splash">
-    <img src="icon-192.png" width="96" alt="">
-  </div>
-
   <main class="wrapper">
-    <section class="card" id="card">
-
+    <section class="card">
       <button class="theme-toggle" id="themeToggle">🌙</button>
 
       <img src="icon-192.png" class="app-icon">
 
-      <h1 id="title"></h1>
-      <p class="desc" id="desc"></p>
+      <h1>أهلًا بك في منصة التمساحية</h1>
+      <p class="desc">يمكنك تثبيت التطبيق للوصول السريع من الشاشة الرئيسية.</p>
 
-      <button id="installBtn" class="btn" hidden></button>
+      <!-- زر تثبيت التطبيق -->
+      <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
       <div class="success" id="success">
         <h1>تم التثبيت بنجاح ✅</h1>
         <p class="desc">يمكنك الآن فتح التطبيق من الشاشة الرئيسية</p>
         <button class="btn" onclick="location.reload()">فتح التطبيق</button>
       </div>
-
     </section>
   </main>
 
   <script>
-    const splash = document.getElementById("splash");
-    const title = document.getElementById("title");
-    const desc = document.getElementById("desc");
     const installBtn = document.getElementById("installBtn");
-    const themeToggle = document.getElementById("themeToggle");
     const success = document.getElementById("success");
+    const themeToggle = document.getElementById("themeToggle");
 
-    setTimeout(()=>splash.classList.add('hide'),1500);
-
-    // A/B Test
-    const variants=[
-      {title:"أهلًا بك في منصة التمساحية",desc:"منصة تعليمية رقمية آمنة.",btn:"تثبيت التطبيق"},
-      {title:"تعليم أسهل لكل بيت",desc:"تجربة تعليمية منظمة وسريعة.",btn:"ابدأ الآن"}
-    ];
-
-    const v = localStorage.abVariant ?? Math.floor(Math.random()*variants.length);
-    localStorage.abVariant = v;
-
-    title.textContent = variants[v].title;
-    desc.textContent = variants[v].desc;
-    installBtn.textContent = variants[v].btn;
-
-    gtag('event','ab_variant_view',{ variant: v === 0 ? 'A' : 'B' });
-
-    // Dark Mode
+    // الوضع الليلي
     const savedTheme = localStorage.theme;
     if(savedTheme){
       document.documentElement.dataset.theme = savedTheme;
-      themeToggle.textContent = savedTheme==="dark"?"☀️":"🌙";
+      themeToggle.textContent = savedTheme === "dark" ? "☀️" : "🌙";
     }
 
-    themeToggle.onclick = ()=>{
-      const isDark = document.documentElement.dataset.theme==="dark";
+    themeToggle.onclick = () => {
+      const isDark = document.documentElement.dataset.theme === "dark";
       document.documentElement.dataset.theme = isDark ? "" : "dark";
       localStorage.theme = isDark ? "" : "dark";
       themeToggle.textContent = isDark ? "🌙" : "☀️";
     };
 
-    /* ---------- PWA INSTALL ---------- */
+    // PWA INSTALL
     let deferredPrompt;
 
     window.addEventListener("beforeinstallprompt", e => {
       e.preventDefault();
       deferredPrompt = e;
       installBtn.hidden = false;
-      installBtn.textContent = "تثبيت التطبيق";
-
-      gtag('event','install_prompt_shown',{ variant: v === 0 ? 'A' : 'B' });
     });
 
-    // إظهار الزر دائمًا كخطة بديلة
-    setTimeout(() => {
-      installBtn.hidden = false;
-      installBtn.textContent = "تثبيت التطبيق";
-    }, 1000);
-
-    installBtn.onclick = async ()=>{
+    installBtn.addEventListener("click", async () => {
       if(deferredPrompt){
-        installBtn.classList.add("loading");
-        gtag('event','install_button_clicked',{ variant: v === 0 ? 'A' : 'B' });
-
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        installBtn.classList.remove("loading");
-
-        if(outcome==="accepted"){
-          gtag('event','install_accepted',{ variant: v === 0 ? 'A' : 'B' });
+        if(outcome === "accepted"){
           installBtn.hidden = true;
         }
         deferredPrompt = null;
       } else {
         alert("📌 لتثبيت التطبيق، افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
       }
-    };
+    });
 
-    window.addEventListener("appinstalled",()=>{
-      gtag('event','app_installed',{ variant: v === 0 ? 'A' : 'B' });
+    window.addEventListener("appinstalled", () => {
+      installBtn.hidden = true;
       success.classList.add("show");
     });
   </script>
-
 </body>
 </html>
