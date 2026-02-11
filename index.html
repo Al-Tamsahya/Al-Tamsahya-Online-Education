@@ -1686,7 +1686,7 @@ if ("serviceWorker" in navigator) {
 </script>
 
 <!-- جميع وظائف الأدمن والإعلانات -->
-<script>
+<script> 
 const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
 const loggedEmail = localStorage.getItem("loggedEmail"); // البريد بعد تسجيل الدخول
 const currentUser = {
@@ -1722,7 +1722,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("تم إضافة الإعلان بنجاح!");
     });
   }
-
+    
   // ======= عرض الإعلانات لجميع المستخدمين =======
   const adsContainer = document.getElementById("ads-container");
   firestoreTools.collection("ads")
@@ -1755,7 +1755,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 });
-
+ </script>
 // ======= وظائف الشريط المتحرك =======
 function startAnnouncementAnimation(text, duration = 12000) {
   const bar = document.getElementById("announcementBar");
@@ -1892,7 +1892,7 @@ if ("serviceWorker" in navigator) {
 let animationTimeout;
 
 // ======= التعامل مع لوحة الأدمن =======
-if (currentUser.role === "ADMIN") {
+if (currentUser.role === "ADMIN") 
   // إظهار لوحة التحكم
   const adminPanel = document.getElementById("admin-panel");
   if (adminPanel) adminPanel.style.display = "block";
@@ -2006,6 +2006,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
