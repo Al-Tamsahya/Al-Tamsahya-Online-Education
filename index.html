@@ -1686,25 +1686,26 @@ if ("serviceWorker" in navigator) {
 </script>
 <!-- جميع وظائف الأدمن والإعلانات -->
 <script>
+<!-- جميع وظائف الأدمن والإعلانات -->
+<script>
 // 🔹 تهيئة المستخدم الحالي (مرة واحدة فقط)
 const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
-const loggedEmail = localStorage.getItem("loggedEmail"); // البريد بعد تسجيل الدخول
+const loggedEmail = localStorage.getItem("loggedEmail") || "";
 
 // ❌ منع إعادة التعريف
-if (typeof currentUser === "undefined") {
-  window.currentUser = {
-    email: loggedEmail,
-    role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-  };
-}
+window.currentUser = window.currentUser || {
+  email: loggedEmail,
+  role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+};
 
 let animationTimeout;
+let deferredPrompt = null;
 
 // ⚡️ انتظار تحميل DOM
 document.addEventListener("DOMContentLoaded", () => {
 
   // ======= لوحة الأدمن =======
-  if (currentUser.role === "ADMIN") {
+  if (window.currentUser.role === "ADMIN") {
     const adminPanel = document.getElementById("admin-panel");
     if (adminPanel) adminPanel.style.display = "block";
 
@@ -1789,7 +1790,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      deferredPrompt.prompt();
+      await deferredPrompt.prompt();
       await deferredPrompt.userChoice;
       deferredPrompt = null;
       installBtn.classList.add("hidden");
@@ -1937,25 +1938,24 @@ if (currentUser.role === "ADMIN") {
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
 
-    if (!title || !content) {
-      alert("الرجاء ملء العنوان والمحتوى!");
-      return;
-    }
-
-    // باقي الكود لإضافة الإعلان...
-  });
+   if (!title || !content) {
+  alert("الرجاء ملء العنوان والمحتوى!");
+  return;
 }
 
+// ✅ داخل دالة async
+try {
+  await firestoreTools.addDoc(
+    firestoreTools.collection("ads"),
+    { title, content, date: new Date() }
+  );
 
-    await firestoreTools.addDoc(
-      firestoreTools.collection("ads"),
-      { title, content, date: new Date() }
-    );
-
-    titleInput.value = "";
-    contentInput.value = "";
-    alert("تم إضافة الإعلان بنجاح!");
-  });
+  titleInput.value = "";
+  contentInput.value = "";
+  alert("تم إضافة الإعلان بنجاح!");
+} catch (err) {
+  console.error(err);
+  alert("حدث خطأ أثناء إضافة الإعلان ❌\n" + err.message);
 }
 
 // ======= عرض الإعلانات لجميع المستخدمين =======
@@ -2042,6 +2042,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
