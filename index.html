@@ -1672,23 +1672,26 @@ async function editStudent(studentEmail) {
 <!-- Service Worker + PWA Install -->
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./service-worker.js")
-
+  // تسجيل Service Worker الصحيح
+  navigator.serviceWorker.register("/Al-Tamsahya-Online-Education/service-worker.js")
     .then((reg) => {
       console.log("Service Worker Registered");
-      reg.update();
 
+      // تحديث تلقائي للـ SW عند وجود نسخة جديدة
       if (reg.waiting) {
         reg.waiting.postMessage({ type: "SKIP_WAITING" });
       }
 
+      // إعادة تحميل الصفحة عند تغيير SW
       navigator.serviceWorker.addEventListener("controllerchange", () => {
+        console.log("Controller changed: Reloading page...");
         window.location.reload();
       });
     })
-    .catch(err => console.log("SW registration failed:", err));
+    .catch(err => console.error("SW registration failed:", err));
 }
 </script>
+
 <!-- جميع وظائف الأدمن والإعلانات -->
 <script>
   // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
