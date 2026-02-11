@@ -453,8 +453,18 @@ button {
     opacity: 1;
   }
 }
-@keyframes scrollText {
-  from { left: 100%; }
-  to { left: -100%; }
+@keyframes slide-right {
+  from { left: -100%; } /* البداية خارج الشاشة على اليسار */
+  to { left: 100%; }    /* تصل إلى خارج الشاشة على اليمين */
+}
+
+.announcement-text {
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 16px;
+  display: inline-block;
+  position: relative;
+  left: -100%; /* البداية خارج الشاشة على اليسار */
+  animation: slide-right 15s linear infinite; /* الحركة الافتراضية */
 }
 
