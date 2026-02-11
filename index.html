@@ -1889,31 +1889,53 @@ async function installApp() {
 
 body { padding-top: 45px; }
 </style>
-
 <script>
   // 🔹 تهيئة Firebase مرة واحدة فقط
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  const stopAdBtn = document.getElementById("stopAdBtn");
+  // زر الحفظ
+  const saveAdBtn = document.getElementById("saveAdBtn");
+  if (saveAdBtn) {
+    saveAdBtn.addEventListener("click", async () => {
+      const text = document.getElementById("adminAdText").value.trim();
+      if (!text) {
+        alert("يرجى كتابة نص الإعلان أولاً!");
+        return;
+      }
+      try {
+        await firestoreTools.collection("announcements").doc("current").set({ text });
+        document.getElementById("announcementText").innerText = text;
+        showAnnouncementBar(); // لإظهار الشريط فورًا
+        alert("تم حفظ الإعلان ✅");
+      } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+      }
+    });
+  }
 
+  // زر الإيقاف
+  const stopAdBtn = document.getElementById("stopAdBtn");
   if (stopAdBtn) {
     stopAdBtn.addEventListener("click", async () => {
       try {
         await firestoreTools.collection("announcements").doc("current").set({ text: "" });
         hideAnnouncementBar();
-        alert("تم إيقاف الإعلان بنجاح ✅");
+        alert("تم إيقاف الإعلان ✅");
       } catch (err) {
         console.error(err);
-        alert("حدث خطأ أثناء إيقاف الإعلان ❌\n" + err.message);
+        alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
       }
     });
   }
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
