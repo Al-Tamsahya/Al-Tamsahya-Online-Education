@@ -1894,32 +1894,27 @@ body { padding-top: 45px; }
   // 🔹 تهيئة Firebase مرة واحدة فقط
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+
+  const stopAdBtn = document.getElementById("stopAdBtn");
+
+  if (stopAdBtn) {
+    stopAdBtn.addEventListener("click", async () => {
+      try {
+        await firestoreTools.collection("announcements").doc("current").set({ text: "" });
+        hideAnnouncementBar();
+        alert("تم إيقاف الإعلان بنجاح ✅");
+      } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء إيقاف الإعلان ❌\n" + err.message);
+      }
+    });
+  }
 </script>
 
-        const stopAdBtn = document.getElementById("stopAdBtn");
-
-if (stopAdBtn) {
-  stopAdBtn.addEventListener("click", async () => {
-    try {
-      // 1️⃣ إزالة نص الإعلان من قاعدة البيانات
-      await firestoreTools.collection("announcements").doc("current").set({
-        text: ""
-      });
-      
-      // 2️⃣ إخفاء شريط الإعلان فوراً
-      hideAnnouncementBar();
-
-      // 3️⃣ إشعار نجاح
-      alert("تم إيقاف الإعلان بنجاح ✅");
-    } catch (err) {
-      console.error(err);
-      alert("حدث خطأ أثناء إيقاف الإعلان ❌\n" + err.message);
-    }
-  });
-}
 
 </body>
 </html>
+
 
 
 
