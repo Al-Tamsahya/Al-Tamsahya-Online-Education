@@ -229,46 +229,65 @@
       themeToggle.textContent = isDark ? "🌙" : "☀️";
     };
 
-    /* ---------- PWA INSTALL (CORE NOT TOUCHED) ---------- */
-    let deferredPrompt;
+ /* ---------- PWA INSTALL (CORE MODIFIED) ---------- */
+let deferredPrompt;
 
-    window.addEventListener("beforeinstallprompt",e=>{
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.hidden = false;
+// استمع للحدث إذا ظهر في المتصفح
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.hidden = false;
 
-      gtag('event','install_prompt_shown',{
-        variant: v === 0 ? 'A' : 'B'
-      });
+  gtag('event','install_prompt_shown',{
+    variant: v === 0 ? 'A' : 'B'
+  });
+});
+
+// إظهار الزر دائمًا بعد 1 ثانية كخطة بديلة
+setTimeout(() => {
+  installBtn.hidden = false;
+  installBtn.textContent = "تثبيت التطبيق";
+}, 1000);
+<script>
+installBtn.onclick = async ()=>{
+  if(deferredPrompt){
+    installBtn.classList.add("loading");
+
+    gtag('event','install_button_clicked',{
+      variant: v === 0 ? 'A' : 'B'
     });
 
-    installBtn.onclick = async ()=>{
-      if(!deferredPrompt) return;
-      installBtn.classList.add("loading");
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    installBtn.classList.remove("loading");
 
-      gtag('event','install_button_clicked',{
+    if(outcome==="accepted"){
+      gtag('event','install_accepted',{
         variant: v === 0 ? 'A' : 'B'
       });
+      installBtn.hidden = true;
+    }
+    deferredPrompt = null;
+  } else {
+    // تنبيه بديل إذا لم يكن PWA متاح
+    alert("📌 لتثبيت التطبيق، افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
+  }
+};
 
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      installBtn.classList.remove("loading");
+window.addEventListener("appinstalled",()=>{
+  gtag('event','app_installed',{
+    variant: v === 0 ? 'A' : 'B'
+  });
+  success.classList.add("show");
+});
 
-      if(outcome==="accepted"){
-        gtag('event','install_accepted',{
-          variant: v === 0 ? 'A' : 'B'
-        });
-        installBtn.hidden = true;
-      }
-      deferredPrompt = null;
-    };
+// إظهار الزر دائمًا كخطة بديلة
+setTimeout(() => {
+  installBtn.hidden = false;
+  installBtn.textContent = "تثبيت التطبيق";
+}, 1000);
+</script>
 
-    window.addEventListener("appinstalled",()=>{
-      gtag('event','app_installed',{
-        variant: v === 0 ? 'A' : 'B'
-      });
-      success.classList.add("show");
-    });
   </script>
 
 </body>
