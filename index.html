@@ -1936,6 +1936,24 @@ body { padding-top: 45px; }
     if (bar) bar.style.display = "none";
   }
 
+  // 🔹 إعادة تشغيل حركة الإعلان مع سرعة مناسبة
+  function restartAnimation() {
+    const announcementText = document.getElementById("announcementText");
+
+    // أوقف الحركة مؤقتًا
+    announcementText.style.animation = "none";
+
+    // إعادة حساب CSS
+    announcementText.offsetHeight;
+
+    // حساب مدة الحركة بناءً على طول النص
+    const textLength = announcementText.offsetWidth;
+    const duration = Math.max(10, textLength / 50); // الحد الأدنى 10 ثوانٍ
+
+    // أعد تشغيل الحركة من الشمال إلى اليمين
+    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+  }
+
   // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
   async function loadAnnouncement() {
     try {
@@ -1946,11 +1964,8 @@ body { padding-top: 45px; }
           const announcementText = document.getElementById("announcementText");
           announcementText.innerText = text;
 
-          // إعادة تشغيل حركة الإعلان
-          announcementText.style.animation = "none";    // إيقاف أي حركة حالية
-announcementText.offsetHeight;                // إعادة حساب CSS لإعادة تشغيل الحركة
-announcementText.style.animation = "slide-right 15s linear infinite"; // تشغيل الحركة من الشمال إلى اليمين
-
+          // إعادة تشغيل الحركة بسرعة مناسبة
+          restartAnimation();
 
           showAnnouncementBar();
         }
@@ -1975,11 +1990,8 @@ announcementText.style.animation = "slide-right 15s linear infinite"; // تشغ�
       const announcementText = document.getElementById("announcementText");
       announcementText.innerText = text;
 
-      // إعادة تشغيل حركة الإعلان بعد التحديث
-      announcementText.style.animation = "none";    // إيقاف أي حركة حالية
-announcementText.offsetHeight;                // إعادة حساب CSS لإعادة تشغيل الحركة
-announcementText.style.animation = "slide-right 15s linear infinite"; // تشغيل الحركة من الشمال إلى اليمين
-
+      // إعادة تشغيل الحركة بسرعة مناسبة
+      restartAnimation();
 
       showAnnouncementBar();
       alert("تم حفظ الإعلان ✅");
@@ -2010,6 +2022,7 @@ announcementText.style.animation = "slide-right 15s linear infinite"; // تشغ�
 
 </body>
 </html>
+
 
 
 
