@@ -1668,27 +1668,33 @@ async function editStudent(studentEmail) {
 
 <!-- Firebase init -->
 <script src="./js/firebase.js"></script>
-
-<!-- Service Worker + PWA Install -->
 <script>
-if ("serviceWorker" in navigator) {
-  // تسجيل Service Worker الصحيح
-  navigator.serviceWorker.register("/Al-Tamsahya-Online-Education/service-worker.js")
-    .then((reg) => {
-      console.log("Service Worker Registered");
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
+    .then(reg => {
+      console.log('Service Worker registered.');
 
-      // تحديث تلقائي للـ SW عند وجود نسخة جديدة
-      if (reg.waiting) {
-        reg.waiting.postMessage({ type: "SKIP_WAITING" });
-      }
+      // تحديث تلقائي عند وجود نسخة جديدة
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      });
 
-      // إعادة تحميل الصفحة عند تغيير SW
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        console.log("Controller changed: Reloading page...");
-        window.location.reload();
+      // إعادة تحميل الصفحة عند تغير الـ SW
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          console.log('Controller changed: Reloading page...');
+          window.location.reload();
+        }
       });
     })
-    .catch(err => console.error("SW registration failed:", err));
+    .catch(err => console.error('SW registration failed:', err));
 }
 </script>
 
@@ -1745,7 +1751,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ======= عرض الإعلانات =======
+<!-- ======= عرض الإعلانات ======= -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
   const adsContainer = document.getElementById("ads-container");
   if (adsContainer && window.firestoreTools && firestoreTools.collection) {
     firestoreTools.collection("ads")
@@ -1780,35 +1789,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ======= تثبيت التطبيق PWA =======
-<!-- زر تثبيت التطبيق PWA -->
-<script>
-let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
+  const installBtn = document.getElementById("installBtn");
+  let deferredPrompt;
 
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.hidden = false;
-});
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.hidden = false;
+  });
 
-installBtn.addEventListener("click", async () => {
-  if (!deferredPrompt) {
-    alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
-    return;
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) {
+        alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
+        return;
+      }
+
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        installBtn.hidden = true;
+      }
+      deferredPrompt = null;
+    });
   }
 
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === "accepted") {
-    installBtn.hidden = true;
-  }
-  deferredPrompt = null;
-});
+  window.addEventListener("appinstalled", () => {
+    if (installBtn) installBtn.hidden = true;
+    alert("تم تثبيت التطبيق بنجاح ✅");
+  });
 
-// عند تثبيت التطبيق
-window.addEventListener("appinstalled", () => {
-  installBtn.hidden = true;
-  alert("تم تثبيت التطبيق بنجاح ✅");
 });
 </script>
 
@@ -2041,6 +2051,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
