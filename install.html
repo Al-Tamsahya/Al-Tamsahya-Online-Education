@@ -5,16 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>تثبيت منصة التمساحية</title>
 
-<!-- Google Analytics GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E4BFPGRT2R"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-الكود-الحقيقي');
-</script>
-
-
+  <!-- Google Analytics GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4BFPGRT2R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-الكود-الحقيقي');
+  </script>
 
   <link rel="icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -162,8 +160,8 @@
 <body>
 
   <div class="splash" id="splash">
-  <img src="icon-192.png" width="96" alt="">
-</div>
+    <img src="icon-192.png" width="96" alt="">
+  </div>
 
   <main class="wrapper">
     <section class="card" id="card">
@@ -187,7 +185,6 @@
   </main>
 
   <script>
-    /* ---------- DOM SAFE REFERENCES ---------- */
     const splash = document.getElementById("splash");
     const title = document.getElementById("title");
     const desc = document.getElementById("desc");
@@ -195,10 +192,9 @@
     const themeToggle = document.getElementById("themeToggle");
     const success = document.getElementById("success");
 
-    /* Splash hide */
     setTimeout(()=>splash.classList.add('hide'),1500);
 
-    /* ---------- A/B TEST + Analytics ---------- */
+    // A/B Test
     const variants=[
       {title:"أهلًا بك في منصة التمساحية",desc:"منصة تعليمية رقمية آمنة.",btn:"تثبيت التطبيق"},
       {title:"تعليم أسهل لكل بيت",desc:"تجربة تعليمية منظمة وسريعة.",btn:"ابدأ الآن"}
@@ -211,11 +207,9 @@
     desc.textContent = variants[v].desc;
     installBtn.textContent = variants[v].btn;
 
-    gtag('event','ab_variant_view',{
-      variant: v === 0 ? 'A' : 'B'
-    });
+    gtag('event','ab_variant_view',{ variant: v === 0 ? 'A' : 'B' });
 
-    /* ---------- Dark Mode ---------- */
+    // Dark Mode
     const savedTheme = localStorage.theme;
     if(savedTheme){
       document.documentElement.dataset.theme = savedTheme;
@@ -229,64 +223,48 @@
       themeToggle.textContent = isDark ? "🌙" : "☀️";
     };
 
- /* ---------- PWA INSTALL (CORE MODIFIED) ---------- */
-let deferredPrompt;
+    /* ---------- PWA INSTALL ---------- */
+    let deferredPrompt;
 
-// استمع للحدث إذا ظهر في المتصفح
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.hidden = false;
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.hidden = false;
+      installBtn.textContent = "تثبيت التطبيق";
 
-  gtag('event','install_prompt_shown',{
-    variant: v === 0 ? 'A' : 'B'
-  });
-});
-
-// إظهار الزر دائمًا بعد 1 ثانية كخطة بديلة
-setTimeout(() => {
-  installBtn.hidden = false;
-  installBtn.textContent = "تثبيت التطبيق";
-}, 1000);
-
-installBtn.onclick = async ()=>{
-  if(deferredPrompt){
-    installBtn.classList.add("loading");
-
-    gtag('event','install_button_clicked',{
-      variant: v === 0 ? 'A' : 'B'
+      gtag('event','install_prompt_shown',{ variant: v === 0 ? 'A' : 'B' });
     });
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    installBtn.classList.remove("loading");
+    // إظهار الزر دائمًا كخطة بديلة
+    setTimeout(() => {
+      installBtn.hidden = false;
+      installBtn.textContent = "تثبيت التطبيق";
+    }, 1000);
 
-    if(outcome==="accepted"){
-      gtag('event','install_accepted',{
-        variant: v === 0 ? 'A' : 'B'
-      });
-      installBtn.hidden = true;
-    }
-    deferredPrompt = null;
-  } else {
-    // تنبيه بديل إذا لم يكن PWA متاح
-    alert("📌 لتثبيت التطبيق، افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
-  }
-};
+    installBtn.onclick = async ()=>{
+      if(deferredPrompt){
+        installBtn.classList.add("loading");
+        gtag('event','install_button_clicked',{ variant: v === 0 ? 'A' : 'B' });
 
-window.addEventListener("appinstalled",()=>{
-  gtag('event','app_installed',{
-    variant: v === 0 ? 'A' : 'B'
-  });
-  success.classList.add("show");
-});
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        installBtn.classList.remove("loading");
 
-// إظهار الزر دائمًا كخطة بديلة
-setTimeout(() => {
-  installBtn.hidden = false;
-  installBtn.textContent = "تثبيت التطبيق";
-}, 1000);
-</script>
+        if(outcome==="accepted"){
+          gtag('event','install_accepted',{ variant: v === 0 ? 'A' : 'B' });
+          installBtn.hidden = true;
+        }
+        deferredPrompt = null;
+      } else {
+        alert("📌 لتثبيت التطبيق، افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
+      }
+    };
 
- </body>
+    window.addEventListener("appinstalled",()=>{
+      gtag('event','app_installed',{ variant: v === 0 ? 'A' : 'B' });
+      success.classList.add("show");
+    });
+  </script>
+
+</body>
 </html>
