@@ -1887,13 +1887,6 @@ if ("serviceWorker" in navigator) {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-// 👨‍💼 إعدادات الأدمن
-const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
-const loggedEmail = localStorage.getItem("loggedEmail"); // يتم تخزين البريد عند تسجيل الدخول
-const currentUser = {
-  email: loggedEmail,
-  role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-};
 
 // 🔹 إعلان متغير واحد فقط لجميع التحركات
 let animationTimeout;
@@ -2013,6 +2006,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
