@@ -1684,9 +1684,8 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("SW registration failed:", err));
 }
 </script>
-<!-- جميع وظائف الأدمن والإعلانات -->
-<script>
-<!-- جميع وظائف الأدمن والإعلانات -->
+
+        <!-- جميع وظائف الأدمن والإعلانات -->
 <script>
 // 🔹 تهيئة المستخدم الحالي (مرة واحدة فقط)
 const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
@@ -1846,21 +1845,18 @@ function hideAnnouncementBar() {
 📲 تثبيت التطبيق
 </button>
 <script>
-let deferredPrompt = null;
-
 async function installApp() {
   if (!deferredPrompt) {
     alert("📌 افتح القائمة ⋮ ثم اختر (تثبيت التطبيق)");
     return;
   }
 
-  deferredPrompt.prompt();
+  await deferredPrompt.prompt();
   await deferredPrompt.userChoice;
   deferredPrompt = null;
 }
 </script>
 
- 
 <!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
 
 <!-- 🚨 شريط إعلان متحرك للطلاب -->
@@ -1894,7 +1890,6 @@ async function installApp() {
 body { padding-top: 45px; }
 </style>
 
-
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js")
@@ -1913,6 +1908,7 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("SW registration failed:", err));
 }
 </script>
+
 
 <script>
   // تهيئة Firebase مرة واحدة فقط
@@ -2042,6 +2038,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
