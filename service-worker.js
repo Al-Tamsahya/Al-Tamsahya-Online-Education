@@ -5,7 +5,7 @@ const FILES_TO_CACHE = [
   "./",
   "./css/style.css",
   "./manifest.json",
-  "./icon-192.png",
+  "./icon-192.png", // تأكد أن الملف في نفس مجلد SW
   "./icon-512.png"
 ];
 
@@ -21,7 +21,9 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null)))
+      Promise.all(
+        keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null))
+      )
     )
   );
   self.clients.claim();
@@ -36,6 +38,7 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(event.request.url);
 
+  // لا تعمل على بعض API أو تسجيل الدخول
   if (
     url.hostname.includes("googleapis.com") ||
     url.hostname.includes("gstatic.com") ||
@@ -51,9 +54,7 @@ self.addEventListener("fetch", (event) => {
     fetch(event.request)
       .then((res) => {
         const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) =>
-          cache.put(event.request, copy)
-        );
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
         return res;
       })
       .catch(async () => {
@@ -74,4 +75,3 @@ self.addEventListener("fetch", (event) => {
       })
   );
 });
-
