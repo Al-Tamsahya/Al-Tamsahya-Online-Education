@@ -1902,9 +1902,15 @@ async function installApp() {
   font-size: 16px;
   display: inline-block;
   position: relative;
-  left: 100%; /* البداية خارج الشاشة على اليمين */
-  animation: slide-left 15s linear infinite; /* الحركة المستمرة */
+  left: -100%; /* البداية خارج الشاشة على اليسار */
+  animation: slide-right 15s linear infinite; /* الحركة من الشمال إلى اليمين */
 }
+
+@keyframes slide-right {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
 
 @keyframes slide-left {
   0% { left: 100%; }
@@ -1941,9 +1947,10 @@ body { padding-top: 45px; }
           announcementText.innerText = text;
 
           // إعادة تشغيل حركة الإعلان
-          announcementText.style.animation = "none";
-          announcementText.offsetHeight; // إعادة حساب CSS
-          announcementText.style.animation = "slide-left 15s linear infinite";
+          announcementText.style.animation = "none";    // إيقاف أي حركة حالية
+announcementText.offsetHeight;                // إعادة حساب CSS لإعادة تشغيل الحركة
+announcementText.style.animation = "slide-right 15s linear infinite"; // تشغيل الحركة من الشمال إلى اليمين
+
 
           showAnnouncementBar();
         }
@@ -1969,9 +1976,10 @@ body { padding-top: 45px; }
       announcementText.innerText = text;
 
       // إعادة تشغيل حركة الإعلان بعد التحديث
-      announcementText.style.animation = "none";
-      announcementText.offsetHeight; 
-      announcementText.style.animation = "slide-left 15s linear infinite";
+      announcementText.style.animation = "none";    // إيقاف أي حركة حالية
+announcementText.offsetHeight;                // إعادة حساب CSS لإعادة تشغيل الحركة
+announcementText.style.animation = "slide-right 15s linear infinite"; // تشغيل الحركة من الشمال إلى اليمين
+
 
       showAnnouncementBar();
       alert("تم حفظ الإعلان ✅");
@@ -2002,6 +2010,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
