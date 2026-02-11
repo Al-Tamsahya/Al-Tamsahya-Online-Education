@@ -1684,9 +1684,8 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("SW registration failed:", err));
 }
 </script>
-
-        <!-- جميع وظائف الأدمن والإعلانات -->
-   <script>
+<!-- جميع وظائف الأدمن والإعلانات -->
+<script>
   // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
   const adminEmail = "admin@gmail.com"; 
   const loggedEmail = localStorage.getItem("loggedEmail") || "";
@@ -1700,7 +1699,7 @@ if ("serviceWorker" in navigator) {
   // متغير لتثبيت التطبيق PWA
   let deferredPrompt = null;
 
-  // متغير الشريط المتحرك
+  // 🔹 إعلان متغير واحد فقط لجميع التحركات
   let animationTimeout = null;
 </script>
 
@@ -1796,8 +1795,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-
-// ======= وظائف الشريط المتحرك =======
+<!-- ======= وظائف الشريط المتحرك ======= -->
 <script>
 function startAnnouncementAnimation(text, duration = 12000) {
   const bar = document.getElementById("announcementBar");
@@ -1841,10 +1839,11 @@ function hideAnnouncementBar() {
 }
 </script>
 
-
+<!-- زر تثبيت التطبيق -->
 <button id="installBtn" class="install-btn hidden" onclick="installApp()">
 📲 تثبيت التطبيق
 </button>
+
 <script>
 async function installApp() {
   if (!deferredPrompt) {
@@ -1895,13 +1894,10 @@ body { padding-top: 45px; }
   // 🔹 تهيئة Firebase مرة واحدة فقط
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-
-  // 🔹 إعلان متغير واحد فقط لجميع التحركات
-  let animationTimeout;
-
-
+</script>
 </body>
 </html>
+
 
 
 
