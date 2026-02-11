@@ -1684,18 +1684,23 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("SW registration failed:", err));
 }
 </script>
-
 <!-- جميع وظائف الأدمن والإعلانات -->
-<script> 
+<script>
+// 🔹 تهيئة المستخدم الحالي (مرة واحدة فقط)
 const adminEmail = "admin@gmail.com"; // ضع إيميل الأدمن هنا
 const loggedEmail = localStorage.getItem("loggedEmail"); // البريد بعد تسجيل الدخول
-const currentUser = {
-  email: loggedEmail,
-  role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-};
+
+// ❌ منع إعادة التعريف
+if (typeof currentUser === "undefined") {
+  window.currentUser = {
+    email: loggedEmail,
+    role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+  };
+}
 
 let animationTimeout;
 
+// ⚡️ انتظار تحميل DOM
 document.addEventListener("DOMContentLoaded", () => {
 
   // ======= لوحة الأدمن =======
@@ -1707,40 +1712,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const contentInput = document.getElementById("ad-content");
     const addBtn = document.getElementById("add-ad-btn");
 
-    addBtn?.addEventListener("click", async () => {
-      const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
-      if (!title || !content) return alert("الرجاء ملء العنوان والمحتوى!");
+    if (addBtn && titleInput && contentInput) {
+      addBtn.addEventListener("click", async () => {
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
 
-      await firestoreTools.addDoc(
-        firestoreTools.collection("ads"),
-        { title, content, date: new Date() }
-      );
+        if (!title || !content) {
+          return alert("الرجاء ملء العنوان والمحتوى!");
+        }
 
-      titleInput.value = "";
-      contentInput.value = "";
-      alert("تم إضافة الإعلان بنجاح!");
-    });
+        try {
+          await firestoreTools.addDoc(
+            firestoreTools.collection("ads"),
+            { title, content, date: new Date() }
+          );
+
+          titleInput.value = "";
+          contentInput.value = "";
+          alert("تم إضافة الإعلان بنجاح!");
+        } catch (err) {
+          console.error(err);
+          alert("حدث خطأ أثناء إضافة الإعلان ❌\n" + err.message);
+        }
+      });
+    }
   }
-    
+
   // ======= عرض الإعلانات لجميع المستخدمين =======
   const adsContainer = document.getElementById("ads-container");
-  firestoreTools.collection("ads")
-    .orderBy("date", "desc")
-    .onSnapshot(snapshot => {
-      adsContainer.innerHTML = "";
-      snapshot.forEach(doc => {
-        const ad = doc.data();
-        const adElement = document.createElement("div");
-        adElement.className = "ad";
-        adElement.innerHTML = `
-          <h3>${ad.title}</h3>
-          <p>${ad.content}</p>
-          <small>${ad.date.toDate().toLocaleString()}</small>
-        `;
-        adsContainer.appendChild(adElement);
+  if (adsContainer && window.firestoreTools && firestoreTools.collection) {
+    firestoreTools.collection("ads")
+      .orderBy("date", "desc")
+      .onSnapshot(snapshot => {
+        adsContainer.innerHTML = "";
+        snapshot.forEach(doc => {
+          const ad = doc.data();
+          const adElement = document.createElement("div");
+          adElement.className = "ad";
+          adElement.innerHTML = `
+            <h3>${ad.title}</h3>
+            <p>${ad.content}</p>
+            <small>${ad.date.toDate().toLocaleString()}</small>
+          `;
+          adsContainer.appendChild(adElement);
+        });
       });
-    });
+  }
 
   // ======= شريط إعلان متحرك للطلاب =======
   if (window.firestoreTools && window.firestoreTools.db) {
@@ -1754,14 +1771,39 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
   }
+
+  // ======= تثبيت التطبيق PWA =======
+  const installBtn = document.getElementById("installBtn");
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    if (installBtn) installBtn.classList.remove("hidden");
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) {
+        alert("📌 افتح القائمة ⋮ ثم اختر (تثبيت التطبيق)");
+        return;
+      }
+
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.classList.add("hidden");
+    });
+  }
+
 });
- </script>
+
 // ======= وظائف الشريط المتحرك =======
 function startAnnouncementAnimation(text, duration = 12000) {
   const bar = document.getElementById("announcementBar");
   const textBox = document.getElementById("announcementText");
 
-  if (!bar || !textBox || !text || !text.trim()) {
+  if (!bar || !textBox || !text?.trim()) {
     hideAnnouncementBar();
     return;
   }
@@ -1799,20 +1841,11 @@ function hideAnnouncementBar() {
 }
 </script>
 
-
-
 <button id="installBtn" class="install-btn hidden" onclick="installApp()">
 📲 تثبيت التطبيق
 </button>
 <script>
 let deferredPrompt = null;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  document.getElementById("installBtn")?.classList.remove("hidden");
-});
 
 async function installApp() {
   if (!deferredPrompt) {
@@ -1824,8 +1857,6 @@ async function installApp() {
   await deferredPrompt.userChoice;
   deferredPrompt = null;
 }
-    
-
 </script>
 
  
@@ -1892,7 +1923,7 @@ if ("serviceWorker" in navigator) {
 let animationTimeout;
 
 // ======= التعامل مع لوحة الأدمن =======
-if (currentUser.role === "ADMIN") 
+if (currentUser.role === "ADMIN") {
   // إظهار لوحة التحكم
   const adminPanel = document.getElementById("admin-panel");
   if (adminPanel) adminPanel.style.display = "block";
@@ -1910,6 +1941,11 @@ if (currentUser.role === "ADMIN")
       alert("الرجاء ملء العنوان والمحتوى!");
       return;
     }
+
+    // باقي الكود لإضافة الإعلان...
+  });
+}
+
 
     await firestoreTools.addDoc(
       firestoreTools.collection("ads"),
@@ -2006,6 +2042,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
