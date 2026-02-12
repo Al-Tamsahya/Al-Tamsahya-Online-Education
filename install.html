@@ -18,38 +18,33 @@
 
 <div class="card">
   <h1>أهلًا بك في منصة التمساحية</h1>
-  <p>اضغط على الزر أدناه لتثبيت التطبيق على هاتفك كتطبيق رسمي.</p>
+  <p>اضغط على الزر أدناه لتثبيت التطبيق للوصول السريع للموقع من الشاشة الرئيسية.</p>
   <button id="installBtn" class="btn">📲 تثبيت التطبيق</button>
 </div>
 
 <script>
-  let deferredPrompt;
+let deferredPrompt;
 
-  // التقاط حدث beforeinstallprompt
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
+// التقاط حدث قبل التثبيت
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById("installBtn").style.display = "inline-block"; // إظهار الزر
+});
 
-    const btn = document.getElementById("installBtn");
-    btn.style.display = "inline-block"; // إظهار الزر
-  });
+// عند الضغط على الزر
+document.getElementById("installBtn").addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt(); // يظهر مربع تثبيت التطبيق الرسمي
+  const choice = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById("installBtn").style.display = "none";
 
-  // عند الضغط على الزر
-  const installBtn = document.getElementById("installBtn");
-  installBtn.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt(); // يظهر مربع تثبيت التطبيق الرسمي
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installBtn.style.display = "none"; // إخفاء الزر بعد الضغط
-  });
-
-  // تسجيل Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker مسجل'))
-      .catch(err => console.error('❌ فشل تسجيل SW:', err));
+  // يمكن إضافة رسالة نجاح بسيطة
+  if(choice.outcome === "accepted"){
+    alert("✅ تم تثبيت التطبيق، يمكنك الآن فتح الموقع من الشاشة الرئيسية");
   }
+});
 </script>
 
 </body>
