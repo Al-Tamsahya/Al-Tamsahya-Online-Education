@@ -459,37 +459,42 @@ button {
 }
 <style>
     /* شريط الإعلان */
+/* شريط الإعلان العام */
 .announcement-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(90deg, #f59e0b, #d97706); /* عدسي برتقالي */
+    background: linear-gradient(90deg, #f59e0b, #d97706); /* عدسي برتقالي جذاب */
     color: #fff; /* النص أبيض */
     overflow: hidden;
     z-index: 9999;
-    height: 45px;
+    height: 50px; /* زيادة بسيطة للارتفاع لراحة القراءة */
     display: flex;
     align-items: center;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    font-size: 18px; /* تكبير الخط لجعله واضح */
+    font-weight: 900; /* خط سميك جداً للنص */
+    letter-spacing: 0.5px; /* زيادة بسيطة للمسافات بين الحروف لتوضيح النص */
+    padding-left: 10px; /* مسافة صغيرة من اليسار */
 }
 
+/* نص الإعلان المتحرك */
 .announcement-text {
     white-space: nowrap;
-    font-weight: bold;
-    font-size: 16px;
     display: inline-block;
     position: relative;
     left: -100%;
+    animation: slide-right 20s linear infinite; /* حركة النص */
 }
 
+/* حركة النص */
 @keyframes slide-right {
     0% { left: -100%; }
     100% { left: 100%; }
 }
 
-
-
+/* أزرار التحكم */
 .custom-btn {
     padding: 6px 12px;
     margin-right: 5px;
@@ -501,7 +506,7 @@ button {
     font-weight: bold;
 }
 
-.custom-btn.danger { background-color: #e53e3e; color: #fff; }
-
-
-
+.custom-btn.danger { 
+    background-color: #e53e3e; 
+    color: #fff; 
+}
