@@ -1919,42 +1919,34 @@ function hideAnnouncementBar() {
   📲 تثبيت التطبيق
 </button>
 
-<!-- كود JavaScript -->
 <script>
-  let deferredPrompt = null;
+let deferredPrompt = null;
 
-  // التقاط حدث beforeinstallprompt
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
+// التقاط حدث beforeinstallprompt
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
 
-    // إظهار زر التثبيت
-    const installBtn = document.getElementById("installBtn");
-    if (installBtn) installBtn.hidden = false;
-  });
-
-  // حدث عند تثبيت التطبيق
-  window.addEventListener("appinstalled", () => {
-    alert("✅ تم تثبيت التطبيق بنجاح");
-    const installBtn = document.getElementById("installBtn");
-    if (installBtn) installBtn.hidden = true;
-  });
-
-  // دالة تثبيت التطبيق عند الضغط على الزر
+  // إظهار زر التثبيت للمستخدم
   const installBtn = document.getElementById("installBtn");
-  if (installBtn) {
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) {
-        alert("افتح القائمة ثم اختر تثبيت التطبيق");
-        return;
-      }
+  if (installBtn) installBtn.hidden = false;
+});
 
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.hidden = true;
-    });
-  }
+// عند الضغط على الزر لتثبيت التطبيق
+const installBtn = document.getElementById("installBtn");
+if (installBtn) {
+  installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return; // إذا الحدث لم يظهر، لا يعمل
+
+    // فتح مربع تثبيت التطبيق الرسمي
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice; // المستخدم يوافق أو يرفض
+    deferredPrompt = null;
+
+    // إخفاء الزر بعد الضغط
+    installBtn.hidden = true;
+  });
+});
 </script>
 
 
@@ -2120,4 +2112,5 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
