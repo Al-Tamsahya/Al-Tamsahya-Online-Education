@@ -1628,34 +1628,30 @@
         <script src="./js/firebase.js"></script>
         <script>
         
-                        // تحديث تلقائي عند وجود نسخة جديدة
-                        reg.addEventListener('updatefound', () => {
-                            const newWorker = reg.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                }
-                            });
-                        });
-
-            
-if ('serviceWorker' in navigator) {
+   if ('serviceWorker' in navigator) {
 
   let newWorker;
 
+  // تسجيل Service Worker
   navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
     .then(registration => {
 
       console.log("Service Worker registered successfully ✅");
 
+      // تحديث تلقائي عند وجود نسخة جديدة
       registration.addEventListener('updatefound', () => {
 
         newWorker = registration.installing;
 
         newWorker.addEventListener('statechange', () => {
 
+          // إذا تم تثبيت نسخة جديدة وكانت هناك نسخة سابقة
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
 
+            // إرسال رسالة لتخطي الانتظار
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+
+            // إظهار صندوق التحديث للمستخدم
             const updateBox = document.getElementById("updateNotification");
             if (updateBox) {
               updateBox.style.display = "block";
@@ -1664,8 +1660,12 @@ if ('serviceWorker' in navigator) {
           }
         });
       });
+
     })
-    .catch(error => console.error('Service Worker registration failed ❌:', error));
+    .catch(error => {
+      console.error("Service Worker registration failed ❌", error);
+    });
+}
 
   const updateBtn = document.getElementById("updateBtn");
   if (updateBtn) {
@@ -1793,10 +1793,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-        <!-- ======= وظائف الشريط المتحرك ======= -->
-       <script>
+        <!-- ======= وظائف الشريط المتحرك (تم التعديل) ======= -->
+<script>
 let animationTimeout = null;
 
+// تشغيل الإعلان المتحرك
 function startAnnouncementAnimation(text, duration = 12000) {
     const bar = document.getElementById("announcementBar");
     const textBox = document.getElementById("announcementText");
@@ -1827,8 +1828,18 @@ function startAnnouncementAnimation(text, duration = 12000) {
     move();
 }
 
+// إخفاء شريط الإعلان
+function hideAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
 
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
+    }
+}
 </script>
+
 
 <!-- زر تثبيت التطبيق -->
 <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
@@ -2053,6 +2064,7 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
