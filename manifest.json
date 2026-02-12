@@ -2,7 +2,7 @@
   "name": "منصة التمساحية التعليمية",
   "short_name": "التمساحية",
   "description": "منصة تعليمية للمرحلة الإعدادية",
-  "start_url": "/Al-Tamsahya-Online-Education/",
+  "start_url": "/Al-Tamsahya-Online-Education/index.html",
   "scope": "/Al-Tamsahya-Online-Education/",
   "display": "standalone",
   "background_color": "#f3f6fb",
