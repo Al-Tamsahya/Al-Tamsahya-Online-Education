@@ -459,13 +459,13 @@ button {
 }
 <style>
     /* شريط الإعلان */
-    .announcement-bar {
+.announcement-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: #f59e0b;
-    color: #000;
+    background: linear-gradient(90deg, #f59e0b, #d97706); /* عدسي برتقالي */
+    color: #fff; /* النص أبيض */
     overflow: hidden;
     z-index: 9999;
     height: 45px;
@@ -488,6 +488,7 @@ button {
     100% { left: 100%; }
 }
 
+
 .custom-btn {
     padding: 6px 12px;
     margin-right: 5px;
@@ -500,4 +501,5 @@ button {
 }
 
 .custom-btn.danger { background-color: #e53e3e; color: #fff; }
+
 
