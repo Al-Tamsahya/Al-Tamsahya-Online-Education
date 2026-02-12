@@ -1834,39 +1834,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // ======= تثبيت التطبيق PWA =======
-  const installBtn = document.getElementById("installBtn");
-  let deferredPrompt;
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installBtn) installBtn.hidden = false;
-  });
-
-  if (installBtn) {
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) {
-        alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
-        return;
-      }
-
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        installBtn.hidden = true;
-      }
-      deferredPrompt = null;
-    });
-  }
-
-  window.addEventListener("appinstalled", () => {
-    if (installBtn) installBtn.hidden = true;
-    alert("تم تثبيت التطبيق بنجاح ✅");
-  });
-
-});
-
 
 <!-- ======= وظائف الشريط المتحرك ======= -->
 
@@ -1913,41 +1880,6 @@ function hideAnnouncementBar() {
     animationTimeout = null;
   }
 }
-
-<!-- داخل body -->
-<button id="installBtn" class="btn" hidden>
-  📲 تثبيت التطبيق
-</button>
-
-<script>
-let deferredPrompt = null;
-
-// التقاط حدث beforeinstallprompt
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  // إظهار زر التثبيت للمستخدم
-  const installBtn = document.getElementById("installBtn");
-  if (installBtn) installBtn.hidden = false;
-});
-
-// عند الضغط على الزر لتثبيت التطبيق
-const installBtn = document.getElementById("installBtn");
-if (installBtn) {
-  installBtn.addEventListener("click", async () => {
-    if (!deferredPrompt) return; // إذا الحدث لم يظهر، لا يعمل
-
-    // فتح مربع تثبيت التطبيق الرسمي
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice; // المستخدم يوافق أو يرفض
-    deferredPrompt = null;
-
-    // إخفاء الزر بعد الضغط
-    installBtn.hidden = true;
-  });
-});
-</script>
 
 
 <!-- 🔔 لوحة إدارة الإعلان (يظهر فقط للأدمن) -->
@@ -2112,5 +2044,6 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
