@@ -1631,11 +1631,7 @@
         <!-- Firebase init -->
         <script src="./js/firebase.js"></script>
         <script>
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
-                    .then(reg => {
-                        console.log('Service Worker registered.');
-
+        
                         // تحديث تلقائي عند وجود نسخة جديدة
                         reg.addEventListener('updatefound', () => {
                             const newWorker = reg.installing;
@@ -1646,19 +1642,50 @@
                             });
                         });
 
-                        // إعادة تحميل الصفحة عند تغير الـ SW
-                        let refreshing = false;
-                        navigator.serviceWorker.addEventListener('controllerchange', () => {
-                            if (!refreshing) {
-                                refreshing = true;
-                                console.log('Controller changed: Reloading page...');
-                                window.location.reload();
-                            }
-                        });
-                    })
-                    .catch(err => console.error('SW registration failed:', err));
+            <script>
+if ('serviceWorker' in navigator) {
+
+  let newWorker;
+
+  navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
+    .then(registration => {
+
+      console.log("Service Worker registered successfully ✅");
+
+      registration.addEventListener('updatefound', () => {
+
+        newWorker = registration.installing;
+
+        newWorker.addEventListener('statechange', () => {
+
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+
+            const updateBox = document.getElementById("updateNotification");
+            if (updateBox) {
+              updateBox.style.display = "block";
             }
-        </script>
+
+          }
+        });
+      });
+    })
+    .catch(error => console.error('Service Worker registration failed ❌:', error));
+
+  const updateBtn = document.getElementById("updateBtn");
+  if (updateBtn) {
+    updateBtn.addEventListener("click", () => {
+      if (newWorker) {
+        newWorker.postMessage({ type: "SKIP_WAITING" });
+      }
+    });
+  }
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    window.location.reload();
+  });
+}
+</script>
+
 
         <!-- جميع وظائف الأدمن والإعلانات -->
         <script>
@@ -2034,11 +2061,40 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 </script>
 
 
+<!-- 🔔 إشعار تحديث التطبيق -->
+<div id="updateNotification" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1e40af;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 9999;
+  font-family: Arial;
+">
+  🔄 يوجد تحديث جديد للتطبيق
+  <button id="updateBtn" style="
+    margin-right:10px;
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    background:#fff;
+    color:#1e40af;
+    cursor:pointer;
+    font-weight:bold;
+  ">
+    تحديث الآن
+  </button>
+</div>
 
            
 
 </body>
 </html>
+
 
 
 
