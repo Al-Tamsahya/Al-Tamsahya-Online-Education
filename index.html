@@ -1883,15 +1883,17 @@ function hideAnnouncementBar() {
 
 
 <!-- زر تثبيت التطبيق -->
-
 <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
 <script>
 async function installApp() {
   if (!deferredPrompt) {
-    alert("📌 افتح القائمة ⋮ ثم اختر (تثبيت التطبيق)");
+    alert("افتح القائمة ثم اختر تثبيت التطبيق");
     return;
   }
+}
+</script>
+
 
   await deferredPrompt.prompt();
   await deferredPrompt.userChoice;
@@ -2065,6 +2067,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
