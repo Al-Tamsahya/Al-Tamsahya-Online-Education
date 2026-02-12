@@ -1,76 +1,94 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-    <!-- 🚨 شريط إعلان متحرك للطلاب -->
-<div id="announcementBar" class="announcement-bar" style="display:none;">
-  <div class="announcement-text" id="announcementText"></div>
-</div>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- اسم المنصة -->
-   <title>منصة التمساحية التعليمية</title>
-<meta name="application-name" content="منصة التمساحية التعليمية">
-<meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
+    <!-- ========================= -->
+    <!-- معلومات المنصة -->
+    <!-- ========================= -->
+    <title>منصة التمساحية التعليمية</title>
+    <meta name="application-name" content="منصة التمساحية التعليمية">
+    <meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
 
-<!-- Open Graph (للمشاركة على السوشيال ميديا) -->
-<meta property="og:title" content="منصة التمساحية التعليمية">
-<meta property="og:description" content="منصة عربية متخصصة في التعليم الأونلاين للمرحلة الإعدادية المصرية">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/">
-<meta property="og:image" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/icon-192.png">
+    <!-- ========================= -->
+    <!-- Open Graph لمشاركة المحتوى -->
+    <!-- ========================= -->
+    <meta property="og:title" content="منصة التمساحية التعليمية">
+    <meta property="og:description" content="منصة عربية متخصصة في التعليم الأونلاين للمرحلة الإعدادية المصرية">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/">
+    <meta property="og:image" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/icon-192.png">
 
-
+    <!-- ========================= -->
+    <!-- ملفات CSS والخطوط -->
+    <!-- ========================= -->
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- الخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
- <!-- PWA -->
+
+    <!-- ========================= -->
+    <!-- PWA وإعدادات الألوان -->
+    <!-- ========================= -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e40af">
 
+    <!-- ========================= -->
     <!-- الأيقونات -->
+    <!-- ========================= -->
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="icon" type="image/x-icon" href="/Al-Tamsahya-Online-Education/favicon.ico">
 
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E4BFPGRT2R"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- ========================= -->
+    <!-- Google Analytics -->
+    <!-- ========================= -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4BFPGRT2R"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-  gtag('config', 'G-E4BFPGRT2R');
-</script>
-
+      gtag('config', 'G-E4BFPGRT2R');
+    </script>
 </head>
 
 <body>
+
+    <!-- ========================= -->
+    <!-- شريط إعلان متحرك للطلاب -->
+    <!-- ========================= -->
+    <div id="announcementBar" class="announcement-bar" style="display:none;">
+      <div class="announcement-text" id="announcementText"></div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- واجهة المستخدم الرئيسية -->
+    <!-- ========================= -->
     <div class="app-container">
 
         <nav class="top-nav">
-            <div class="nav-title">
-    منصة التمساحية التعليمية
-</div>
-  <div id="navUser" class="nav-user"></div>
+            <div class="nav-title">منصة التمساحية التعليمية</div>
+            <div id="navUser" class="nav-user"></div>
             
-<button onclick="toggleDarkMode()" class="dark-btn">
-  🌙 الوضع الليلي
-</button>
-          
+            <button onclick="toggleDarkMode()" class="dark-btn">
+              🌙 الوضع الليلي
+            </button>
         </nav>
         
     </div>
-<div id="studentAnnouncement"
-     style="display:none; background:#fff3cd; padding:15px; margin:15px; border-radius:8px;">
-</div>
 
-    <!-- 🧑‍🎓 رسالة ترحيب رسمية -->
+    <!-- ========================= -->
+    <!-- إشعارات الطلاب -->
+    <!-- ========================= -->
+    <div id="studentAnnouncement"
+         style="display:none; background:#fff3cd; padding:15px; margin:15px; border-radius:8px;">
+    </div>
+
+    <!-- ========================= -->
+    <!-- رسالة ترحيب رسمية -->
+    <!-- ========================= -->
     <section class="welcome-message" id="welcomeMessage">
-
         <h2>مرحبًا بكم في منصة التمساحية التعليمية 🎓</h2>
-
         <p>
             نرحب بطلاب المرحلة الإعدادية في منصتنا التعليمية الرقمية،
             والتي تهدف إلى تقديم محتوى تعليمي مبسط ومنظم
@@ -84,32 +102,46 @@
             <strong>نتمنى لكم تجربة تعليمية ناجحة ومثمرة 🌟</strong>
         </p>
     </section>
-    <!-- 🔔 إعلان متحرك -->
-<div id="promoAd" class="promo-ad hidden">
-  <div class="promo-content">
-    <div id="promoText"></div>
-    <br>
-    <button onclick="closeAd()">✖ إغلاق</button>
-  </div>
-</div>
 
-<div id="ads-container">
-  <!-- هنا ستظهر الإعلانات تلقائيًا -->
-</div>
-<!-- واجهة الأدمن -->
-<div id="admin-panel" style="display:none;">
-  <h2>لوحة تحكم الأدمن</h2>
-  <input type="text" id="ad-title" placeholder="عنوان الإعلان">
-  <textarea id="ad-content" placeholder="محتوى الإعلان"></textarea>
-  <button id="add-ad-btn">إضافة إعلان</button>
-</div>
+    <!-- ========================= -->
+    <!-- إعلان ترويجي متحرك -->
+    <!-- ========================= -->
+    <div id="promoAd" class="promo-ad hidden">
+      <div class="promo-content">
+        <div id="promoText"></div>
+        <br>
+        <button onclick="closeAd()">✖ إغلاق</button>
+      </div>
+    </div>
 
+    <!-- ========================= -->
+    <!-- حاوية الإعلانات -->
+    <!-- ========================= -->
+    <div id="ads-container">
+      <!-- هنا ستظهر الإعلانات تلقائيًا -->
+    </div>
 
+    <!-- ========================= -->
+    <!-- لوحة تحكم الأدمن -->
+    <!-- ========================= -->
+    <div id="admin-panel" style="display:none;">
+      <h2>لوحة تحكم الأدمن</h2>
+      <input type="text" id="ad-title" placeholder="عنوان الإعلان">
+      <textarea id="ad-content" placeholder="محتوى الإعلان"></textarea>
+      <button id="add-ad-btn">إضافة إعلان</button>
+    </div>
+
+    <!-- ========================= -->
     <!-- شريط تنقل عام -->
+    <!-- ========================= -->
     <div id="globalNav" class="nav-btns hidden">
-    <button id="backBtn" onclick="smartBack()">⬅️ رجوع</button>
-    <button id="homeBtn" onclick="goHome()">🏠 الصفحة الرئيسية</button>
-</div>
+        <button id="backBtn" onclick="smartBack()">⬅️ رجوع</button>
+        <button id="homeBtn" onclick="goHome()">🏠 الصفحة الرئيسية</button>
+    </div>
+
+</body>
+
+
 
     <!-- صفحة تسجيل الدخول -->
     <div id="loginPage" class="login-container">
@@ -2077,6 +2109,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
