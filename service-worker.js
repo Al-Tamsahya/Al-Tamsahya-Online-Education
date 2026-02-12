@@ -1,15 +1,17 @@
 const CACHE_NAME = "edu-platform-v7";
+
+const BASE_PATH = "/Al-Tamsahya-Online-Education/";
+
 const FILES_TO_CACHE = [
-  "/Al-Tamsahya-Online-Education/",
-  "/Al-Tamsahya-Online-Education/index.html",
-  "/Al-Tamsahya-Online-Education/install.html",
-  "/Al-Tamsahya-Online-Education/css/style.css",
-  "/Al-Tamsahya-Online-Education/manifest.json",
-  "/Al-Tamsahya-Online-Education/icon-192.png",
-  "/Al-Tamsahya-Online-Education/icon-512.png"
+  BASE_PATH,
+  BASE_PATH + "index.html",
+  BASE_PATH + "manifest.json",
+  BASE_PATH + "css/style.css",
+  BASE_PATH + "icon-192.png",
+  BASE_PATH + "icon-512.png"
 ];
 
-// تثبيت Service Worker وتخزين الملفات
+// تثبيت
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -17,58 +19,52 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// تفعيل Service Worker وحذف النسخ القديمة
+// تفعيل وحذف القديم
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
       )
     )
   );
   self.clients.claim();
 });
 
-// التعامل مع fetch
+// التعامل مع الطلبات
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   const url = new URL(event.request.url);
 
-  // جلب install.html من الكاش أو الشبكة
-  if (url.pathname.includes("install.html")) {
-    event.respondWith(
-      caches.match(event.request).then((cached) => cached || fetch(event.request))
-    );
+  // تجاهل Firebase و Google
+  if (
+    url.hostname.includes("googleapis.com") ||
+    url.hostname.includes("gstatic.com")
+  ) {
     return;
   }
 
-  // السماح بالطلبات الخارجية بدون cache
-  if (url.hostname.includes("googleapis.com") || url.hostname.includes("gstatic.com")) return;
-
   event.respondWith(
     fetch(event.request)
-      .then((res) => {
-        // تخزين نسخة من الملفات الأساسية في الكاش
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return res;
+      .then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, copy);
+        });
+        return response;
       })
-      .catch(async () => {
-        // جلب من الكاش عند عدم وجود اتصال
-        const cached = await caches.match(event.request);
-        if (cached) return cached;
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
 
-        // صفحة offline افتراضية
-        return new Response(
-          `<html>
-            <body style="text-align:center;margin-top:100px;font-family:Arial">
-              <h1 style="color:red">🚫 لا يوجد اتصال بالإنترنت</h1>
-              <p>حاول مرة أخرى عند توفر الشبكة</p>
-            </body>
-          </html>`,
-          { headers: { "Content-Type": "text/html" }, status: 503 }
-        );
+          // fallback إلى الصفحة الرئيسية
+          return caches.match(BASE_PATH + "index.html");
+        });
       })
   );
 });
