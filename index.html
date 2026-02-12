@@ -231,33 +231,6 @@
                 <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
             </div>
 
-            <!-- 🔔 إدارة الإعلان (يظهر فقط عند دخول ADMIN) -->
-            <div id="adminAdBox"
-                 style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
-
-                <h4>📢 إعلان عام للطلاب</h4>
-
-                <textarea id="adminAdText"
-                          placeholder="اكتب الإعلان هنا..."
-                          style="width:100%; min-height:80px; padding:8px;">
-        </textarea>
-
-                <div style="margin-top:10px;">
-                    <button class="custom-btn" onclick="saveAnnouncement()">💾 حفظ الإعلان</button>
-                    <button class="custom-btn danger" onclick="deleteAnnouncement()">🗑 إيقاف الإعلان</button>
-                </div>
-            </div>
-
-            <!-- محتوى الإدارة -->
-            <div id="adminContent">
-                <div id="studentsList" class="table-container hidden"></div>
-                <div id="supervisorsList" class="table-container hidden"></div>
-                <div id="testsList" class="table-container hidden"></div>
-                <div id="resultsList" class="table-container hidden"></div>
-            </div>
-        </div>
-
-
 
         <!-- النماذج المنبثقة -->
         <div id="studentModal" class="modal">
@@ -681,10 +654,6 @@
                     row.style.display = email.includes(filter) ? "" : "none";
                 });
             }
-
-
-
-
 
 
             // تسجيل خروج
@@ -1878,170 +1847,199 @@ if (!deferredPrompt) {
             deferredPrompt = null;
 }
         </script>
+<!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
+<!-- 🔔 لوحة إدارة الإعلان (يظهر فقط للأدمن) -->
+<!-- 🔔 شريط الإعلان للطلاب -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-        <!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
-        <!-- 🔔 لوحة إدارة الإعلان (يظهر فقط للأدمن) -->
-        <div id="adminAdBox"
-             style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
+<!-- 🔔 لوحة إدارة الأدمن مع الإعلان الحي -->
+<div id="adminAdBox" style="display:none; border:2px dashed #f39c12; padding:15px; margin:20px; border-radius:8px;">
 
-            <h4>📢 إعلان عام للطلاب</h4>
+    <!-- عنوان الإعلان -->
+    <h4>📢 إعلان عام للطلاب</h4>
 
-            <textarea id="adminAdText"
-                      placeholder="اكتب الإعلان هنا..."
-                      style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <!-- نص الإعلان -->
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
 
-            <div style="margin-top:10px;">
-                <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
-                <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
-            </div>
-        </div>
+    <!-- أزرار التحكم بالإعلان -->
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
 
-        <style>
-            .announcement-bar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: #f59e0b;
-                color: #000;
-                overflow: hidden;
-                z-index: 9999;
-                height: 45px;
-                display: flex;
-                align-items: center;
-            }
+<!-- محتوى الإدارة (لا يتغير) -->
+<div id="adminContent">
+    <div id="studentsList" class="table-container hidden"></div>
+    <div id="supervisorsList" class="table-container hidden"></div>
+    <div id="testsList" class="table-container hidden"></div>
+    <div id="resultsList" class="table-container hidden"></div>
+</div>
 
-            .announcement-text {
-                white-space: nowrap;
-                font-weight: bold;
-                font-size: 16px;
-                display: inline-block;
-                position: relative;
-                left: -100%; /* البداية خارج الشاشة على اليسار */
-                animation: slide-right 15s linear infinite; /* الحركة من الشمال إلى اليمين */
-            }
+<!-- 🔔 شريط الإعلان للطلاب -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-            @keyframes slide-right {
-                0% {
-                    left: -100%;
-                }
-
-                100% {
-                    left: 100%;
-                }
-            }
-
-
-            @keyframes slide-left {
-                0% {
-                    left: 100%;
-                }
-
-                100% {
-                    left: -100%;
-                }
-            }
-
-            body {
-                padding-top: 45px;
-            }
-        </style>
-
-        <script>
-            // 🔹 تهيئة Firebase مرة واحدة فقط
-            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
-
-            // دوال مساعدة لإظهار وإخفاء شريط الإعلان
-            function showAnnouncementBar() {
-const bar = document.getElementById("announcementBar");
-            if (bar) bar.style.display = "flex";
+<!-- ======= CSS للإعلان ======= -->
+<style>
+.announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f59e0b;
+    color: #000;
+    overflow: hidden;
+    z-index: 9999;
+    height: 45px;
+    display: flex;
+    align-items: center;
 }
 
-            function hideAnnouncementBar() {
-const bar = document.getElementById("announcementBar");
-            if (bar) bar.style.display = "none";
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
 }
 
-            // 🔹 إعادة تشغيل حركة الإعلان مع سرعة مناسبة
-            function restartAnimation() {
-const announcementText = document.getElementById("announcementText");
-
-            // أوقف الحركة مؤقتًا
-            announcementText.style.animation = "none";
-
-            // ضع النص مباشرة على الشمال (خارج الشاشة) حتى يظهر فورًا
-            announcementText.style.left = "-100%";
-
-            // إعادة حساب CSS
-            announcementText.offsetHeight;
-
-            // حساب مدة الحركة بناءً على طول النص
-            const textLength = announcementText.offsetWidth;
-            const duration = Math.max(15, textLength / 50); // الحد الأدنى 15 ثانية
-
-            // أعد تشغيل الحركة من الشمال إلى اليمين
-            announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+@keyframes slide-right {
+    0% { left: -100%; }
+    100% { left: 100%; }
 }
 
-
-            // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
-            async function loadAnnouncement() {
-try {
-  const doc = await firestoreTools.collection("announcements").doc("current").get();
-            if (doc.exists) {
-    const text = doc.data().text || "";
-            if (text) {
-      const announcementText = document.getElementById("announcementText");
-            announcementText.innerText = text;
-
-            // إعادة تشغيل الحركة بسرعة مناسبة
-            restartAnimation();
-
-            showAnnouncementBar();
-    }
-  }
-} catch (err) {
-                console.error("خطأ أثناء تحميل الإعلان:", err);
-}
+.custom-btn {
+    padding: 6px 12px;
+    margin-right: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #f59e0b;
+    color: #000;
+    font-weight: bold;
 }
 
-            window.addEventListener("DOMContentLoaded", loadAnnouncement);
+.custom-btn.danger { background-color: #e53e3e; color: #fff; }
+</style>
 
-            // 🔹 دوال الأدمن
-            async function saveAnnouncement() {
-const text = document.getElementById("adminAdText").value.trim();
-            if (!text) {
-                alert("يرجى كتابة نص الإعلان أولاً!");
-            return;
-}
-            try {
-                await firestoreTools.collection("announcements").doc("current").set({ text });
+<!-- ======= Script لإدارة الإعلان ======= -->
+<script>
+const AnnouncementManager = {
+    lastText: "",
 
-            const announcementText = document.getElementById("announcementText");
-            announcementText.innerText = text;
+    init() {
+        this.announcementText = document.getElementById("announcementText");
+        this.saveBtn = document.getElementById("saveAdBtn");
+        this.stopBtn = document.getElementById("stopAdBtn");
+        this.adminTextarea = document.getElementById("adminAdText");
 
-            // إعادة تشغيل الحركة بسرعة مناسبة
-            restartAnimation();
+        // إظهار لوحة الأدمن (تعديل حسب شرط الأدمن الفعلي)
+        const isAdmin = true; 
+        if (isAdmin) document.getElementById("adminAdBox").style.display = "block";
 
-            showAnnouncementBar();
+        this.bindEvents();
+        this.subscribeToAnnouncement();
+    },
+
+    bindEvents() {
+        if (this.saveBtn) this.saveBtn.addEventListener("click", () => this.saveAnnouncement());
+        if (this.stopBtn) this.stopBtn.addEventListener("click", () => this.deleteAnnouncement());
+
+        if (this.adminTextarea) {
+            let timeout = null;
+            this.adminTextarea.addEventListener("input", () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => this.saveLiveAnnouncement(), 500);
+            });
+        }
+    },
+
+    showBar() {
+        const bar = document.getElementById("announcementBar");
+        if (bar) bar.style.display = "flex";
+    },
+
+    hideBar() {
+        const bar = document.getElementById("announcementBar");
+        if (bar) bar.style.display = "none";
+    },
+
+    restartAnimation() {
+        if (!this.announcementText) return;
+        this.announcementText.style.animation = "none";
+        this.announcementText.style.left = "-100%";
+        this.announcementText.offsetHeight;
+
+        const textLength = this.announcementText.offsetWidth;
+        const duration = Math.max(15, textLength / 50);
+        this.announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+    },
+
+    updateAnnouncementText(text) {
+        if (!this.announcementText) return;
+        if (text?.trim() && text !== this.lastText) {
+            this.announcementText.innerText = "📢 " + text + " 📢";
+            this.restartAnimation();
+            this.showBar();
+            this.lastText = text;
+        } else if (!text?.trim()) {
+            this.announcementText.innerText = "";
+            this.hideBar();
+            this.lastText = "";
+        }
+    },
+
+    async saveAnnouncement() {
+        const text = this.adminTextarea?.value.trim() || "";
+        if (!text) return alert("يرجى كتابة نص الإعلان أولاً!");
+        try {
+            await firestoreTools.db.collection("announcements").doc("current").set({ text });
             alert("تم حفظ الإعلان ✅");
-} catch (err) {
-                console.error(err);
+        } catch (err) {
+            console.error(err);
             alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
-}
-}
+        }
+    },
 
-            async function deleteAnnouncement() {
-try {
-                await firestoreTools.collection("announcements").doc("current").set({ text: "" });
-            hideAnnouncementBar();
+    async saveLiveAnnouncement() {
+        const text = this.adminTextarea?.value.trim() || "";
+        try {
+            await firestoreTools.db.collection("announcements").doc("current").set({ text });
+        } catch (err) {
+            console.error("خطأ أثناء الحفظ المباشر:", err);
+        }
+    },
+
+    async deleteAnnouncement() {
+        try {
+            await firestoreTools.db.collection("announcements").doc("current").set({ text: "" });
             alert("تم إيقاف الإعلان ✅");
-} catch (err) {
-                console.error(err);
+        } catch (err) {
+            console.error(err);
             alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
-}
-}
+        }
+    },
+
+    subscribeToAnnouncement() {
+        firestoreTools.db.collection("announcements").doc("current")
+            .onSnapshot(doc => {
+                const text = doc.exists ? doc.data().text || "" : "";
+                this.updateAnnouncementText(text);
+            });
+    }
+};
+
+window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
+</script>
+
+
 
             // 🔹 ربط الأزرار بالأحداث
             const saveAdBtn = document.getElementById("saveAdBtn");
@@ -2053,4 +2051,5 @@ try {
 
 </body>
 </html>
+
 
