@@ -1692,26 +1692,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadAnnouncement();              // تحميل الإعلان عند فتح الصفحة
     setInterval(loadAnnouncement, 60000); // تحديث كل دقيقة
 });
-</script>
-
 <script>
-   if ('serviceWorker' in navigator) {
+let newWorker; // إعلان متغير عام للوصول له في كل مكان
 
-  let newWorker;
+if ('serviceWorker' in navigator) {
 
   // تسجيل Service Worker
   navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
     .then(registration => {
-
       console.log("Service Worker registered successfully ✅");
 
       // تحديث تلقائي عند وجود نسخة جديدة
       registration.addEventListener('updatefound', () => {
-
         newWorker = registration.installing;
 
         newWorker.addEventListener('statechange', () => {
-
           // إذا تم تثبيت نسخة جديدة وكانت هناك نسخة سابقة
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
 
@@ -1723,7 +1718,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (updateBox) {
               updateBox.style.display = "block";
             }
-
           }
         });
       });
@@ -1734,19 +1728,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 }
 
-  const updateBtn = document.getElementById("updateBtn");
-  if (updateBtn) {
-    updateBtn.addEventListener("click", () => {
-      if (newWorker) {
-        newWorker.postMessage({ type: "SKIP_WAITING" });
-      }
-    });
-  }
-
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    window.location.reload();
+// زر تحديث التطبيق
+const updateBtn = document.getElementById("updateBtn");
+if (updateBtn) {
+  updateBtn.addEventListener("click", () => {
+    if (newWorker) {
+      newWorker.postMessage({ type: "SKIP_WAITING" });
+    }
   });
+}
+
+// إعادة تحميل الصفحة عند تغيير الـ Service Worker
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+  window.location.reload();
+});
 </script>
+
 
 
 <!-- جميع وظائف الأدمن والإعلانات -->
@@ -2133,6 +2130,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
