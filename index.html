@@ -1692,7 +1692,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadAnnouncement();              // تحميل الإعلان عند فتح الصفحة
     setInterval(loadAnnouncement, 60000); // تحديث كل دقيقة
 });
-<script>
+    
 let newWorker; // إعلان متغير عام للوصول له في كل مكان
 
 if ('serviceWorker' in navigator) {
@@ -2130,6 +2130,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
