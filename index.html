@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<!-- 🚨 شريط إعلان متحرك للطلاب -->
 
-    <div id="announcementBar" class="announcement-bar" style="display:none;">
-
-    <div class="announcement-text" id="announcementText"></div>
-</div>
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -1761,18 +1756,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // ======= شريط الإعلان المتحرك =======
-    if (window.firestoreTools && window.firestoreTools.db) {
-        const db = window.firestoreTools.db;
-        db.collection("announcements").doc("current")
-            .onSnapshot(doc => {
-                if (doc.exists && doc.data().text?.trim()) {
-                    startAnnouncementAnimation(doc.data().text, 12000);
-                } else {
-                    hideAnnouncementBar();
-                }
-            });
-    }
+   
 
     // ======= تثبيت التطبيق PWA =======
     const installBtn = document.getElementById("installBtn");
@@ -1843,31 +1827,12 @@ function startAnnouncementAnimation(text, duration = 12000) {
     move();
 }
 
-function hideAnnouncementBar() {
-    const bar = document.getElementById("announcementBar");
-    if (bar) bar.style.display = "none";
 
-    if (animationTimeout) {
-        clearTimeout(animationTimeout);
-        animationTimeout = null;
-    }
-}
 </script>
 
 <!-- زر تثبيت التطبيق -->
 <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
-            async function installApp() {
-if (!deferredPrompt) {
-                alert("📌 افتح القائمة ⋮ ثم اختر (تثبيت التطبيق)");
-            return;
-}
-
-            await deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-}
-        </script>
 <!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
 <!-- 🔔 لوحة إدارة الإعلان (يظهر فقط للأدمن) -->
 <!-- 🔔 شريط الإعلان للطلاب -->
@@ -1901,10 +1866,7 @@ if (!deferredPrompt) {
     <div id="resultsList" class="table-container hidden"></div>
 </div>
 
-<!-- 🔔 شريط الإعلان للطلاب -->
-<div id="announcementBar" class="announcement-bar" style="display:none;">
-    <span id="announcementText" class="announcement-text"></span>
-</div>
+
 
 <!-- ======= CSS للإعلان ======= -->
 <style>
@@ -1985,10 +1947,7 @@ const AnnouncementManager = {
     showBar() {
         const bar = document.getElementById("announcementBar");
         if (bar) bar.style.display = "flex";
-    },
-
-    hideBar() {
-        const bar = document.getElementById("announcementBar");
+          
         if (bar) bar.style.display = "none";
     },
 
@@ -2094,6 +2053,7 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
