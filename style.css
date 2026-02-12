@@ -458,25 +458,20 @@ button {
   to { left: 100%; }    /* تصل إلى خارج الشاشة على اليمين */
 }
 <style>
-    /* شريط الإعلان */
-/* شريط الإعلان العام */
+   /* شريط الإعلان العام */
 .announcement-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(90deg, #f59e0b, #d97706); /* عدسي برتقالي جذاب */
-    color: #fff; /* النص أبيض */
+    background: linear-gradient(90deg, #f59e0b, #d97706); /* عدسي برتقالي */
     overflow: hidden;
     z-index: 9999;
-    height: 50px; /* زيادة بسيطة للارتفاع لراحة القراءة */
+    height: 55px; /* ارتفاع مناسب للوضوح */
     display: flex;
     align-items: center;
     font-family: 'Arial', sans-serif;
-    font-size: 18px; /* تكبير الخط لجعله واضح */
-    font-weight: 900; /* خط سميك جداً للنص */
-    letter-spacing: 0.5px; /* زيادة بسيطة للمسافات بين الحروف لتوضيح النص */
-    padding-left: 10px; /* مسافة صغيرة من اليسار */
+    padding-left: 15px; /* مسافة من اليسار */
 }
 
 /* نص الإعلان المتحرك */
@@ -485,7 +480,11 @@ button {
     display: inline-block;
     position: relative;
     left: -100%;
-    animation: slide-right 20s linear infinite; /* حركة النص */
+    animation: slide-right 20s linear infinite;
+    color: #fff !important; /* اللون أبيض بالقوة */
+    font-size: 20px; /* حجم الخط كبير وواضح */
+    font-weight: 900; /* خط سميك جدًا */
+    letter-spacing: 1px; /* مسافة بين الحروف لتوضيح النص */
 }
 
 /* حركة النص */
@@ -510,3 +509,4 @@ button {
     background-color: #e53e3e; 
     color: #fff; 
 }
+
