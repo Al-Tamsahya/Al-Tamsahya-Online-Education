@@ -1914,30 +1914,12 @@ const AnnouncementManager = {
 
     init() {
         this.announcementText = document.getElementById("announcementText");
-        this.saveBtn = document.getElementById("saveAdBtn");
-        this.stopBtn = document.getElementById("stopAdBtn");
-        this.adminTextarea = document.getElementById("adminAdText");
 
-        // إظهار لوحة الأدمن
-        const isAdmin = true; 
-        if (isAdmin) document.getElementById("adminAdText").parentElement.style.display = "block";
+        // جلب نص الإعلان من Firestore عند تحميل الصفحة
+        this.loadAnnouncement();
 
-        this.bindEvents();
-        // مثال: عرض نص تجريبي عند التشغيل
-        this.updateAnnouncementText("مرحباً بكم في منصة التمساحية التعليمية!");
-    },
-
-    bindEvents() {
-        if (this.saveBtn) this.saveBtn.addEventListener("click", () => this.saveAnnouncement());
-        if (this.stopBtn) this.stopBtn.addEventListener("click", () => this.deleteAnnouncement());
-
-        if (this.adminTextarea) {
-            let timeout = null;
-            this.adminTextarea.addEventListener("input", () => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => this.saveLiveAnnouncement(), 500);
-            });
-        }
+        // إعادة تشغيل الإعلان كل فترة (اختياري للتحديثات الجديدة)
+        setInterval(() => this.loadAnnouncement(), 60000); // كل 60 ثانية
     },
 
     showBar() {
@@ -1975,38 +1957,21 @@ const AnnouncementManager = {
         }
     },
 
-    async saveAnnouncement() {
-        const text = this.adminTextarea?.value.trim() || "";
-        if (!text) return alert("يرجى كتابة نص الإعلان أولاً!");
+    async loadAnnouncement() {
         try {
-            // حفظ إلى Firebase Firestore (إذا موجود)
-            await firestoreTools.db.collection("announcements").doc("current").set({ text });
-            alert("تم حفظ الإعلان ✅");
+            const doc = await firestoreTools.db.collection("announcements").doc("current").get();
+            if (doc.exists) {
+                this.updateAnnouncementText(doc.data().text);
+            } else {
+                this.updateAnnouncementText(""); // لا يوجد إعلان
+            }
         } catch (err) {
-            console.error(err);
-            alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+            console.error("Error loading announcement:", err);
         }
-        this.updateAnnouncementText(text);
-    },
-
-    deleteAnnouncement() {
-        this.adminTextarea.value = "";
-        this.updateAnnouncementText("");
-        // حذف من Firestore إذا لزم
-        try {
-            firestoreTools.db.collection("announcements").doc("current").delete();
-        } catch (err) {
-            console.warn("لم يتم الحذف من قاعدة البيانات:", err.message);
-        }
-    },
-
-    saveLiveAnnouncement() {
-        const text = this.adminTextarea.value;
-        this.updateAnnouncementText(text);
     }
 };
 
-// تفعيل الإعلان عند تحميل الصفحة
+// تشغيل الإعلان عند تحميل أي صفحة
 document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 </script>
 
@@ -2044,6 +2009,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
