@@ -2041,10 +2041,27 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
   </button>
 </div>
 
-           
+      <!-- شريط الإعلان العام -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
+
+<!-- لوحة الأدمن للتحكم بالإعلان -->
+<div id="adminAdBox" style="margin-top:60px; display:none;">
+    <h4>📢 إعلان عام للطلاب</h4>
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
+     
 
 </body>
 </html>
+
 
 
 
