@@ -1838,10 +1838,6 @@ setTimeout(() => {
             animationTimeout = setTimeout(move, duration + 2000);
 }
 
-            if (animationTimeout) clearTimeout(animationTimeout);
-            move();
-}
-
             function hideAnnouncementBar() {
 const bar = document.getElementById("announcementBar");
             if (bar) bar.style.display = "none";
@@ -1850,7 +1846,7 @@ const bar = document.getElementById("announcementBar");
                 clearTimeout(animationTimeout);
             animationTimeout = null;
 }
-}
+
         </script>
 
 
@@ -2095,6 +2091,7 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
