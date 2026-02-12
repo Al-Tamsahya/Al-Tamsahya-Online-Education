@@ -9,6 +9,9 @@
     <title>منصة التمساحية التعليمية</title>
     <meta name="application-name" content="منصة التمساحية التعليمية">
     <meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
     <!-- Open Graph (للمشاركة على السوشيال ميديا) -->
     <meta property="og:title" content="منصة التمساحية التعليمية">
@@ -1623,11 +1626,75 @@
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- Firebase init -->
+<script src="./js/firebase.js"></script>
 
-        <!-- Firebase init -->
-        <script src="./js/firebase.js"></script>
-        <script>
-        
+<!-- 🔹 شريط الإعلان لجميع الزوار -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
+
+<style>
+.announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f59e0b;
+    color: #000;
+    overflow: hidden;
+    z-index: 9999;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
+}
+@keyframes slide-right {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const announcementBar = document.getElementById("announcementBar");
+    const announcementText = document.getElementById("announcementText");
+
+    if (!announcementBar || !announcementText || !firestoreTools) return;
+
+    async function loadAnnouncement() {
+        try {
+            const doc = await firestoreTools.db.collection("announcements").doc("current").get();
+            if (doc.exists && doc.data().text?.trim()) {
+                announcementText.innerText = "📢 " + doc.data().text + " 📢";
+                announcementText.style.animation = "none";
+                announcementText.style.left = "-100%";
+                announcementText.offsetHeight;
+                const duration = Math.max(15, announcementText.offsetWidth / 50);
+                announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+                announcementBar.style.display = "flex";
+            } else {
+                announcementBar.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Error loading announcement:", err);
+        }
+    }
+
+    loadAnnouncement();              // تحميل الإعلان عند فتح الصفحة
+    setInterval(loadAnnouncement, 60000); // تحديث كل دقيقة
+});
+</script>
+
+<script>
    if ('serviceWorker' in navigator) {
 
   let newWorker;
@@ -1679,28 +1746,28 @@
   navigator.serviceWorker.addEventListener("controllerchange", () => {
     window.location.reload();
   });
-
 </script>
 
 
-        <!-- جميع وظائف الأدمن والإعلانات -->
-        <script>
-            // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
-            const adminEmail = "admin@gmail.com";
-            const loggedEmail = localStorage.getItem("loggedEmail") || "";
+<!-- جميع وظائف الأدمن والإعلانات -->
+<script>
+    // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
+    const adminEmail = "admin@gmail.com";
+    const loggedEmail = localStorage.getItem("loggedEmail") || "";
 
-            // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
-            window.currentUser = window.currentUser || {
-                email: loggedEmail,
-                role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-            };
+    // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
+    window.currentUser = window.currentUser || {
+        email: loggedEmail,
+        role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+    };
 
-            // متغير لتثبيت التطبيق PWA
-            let deferredPrompt = null;
+    // متغير لتثبيت التطبيق PWA
+    let deferredPrompt = null;
 
-            // 🔹 إعلان متغير واحد فقط لجميع التحركات
-          animationTimeout = null;
-        </script>
+    // 🔹 إعلان متغير واحد فقط لجميع التحركات
+  animationTimeout = null;
+</script>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -1734,6 +1801,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
+</script>
+
 
     // ======= عرض الإعلانات =======
     const adsContainer = document.getElementById("ads-container");
@@ -2061,6 +2130,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
