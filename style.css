@@ -13,34 +13,38 @@
 ===================== */
 
 :root {
+  /* خلفيات */
   --bg-page-light: linear-gradient(180deg, #f5f7fb, #ffffff);
-  --bg-page-dark: #e9eef5;
+  --bg-page-dark: #0f172a; /* داكن حقيقي */
 
   --bg-card-light: #ffffff;
-  --bg-card-dark: #f8fafc;
+  --bg-card-dark: #1e293b;
 
   --bg-navbar-light: linear-gradient(135deg, #2563eb, #1e40af);
-  --bg-navbar-dark: #dbe3f1;
+  --bg-navbar-dark: #0f172a;
 
   --bg-button-light: #2563eb;
-  --bg-button-dark: #dde6f2;
+  --bg-button-dark: #334155;
 
+  /* النصوص */
   --text-primary-light: #1f2937;
-  --text-primary-dark: #111827;
+  --text-primary-dark: #f1f5f9;
 
   --text-secondary-light: #444;
-  --text-secondary-dark: #111827;
+  --text-secondary-dark: #cbd5e1;
 
   --text-navbar-light: #ffffff;
-  --text-navbar-dark: #111827;
+  --text-navbar-dark: #ffffff;
 
   --text-button-light: #ffffff;
-  --text-button-dark: #111827;
+  --text-button-dark: #ffffff;
 
+  /* أزرار الخطر */
   --bg-danger-light: #dc2626;
-  --bg-danger-dark: #f2caca;
-  --text-danger-dark: #7f1d1d;
+  --bg-danger-dark: #7f1d1d;
+  --text-danger-dark: #ffffff;
 }
+
 
 /* =====================
    BASE STYLES
@@ -315,10 +319,6 @@ body.dark-mode .container {
   background: var(--bg-page-dark);
 }
 
-h1.dark-mode, h2.dark-mode, h3.dark-mode, h4.dark-mode,
-p.dark-mode, span.dark-mode, label.dark-mode, li.dark-mode {
-  color: var(--text-primary-dark);
-}
 
 /* Navbar */
 body.dark-mode .top-nav,
@@ -548,15 +548,20 @@ button {
     margin-right: 5px;
     cursor: pointer;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: #f59e0b;
-    color: #000;
+    color: #111827; /* بدل الأسود القاسي */
     font-weight: bold;
+    transition: 0.3s ease;
 }
 
-.custom-btn.danger { 
-    background-color: #e53e3e; 
-    color: #fff; 
+.custom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
-
+/* في الوضع الليلي */
+body.dark-mode .custom-btn {
+    background-color: #f59e0b;
+    color: #000; /* أوضح فوق البرتقالي */
+}
