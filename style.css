@@ -346,7 +346,7 @@ body.dark-mode th {
 body.dark-mode button,
 body.dark-mode .custom-btn {
   background: var(--bg-button-dark);
-  color: var(--text-button-dark);
+  color: var(--text-primary-dark); /* وضوح كامل للنصوص */
 }
 
 body.dark-mode button:hover {
@@ -393,7 +393,7 @@ body.dark-mode .text-secondary-light {
 body.dark-mode button,
 body.dark-mode .custom-btn {
   background: var(--bg-button-dark);
-  color: var(--text-primary-dark); /* بدل #ffffff لجعلها أكثر وضوحًا */
+  color: var(--text-primary-dark); /* نصوص واضحة */
 }
 
 /* زر الخطر */
@@ -571,5 +571,5 @@ button {
 /* في الوضع الليلي */
 body.dark-mode .custom-btn {
     background-color: #f59e0b;
-    color: var(--text-primary-dark); /* بدل #000 لجعل النص أوضح */
+    color: var(--text-primary-dark); /* نص واضح */
 }
