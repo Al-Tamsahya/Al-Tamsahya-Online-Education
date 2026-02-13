@@ -368,6 +368,46 @@ body.dark-mode textarea {
   border: 1px solid #cbd5e1;
 }
 /* =====================
+   DARK MODE FIXES (وضوح النصوص والأزرار)
+===================== */
+
+/* نصوص عامة */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode label,
+body.dark-mode li {
+  color: var(--text-primary-dark);
+}
+
+/* نصوص ثانوية */
+body.dark-mode .text-secondary-light {
+  color: #cbd5e1; /* رمادي فاتح وواضح */
+}
+
+/* الأزرار */
+body.dark-mode button,
+body.dark-mode .custom-btn {
+  background: var(--bg-button-dark);
+  color: #ffffff; /* أبيض للوضوح */
+}
+
+body.dark-mode .custom-btn.danger {
+  background: var(--bg-danger-dark);
+  color: #7f1d1d; /* واضح على الخلفية الفاتحة الداكنة */
+}
+
+/* Placeholder في الفورم */
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #94a3b8; /* رمادي واضح */
+}
+
+
+/* =====================
    MOBILE CLICK FIX
 ===================== */
 
@@ -518,4 +558,5 @@ button {
     background-color: #e53e3e; 
     color: #fff; 
 }
+
 
