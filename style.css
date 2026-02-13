@@ -13,34 +13,36 @@
 ===================== */
 
 :root {
+
+  /* LIGHT MODE */
   --bg-page-light: linear-gradient(180deg, #f5f7fb, #ffffff);
-  --bg-page-dark: #e9eef5;
-
   --bg-card-light: #ffffff;
-  --bg-card-dark: #f8fafc;
-
   --bg-navbar-light: linear-gradient(135deg, #2563eb, #1e40af);
-  --bg-navbar-dark: #dbe3f1;
-
   --bg-button-light: #2563eb;
-  --bg-button-dark: #dde6f2;
 
   --text-primary-light: #1f2937;
-  --text-primary-dark: #111827;
-
   --text-secondary-light: #444;
-  --text-secondary-dark: #111827;
-
   --text-navbar-light: #ffffff;
-  --text-navbar-dark: #111827;
-
   --text-button-light: #ffffff;
-  --text-button-dark: #111827;
 
   --bg-danger-light: #dc2626;
-  --bg-danger-dark: #f2caca;
-  --text-danger-dark: #7f1d1d;
+
+  /* DARK MODE */
+  --bg-page-dark: #0f172a;
+  --bg-card-dark: #1e293b;
+  --bg-navbar-dark: #0f172a;
+  --bg-button-dark: #334155;
+
+  --text-primary-dark: #f1f5f9;
+  --text-secondary-dark: #cbd5e1;
+  --text-navbar-dark: #ffffff;
+  --text-button-dark: #ffffff;
+
+  --bg-danger-dark: #7f1d1d;
+  --text-danger-dark: #ffffff;
 }
+
+
 
 /* =====================
    BASE STYLES
@@ -305,17 +307,18 @@ body.dark-mode {
   background: var(--bg-page-dark);
   color: var(--text-primary-dark);
 }
-
-body.dark-mode header,
-body.dark-mode main,
-body.dark-mode section,
-body.dark-mode footer,
-body.dark-mode .container {
-  background: var(--bg-page-dark);
+body.dark-mode a {
+  color: #60a5fa;
 }
 
-h1.dark-mode, h2.dark-mode, h3.dark-mode, h4.dark-mode,
-p.dark-mode, span.dark-mode, label.dark-mode, li.dark-mode {
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode label,
+body.dark-mode li {
   color: var(--text-primary-dark);
 }
 
@@ -511,3 +514,4 @@ button {
     background-color: #e53e3e; 
     color: #fff; 
 }
+
