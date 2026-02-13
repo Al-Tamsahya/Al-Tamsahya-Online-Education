@@ -1803,9 +1803,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-
-    // ======= عرض الإعلانات =======
+<!-- ======= عرض الإعلانات ======= -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
     const adsContainer = document.getElementById("ads-container");
+
     if (adsContainer && window.firestoreTools && firestoreTools.collection) {
         firestoreTools.collection("ads")
             .orderBy("date", "desc")
@@ -1824,8 +1826,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
     }
-
-   
 
     // ======= تثبيت التطبيق PWA =======
     const installBtn = document.getElementById("installBtn");
@@ -1857,9 +1857,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (installBtn) installBtn.hidden = true;
         alert("تم تثبيت التطبيق بنجاح ✅");
     });
-
-}); // نهاية DOMContentLoaded
+});
 </script>
+
 
 
         <!-- ======= وظائف الشريط المتحرك (تم التعديل) ======= -->
@@ -2151,6 +2151,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
