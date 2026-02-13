@@ -8,28 +8,56 @@
   padding: 0;
 }
 
+/* =====================
+   VARIABLES (Light & Dark Mode)
+===================== */
+
+:root {
+  --bg-page-light: linear-gradient(180deg, #f5f7fb, #ffffff);
+  --bg-page-dark: #e9eef5;
+
+  --bg-card-light: #ffffff;
+  --bg-card-dark: #f8fafc;
+
+  --bg-navbar-light: linear-gradient(135deg, #2563eb, #1e40af);
+  --bg-navbar-dark: #dbe3f1;
+
+  --bg-button-light: #2563eb;
+  --bg-button-dark: #dde6f2;
+
+  --text-primary-light: #1f2937;
+  --text-primary-dark: #111827;
+
+  --text-secondary-light: #444;
+  --text-secondary-dark: #111827;
+
+  --text-navbar-light: #ffffff;
+  --text-navbar-dark: #111827;
+
+  --text-button-light: #ffffff;
+  --text-button-dark: #111827;
+
+  --bg-danger-light: #dc2626;
+  --bg-danger-dark: #f2caca;
+  --text-danger-dark: #7f1d1d;
+}
+
+/* =====================
+   BASE STYLES
+===================== */
+
 body {
   font-family: "Cairo", sans-serif;
-  background: linear-gradient(180deg, #f5f7fb, #ffffff);
-  color: #1f2937;
+  background: var(--bg-page-light);
+  color: var(--text-primary-light);
   overflow-x: hidden;
 }
 
 body[dir="ltr"] { text-align: left; }
 body[dir="rtl"] { text-align: right; }
 
-/* =====================
-   TYPOGRAPHY
-===================== */
-
-h1, h2, h3, h4 {
-  margin-bottom: 15px;
-  color: #2c3e50;
-}
-
-p {
-  line-height: 1.8;
-  color: #444;
+h1, h2, h3, h4, p, span, label, li {
+  color: inherit;
 }
 
 /* =====================
@@ -48,7 +76,7 @@ p {
 ===================== */
 
 .top-nav {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: var(--bg-navbar-light);
   padding: 8px;
   text-align: center;
 }
@@ -56,7 +84,7 @@ p {
 .nav-title {
   font-size: 22px;
   font-weight: bold;
-  color: #ffffff;
+  color: var(--text-navbar-light);
 }
 
 /* =====================
@@ -65,8 +93,8 @@ p {
 
 .custom-btn,
 button {
-  background: #2563eb;
-  color: #ffffff;
+  background: var(--bg-button-light);
+  color: var(--text-button-light);
   border: none;
   border-radius: 14px;
   padding: 14px 18px;
@@ -87,7 +115,7 @@ button:active {
 }
 
 button.danger {
-  background: #dc2626;
+  background: var(--bg-danger-light);
 }
 
 /* =====================
@@ -104,7 +132,7 @@ button.danger {
 .admin-section,
 .card,
 .table-container {
-  background: #ffffff;
+  background: var(--bg-card-light);
   padding: 16px;
   border-radius: 18px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
@@ -166,12 +194,12 @@ button.danger {
   display: flex;
   gap: 10px;
   justify-content: center;
-  background: #ffffff;
+  background: var(--bg-navbar-light);
 }
 
 #globalNav button {
-  background: #2563eb;
-  color: #ffffff;
+  background: var(--bg-button-light);
+  color: var(--text-button-light);
   border-radius: 12px;
 }
 
@@ -232,7 +260,7 @@ button.danger {
 .install-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: linear-gradient(180deg, #1e3a8a, #2563eb);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,43 +268,42 @@ button.danger {
 }
 
 .install-box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 360px;
+  background: #ffffff;
+  padding: 26px 22px;
+  border-radius: 22px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
   text-align: center;
 }
 
 .install-box h3 {
-  margin-bottom: 10px;
-  color: #1e40af;
+  color: #1e3a8a;
+  font-size: 20px;
+  margin-bottom: 14px;
 }
 
 .install-box p {
-  font-size: 14px;
-  line-height: 1.7;
-  margin-bottom: 15px;
+  color: #475569;
+  font-size: 15px;
 }
 
 .install-box button {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 14px;
   width: 100%;
   padding: 12px;
   margin-top: 8px;
-  border-radius: 10px;
 }
 
-.hidden {
-  display: none;
-}
-
-/* =================================================
-   🌙 DARK MODE — فاتح + شامل + بدون بهتان
-================================================= */
+/* =====================
+   DARK MODE
+===================== */
 
 body.dark-mode {
-  background: #e9eef5;
-  color: #1f2937;
+  background: var(--bg-page-dark);
+  color: var(--text-primary-dark);
 }
 
 body.dark-mode header,
@@ -284,67 +311,72 @@ body.dark-mode main,
 body.dark-mode section,
 body.dark-mode footer,
 body.dark-mode .container {
-  background: #e9eef5;
+  background: var(--bg-page-dark);
+}
+
+h1.dark-mode, h2.dark-mode, h3.dark-mode, h4.dark-mode,
+p.dark-mode, span.dark-mode, label.dark-mode, li.dark-mode {
+  color: var(--text-primary-dark);
 }
 
 /* Navbar */
 body.dark-mode .top-nav,
 body.dark-mode #globalNav {
-  background: #dbe3f1;
+  background: var(--bg-navbar-dark);
+  color: var(--text-navbar-dark);
 }
 
 /* Cards & tables */
 body.dark-mode .card,
 body.dark-mode .table-container,
 body.dark-mode table {
-  background: #f8fafc;
-  color: #1f2937;
+  background: var(--bg-card-dark);
+  color: var(--text-primary-dark);
   box-shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
 
 /* Table head */
 body.dark-mode th {
   background: #e2e8f0;
-  color: #111827;
+  color: var(--text-primary-dark);
 }
 
 /* Buttons */
 body.dark-mode button,
 body.dark-mode .custom-btn {
-  background: #dde6f2;
-  color: #111827;
+  background: var(--bg-button-dark);
+  color: var(--text-button-dark);
 }
 
 body.dark-mode button:hover {
   background: #cfd9ea;
 }
 
+/* Danger buttons */
 body.dark-mode .danger {
-  background: #f2caca;
-  color: #7f1d1d;
+  background: var(--bg-danger-dark);
+  color: var(--text-danger-dark);
 }
 
 /* Inputs */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
-  background: #eef2f7;
-  color: #111827;
+  background: var(--bg-card-dark);
+  color: var(--text-primary-dark);
   border: 1px solid #cbd5e1;
 }
+
 /* =====================
-   🔧 MOBILE CLICK FIX (IMPORTANT)
-   حل مشكلة عدم الضغط على زر تسجيل حساب جديد
+   MOBILE CLICK FIX
 ===================== */
 
-/* منع أي عنصر شفاف من تعطيل اللمس */
 #welcomeMessage,
 .top-nav,
 #globalNav {
   pointer-events: none;
 }
 
-/* السماح فقط للأزرار باستقبال اللمس */
 #welcomeMessage button,
 .top-nav button,
 #globalNav button,
@@ -352,58 +384,28 @@ body.dark-mode textarea {
   pointer-events: auto;
 }
 
-/* تأكيد أن صفحة الدخول فوق الجميع */
 #loginPage {
   position: relative;
   z-index: 10000;
 }
 
-/* تأكيد أن صفحة التسجيل تظهر فوق */
 #registerPage {
   position: relative;
   z-index: 10001;
 }
 
-/* تحسين اللمس على الموبايل */
 button {
   touch-action: manipulation;
 }
 
-/* منع hover الوهمي في الموبايل */
 @media (hover: none) {
   button:hover {
     transform: none;
     box-shadow: none;
-  }
-}
-.install-modal {
-  background: linear-gradient(180deg, #1e3a8a, #2563eb);
 }
 
-.install-box {
-  background: #ffffff;
-  padding: 26px 22px;
-  border-radius: 22px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
-}
-.install-box h3 {
-  color: #1e3a8a;
-  font-size: 20px;
-  margin-bottom: 14px;
-}
-.install-box p {
-  color: #475569;
-  font-size: 15px;
-}
-.install-box button {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 14px;
-}
 /* =====================
-   🔔 PROMO AD (Animated)
+   PROMO AD
 ===================== */
 
 .promo-ad {
@@ -453,47 +455,47 @@ button {
     opacity: 1;
   }
 }
-@keyframes slide-right {
-  from { left: -100%; } /* البداية خارج الشاشة على اليسار */
-  to { left: 100%; }    /* تصل إلى خارج الشاشة على اليمين */
-}
-<style>
-   /* شريط الإعلان العام */
+
+/* =====================
+   ANNOUNCEMENT BAR
+===================== */
+
 .announcement-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(90deg, #f59e0b, #d97706); /* عدسي برتقالي */
+    background: linear-gradient(90deg, #f59e0b, #d97706);
     overflow: hidden;
     z-index: 9999;
-    height: 55px; /* ارتفاع مناسب للوضوح */
+    height: 55px;
     display: flex;
     align-items: center;
     font-family: 'Arial', sans-serif;
-    padding-left: 15px; /* مسافة من اليسار */
+    padding-left: 15px;
 }
 
-/* نص الإعلان المتحرك */
 .announcement-text {
     white-space: nowrap;
     display: inline-block;
     position: relative;
     left: -100%;
     animation: slide-right 20s linear infinite;
-    color: #fff !important; /* اللون أبيض بالقوة */
-    font-size: 20px; /* حجم الخط كبير وواضح */
-    font-weight: 900; /* خط سميك جدًا */
-    letter-spacing: 1px; /* مسافة بين الحروف لتوضيح النص */
+    color: #fff !important;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 1px;
 }
 
-/* حركة النص */
 @keyframes slide-right {
     0% { left: -100%; }
     100% { left: 100%; }
 }
 
-/* أزرار التحكم */
+/* =====================
+   CUSTOM BUTTONS
+===================== */
+
 .custom-btn {
     padding: 6px 12px;
     margin-right: 5px;
@@ -509,4 +511,3 @@ button {
     background-color: #e53e3e; 
     color: #fff; 
 }
-
