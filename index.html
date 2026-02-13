@@ -1913,27 +1913,50 @@ function hideAnnouncementBar() {
 <!-- زر تثبيت التطبيق -->
 <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
-<!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
-<!-- 🔔 لوحة إدارة الإعلان (يظهر فقط للأدمن) -->
-<!-- شريط الإعلان -->
-<!-- شريط الإعلان العام -->
-<div id="announcementBar" class="announcement-bar" style="display:flex;">
+<!-- ======= شريط الإعلان العام ======= -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
     <span id="announcementText" class="announcement-text"></span>
 </div>
 
+<!-- ======= لوحة الأدمن للتحكم بالإعلان ======= -->
+<div id="adminAdBox" style="margin-top:60px; display:none;">
+    <h4>📢 إعلان عام للطلاب</h4>
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
 
-<!-- عنوان الإعلان -->
-<h4>📢 إعلان عام للطلاب</h4>
-
-<!-- نص الإعلان -->
-<textarea id="adminAdText"
-          placeholder="اكتب الإعلان هنا..."
-          style="width:100%; min-height:80px; padding:8px;"></textarea>
-
-<!-- أزرار التحكم بالإعلان -->
-<div style="margin-top:10px;">
-    <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
-    <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+<!-- ======= إشعار تحديث التطبيق ======= -->
+<div id="updateNotification" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1e40af;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 9999;
+  font-family: Arial;
+">
+  🔄 يوجد تحديث جديد للتطبيق
+  <button id="updateBtn" style="
+    margin-right:10px;
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    background:#fff;
+    color:#1e40af;
+    cursor:pointer;
+    font-weight:bold;
+  ">
+    تحديث الآن
+  </button>
 </div>
 
 <style>
@@ -1989,12 +2012,11 @@ const AnnouncementManager = {
         this.stopBtn = document.getElementById("stopAdBtn");
         this.adminTextarea = document.getElementById("adminAdText");
 
-        // إظهار لوحة الأدمن
+        // إظهار لوحة الأدمن فقط إذا الأدمن
         const isAdmin = true; 
-        if (isAdmin) document.getElementById("adminAdText").parentElement.style.display = "block";
+        if (isAdmin) document.getElementById("adminAdBox").style.display = "block";
 
         this.bindEvents();
-       
     },
 
     bindEvents() {
@@ -2049,7 +2071,7 @@ const AnnouncementManager = {
         const text = this.adminTextarea?.value.trim() || "";
         if (!text) return alert("يرجى كتابة نص الإعلان أولاً!");
         try {
-            // حفظ إلى Firebase Firestore (إذا موجود)
+            // حفظ إلى Firebase Firestore إذا موجود
             await firestoreTools.db.collection("announcements").doc("current").set({ text });
             alert("تم حفظ الإعلان ✅");
         } catch (err) {
@@ -2062,7 +2084,6 @@ const AnnouncementManager = {
     deleteAnnouncement() {
         this.adminTextarea.value = "";
         this.updateAnnouncementText("");
-        // حذف من Firestore إذا لزم
         try {
             firestoreTools.db.collection("announcements").doc("current").delete();
         } catch (err) {
@@ -2079,6 +2100,7 @@ const AnnouncementManager = {
 // تفعيل الإعلان عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 </script>
+>
 
 <!-- 🔔 إشعار تحديث التطبيق -->
 <div id="updateNotification" style="
@@ -2129,6 +2151,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
