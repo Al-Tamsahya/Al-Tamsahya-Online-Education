@@ -367,6 +367,7 @@ body.dark-mode textarea {
   color: var(--text-primary-dark);
   border: 1px solid #cbd5e1;
 }
+
 /* =====================
    DARK MODE FIXES (وضوح النصوص والأزرار)
 ===================== */
@@ -392,12 +393,13 @@ body.dark-mode .text-secondary-light {
 body.dark-mode button,
 body.dark-mode .custom-btn {
   background: var(--bg-button-dark);
-  color: #ffffff; /* أبيض للوضوح */
+  color: var(--text-primary-dark); /* بدل #ffffff لجعلها أكثر وضوحًا */
 }
 
+/* زر الخطر */
 body.dark-mode .custom-btn.danger {
   background: var(--bg-danger-dark);
-  color: #7f1d1d; /* واضح على الخلفية الفاتحة الداكنة */
+  color: var(--text-danger-dark);
 }
 
 /* Placeholder في الفورم */
@@ -406,6 +408,11 @@ body.dark-mode textarea::placeholder {
   color: #94a3b8; /* رمادي واضح */
 }
 
+/* نصوص إضافية عامة لزيادة الوضوح في الوضع الليلي */
+body.dark-mode,
+body.dark-mode * {
+  color: var(--text-primary-dark) !important;
+}
 
 /* =====================
    MOBILE CLICK FIX
@@ -449,6 +456,7 @@ button {
   button:hover {
     transform: none;
     box-shadow: none;
+  }
 }
 
 /* =====================
@@ -563,5 +571,5 @@ button {
 /* في الوضع الليلي */
 body.dark-mode .custom-btn {
     background-color: #f59e0b;
-    color: #000; /* أوضح فوق البرتقالي */
+    color: var(--text-primary-dark); /* بدل #000 لجعل النص أوضح */
 }
