@@ -28,7 +28,7 @@
 
   /* النصوص */
   --text-primary-light: #1f2937;
-  --text-primary-dark: #f1f5f9;
+  --text-primary-dark: #f8fafc;
 
   --text-secondary-light: #444;
   --text-secondary-dark: #cbd5e1;
@@ -328,13 +328,31 @@ body.dark-mode #globalNav {
 }
 
 /* Cards & tables */
-body.dark-mode .card,
-body.dark-mode .table-container,
+body.dark-mode 
+#lessonTitle,
+body.dark-mode 
+#lessonPageContent,
+body.dark-mode 
+.grade-card,
+body.dark-mode 
+.subject-card,
+body.dark-mode 
+.unit-card,
+body.dark-mode 
+.lesson-card,
+body.dark-mode 
+.login-container,
+body.dark-mode 
+.admin-section,
+body.dark-mode 
+.card,
+body.dark-mode 
+.table-container,
 body.dark-mode table {
   background: var(--bg-card-dark);
   color: var(--text-primary-dark);
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
+
 
 /* Table head */
 body.dark-mode th {
@@ -408,11 +426,6 @@ body.dark-mode textarea::placeholder {
   color: #94a3b8; /* رمادي واضح */
 }
 
-/* نصوص إضافية عامة لزيادة الوضوح في الوضع الليلي */
-body.dark-mode,
-body.dark-mode * {
-  color: var(--text-primary-dark) !important;
-}
 
 /* =====================
    MOBILE CLICK FIX
@@ -568,8 +581,26 @@ button {
     box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
-/* في الوضع الليلي */
 body.dark-mode .custom-btn {
     background-color: #f59e0b;
-    color: var(--text-primary-dark); /* نص واضح */
+    color: var(--text-primary-dark);
+}
+
+/* =====================
+   FIX: Welcome Message Dark Mode
+===================== */
+
+body.dark-mode #welcomeMessage {
+  background: #1e293b;
+  color: var(--text-primary-dark);
+  border-radius: 18px;
+}
+
+body.dark-mode #welcomeMessage p,
+body.dark-mode #welcomeMessage span,
+body.dark-mode #welcomeMessage h1,
+body.dark-mode #welcomeMessage h2,
+body.dark-mode #welcomeMessage h3 {
+  color: var(--text-primary-dark);
+  font-weight: 500;
 }
