@@ -292,7 +292,7 @@ button.danger {
 }
 
 .install-box button {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: linear-gradient(135deg, #af1e49, #1e40af);
   color: #ffffff;
   font-size: 16px;
   font-weight: bold;
@@ -499,7 +499,7 @@ button {
 }
 
 .promo-ad button:hover {
-  background: #e5e7eb;
+  background: #000;
 }
 
 .promo-ad.hidden {
@@ -564,7 +564,7 @@ button {
     border: none;
     border-radius: 6px;
     background-color: #f59e0b;
-    color: #111827; /* بدل الأسود القاسي */
+    color: #1e40af; /* بدل الأسود القاسي */
     font-weight: bold;
     transition: 0.3s ease;
 }
@@ -597,4 +597,5 @@ body.dark-mode #welcomeMessage h3 {
   color: var(--text-primary-dark);
   font-weight: 500;
 }
+
 
