@@ -311,13 +311,6 @@ body.dark-mode {
   color: var(--text-primary-dark);
 }
 
-body.dark-mode header,
-body.dark-mode main,
-body.dark-mode section,
-body.dark-mode footer,
-body.dark-mode .container {
-  background: var(--bg-page-dark);
-}
 
 
 /* Navbar */
@@ -604,3 +597,4 @@ body.dark-mode #welcomeMessage h3 {
   color: var(--text-primary-dark);
   font-weight: 500;
 }
+
