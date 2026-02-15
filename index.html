@@ -9,6 +9,9 @@
     <title>منصة التمساحية التعليمية</title>
     <meta name="application-name" content="منصة التمساحية التعليمية">
     <meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
     <!-- Open Graph (للمشاركة على السوشيال ميديا) -->
     <meta property="og:title" content="منصة التمساحية التعليمية">
@@ -17,7 +20,7 @@
     <meta property="og:url" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/">
     <meta property="og:image" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/icon-192.png">
 
-
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 
     <!-- الخطوط -->
@@ -1595,8 +1598,11 @@
                 list.style.display = list.style.display === "none" ? "block" : "none";
             }
 
-            function toggleDarkMode() {
-                document.body.classList.toggle("dark-mode");
+            <script>
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
+</script>
 
                 // حفظ الاختيار
                 localStorage.setItem(
@@ -1623,28 +1629,87 @@
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- Firebase init -->
+<script src="./js/firebase.js"></script>
 
-        <!-- Firebase init -->
-        <script src="./js/firebase.js"></script>
-        <script>
-        
-   if ('serviceWorker' in navigator) {
+<!-- 🔹 شريط الإعلان لجميع الزوار -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-  let newWorker;
+<style>
+.announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f59e0b;
+    color: #000;
+    overflow: hidden;
+    z-index: 9999;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
+}
+@keyframes slide-right {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const announcementBar = document.getElementById("announcementBar");
+    const announcementText = document.getElementById("announcementText");
+
+    if (!announcementBar || !announcementText || !firestoreTools) return;
+
+    async function loadAnnouncement() {
+        try {
+            const doc = await firestoreTools.db.collection("announcements").doc("current").get();
+            if (doc.exists && doc.data().text?.trim()) {
+                announcementText.innerText = "📢 " + doc.data().text + " 📢";
+                announcementText.style.animation = "none";
+                announcementText.style.left = "-100%";
+                announcementText.offsetHeight;
+                const duration = Math.max(15, announcementText.offsetWidth / 50);
+                announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+                announcementBar.style.display = "flex";
+            } else {
+                announcementBar.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Error loading announcement:", err);
+        }
+    }
+
+    loadAnnouncement();              // تحميل الإعلان عند فتح الصفحة
+    setInterval(loadAnnouncement, 60000); // تحديث كل دقيقة
+});
+    
+let newWorker; // إعلان متغير عام للوصول له في كل مكان
+
+if ('serviceWorker' in navigator) {
 
   // تسجيل Service Worker
   navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
     .then(registration => {
-
       console.log("Service Worker registered successfully ✅");
 
       // تحديث تلقائي عند وجود نسخة جديدة
       registration.addEventListener('updatefound', () => {
-
         newWorker = registration.installing;
 
         newWorker.addEventListener('statechange', () => {
-
           // إذا تم تثبيت نسخة جديدة وكانت هناك نسخة سابقة
           if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
 
@@ -1656,7 +1721,6 @@
             if (updateBox) {
               updateBox.style.display = "block";
             }
-
           }
         });
       });
@@ -1667,40 +1731,43 @@
     });
 }
 
-  const updateBtn = document.getElementById("updateBtn");
-  if (updateBtn) {
-    updateBtn.addEventListener("click", () => {
-      if (newWorker) {
-        newWorker.postMessage({ type: "SKIP_WAITING" });
-      }
-    });
-  }
-
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    window.location.reload();
+// زر تحديث التطبيق
+const updateBtn = document.getElementById("updateBtn");
+if (updateBtn) {
+  updateBtn.addEventListener("click", () => {
+    if (newWorker) {
+      newWorker.postMessage({ type: "SKIP_WAITING" });
+    }
   });
+}
 
+// إعادة تحميل الصفحة عند تغيير الـ Service Worker
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+  window.location.reload();
+});
 </script>
 
 
-        <!-- جميع وظائف الأدمن والإعلانات -->
-        <script>
-            // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
-            const adminEmail = "admin@gmail.com";
-            const loggedEmail = localStorage.getItem("loggedEmail") || "";
 
-            // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
-            window.currentUser = window.currentUser || {
-                email: loggedEmail,
-                role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-            };
+<!-- جميع وظائف الأدمن والإعلانات -->
+<script>
+    // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
+    const adminEmail = "admin@gmail.com";
+    const loggedEmail = localStorage.getItem("loggedEmail") || "";
 
-            // متغير لتثبيت التطبيق PWA
-            let deferredPrompt = null;
+    // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
+    window.currentUser = window.currentUser || {
+        email: loggedEmail,
+        role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+    };
 
-            // 🔹 إعلان متغير واحد فقط لجميع التحركات
-          animationTimeout = null;
-        </script>
+    // متغير لتثبيت التطبيق PWA
+    let deferredPrompt = null;
+
+    // 🔹 إعلان متغير واحد فقط لجميع التحركات
+  animationTimeout = null;
+</script>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -1735,8 +1802,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ======= عرض الإعلانات =======
+}); // << نهاية DOMContentLoaded
+</script>
+
+
+<!-- ======= عرض الإعلانات ======= -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
     const adsContainer = document.getElementById("ads-container");
+
     if (adsContainer && window.firestoreTools && firestoreTools.collection) {
         firestoreTools.collection("ads")
             .orderBy("date", "desc")
@@ -1755,8 +1829,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
     }
-
-   
 
     // ======= تثبيت التطبيق PWA =======
     const installBtn = document.getElementById("installBtn");
@@ -1788,9 +1860,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (installBtn) installBtn.hidden = true;
         alert("تم تثبيت التطبيق بنجاح ✅");
     });
-
-}); // نهاية DOMContentLoaded
+});
 </script>
+
 
 
         <!-- ======= وظائف الشريط المتحرك (تم التعديل) ======= -->
@@ -1844,25 +1916,50 @@ function hideAnnouncementBar() {
 <!-- زر تثبيت التطبيق -->
 <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
-<!-- 🔔 مربع إدارة الإعلان داخل لوحة تحكم الأدمن -->
-<!-- 🔔 لوحة إدارة الإعلان (يظهر فقط للأدمن) -->
-<!-- شريط الإعلان -->
+<!-- ======= شريط الإعلان العام ======= -->
 <div id="announcementBar" class="announcement-bar" style="display:none;">
     <span id="announcementText" class="announcement-text"></span>
 </div>
 
-<!-- عنوان الإعلان -->
-<h4>📢 إعلان عام للطلاب</h4>
+<!-- ======= لوحة الأدمن للتحكم بالإعلان ======= -->
+<div id="adminAdBox" style="margin-top:60px; display:none;">
+    <h4>📢 إعلان عام للطلاب</h4>
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
 
-<!-- نص الإعلان -->
-<textarea id="adminAdText"
-          placeholder="اكتب الإعلان هنا..."
-          style="width:100%; min-height:80px; padding:8px;"></textarea>
-
-<!-- أزرار التحكم بالإعلان -->
-<div style="margin-top:10px;">
-    <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
-    <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+<!-- ======= إشعار تحديث التطبيق ======= -->
+<div id="updateNotification" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #1e40af;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 9999;
+  font-family: Arial;
+">
+  🔄 يوجد تحديث جديد للتطبيق
+  <button id="updateBtn" style="
+    margin-right:10px;
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    background:#fff;
+    color:#1e40af;
+    cursor:pointer;
+    font-weight:bold;
+  ">
+    تحديث الآن
+  </button>
 </div>
 
 <style>
@@ -1918,13 +2015,11 @@ const AnnouncementManager = {
         this.stopBtn = document.getElementById("stopAdBtn");
         this.adminTextarea = document.getElementById("adminAdText");
 
-        // إظهار لوحة الأدمن
+        // إظهار لوحة الأدمن فقط إذا الأدمن
         const isAdmin = true; 
-        if (isAdmin) document.getElementById("adminAdText").parentElement.style.display = "block";
+        if (isAdmin) document.getElementById("adminAdBox").style.display = "block";
 
         this.bindEvents();
-        // مثال: عرض نص تجريبي عند التشغيل
-        this.updateAnnouncementText("مرحباً بكم في منصة التمساحية التعليمية!");
     },
 
     bindEvents() {
@@ -1979,7 +2074,7 @@ const AnnouncementManager = {
         const text = this.adminTextarea?.value.trim() || "";
         if (!text) return alert("يرجى كتابة نص الإعلان أولاً!");
         try {
-            // حفظ إلى Firebase Firestore (إذا موجود)
+            // حفظ إلى Firebase Firestore إذا موجود
             await firestoreTools.db.collection("announcements").doc("current").set({ text });
             alert("تم حفظ الإعلان ✅");
         } catch (err) {
@@ -1992,7 +2087,6 @@ const AnnouncementManager = {
     deleteAnnouncement() {
         this.adminTextarea.value = "";
         this.updateAnnouncementText("");
-        // حذف من Firestore إذا لزم
         try {
             firestoreTools.db.collection("announcements").doc("current").delete();
         } catch (err) {
@@ -2009,7 +2103,7 @@ const AnnouncementManager = {
 // تفعيل الإعلان عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 </script>
-
+>
 
 <!-- 🔔 إشعار تحديث التطبيق -->
 <div id="updateNotification" style="
@@ -2040,7 +2134,23 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
   </button>
 </div>
 
-           
+      <!-- شريط الإعلان العام -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
+
+<!-- لوحة الأدمن للتحكم بالإعلان -->
+<div id="adminAdBox" style="margin-top:60px; display:none;">
+    <h4>📢 إعلان عام للطلاب</h4>
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
+     
 
 </body>
 </html>
