@@ -382,17 +382,17 @@ body.dark-mode textarea {
    LOGIN & REGISTER PAGES
 ===================== */
 
-#loginPage {
-  position: relative;
-  z-index: 10000;   /* يضمن ظهور الصفحة فوق الباقي */
-  display: none;     /* مخفية بشكل افتراضي */
+#loginPage,
+#registerPage,
+#welcomeMessage {
+  position: absolute;   /* يجعل الصفحة فوق كل شيء */
+  top: 0;
+  left: 0;
+  width: 100%;          /* تغطي كامل الشاشة */
+  height: 100%;
+  display: none;        /* مخفية في البداية */
 }
 
-#registerPage {
-  position: relative;
-  z-index: 10001;   /* أعلى من LoginPage */
-  display: none;     /* مخفية بشكل افتراضي */
-}
 
 /* =====================
    DARK MODE FIXES (وضوح النصوص والأزرار)
