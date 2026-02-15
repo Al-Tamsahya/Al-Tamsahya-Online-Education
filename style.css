@@ -14,7 +14,7 @@
 
 :root {
   /* خلفيات */
-  --bg-page-light: linear-gradient(180deg, #f5f7fb, #ffffff);
+  --bg-page-light: linear-gradient(180deg, #93c5fd, #6480ae);
   --bg-page-dark: #0f172a; /* داكن حقيقي */
 
   --bg-card-light: #ffffff;
@@ -162,7 +162,7 @@ button.danger {
 
 .admin-buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
   gap: 18px;
 }
 
@@ -292,7 +292,7 @@ button.danger {
 }
 
 .install-box button {
-  background: linear-gradient(135deg, #af1e49, #1e40af);
+  background: linear-gradient(135deg, #111827, #6480ae);
   color: #ffffff;
   font-size: 16px;
   font-weight: bold;
@@ -392,7 +392,7 @@ body.dark-mode p,
 body.dark-mode span,
 body.dark-mode label,
 body.dark-mode li {
-  color: var(--text-primary-dark);
+ color: #000;
 }
 
 /* نصوص ثانوية */
@@ -474,7 +474,7 @@ button {
   bottom: 20px;
   left: 16px;
   right: 16px;
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: linear-gradient(135deg, #111827, #6480ae);
   color: #ffffff;
   padding: 16px;
   border-radius: 18px;
@@ -597,5 +597,6 @@ body.dark-mode #welcomeMessage h3 {
   color: var(--text-primary-dark);
   font-weight: 500;
 }
+
 
 
