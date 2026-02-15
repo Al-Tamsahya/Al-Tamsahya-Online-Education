@@ -1,4 +1,3 @@
-
 /* =====================
    RESET & BASE
 ===================== */
@@ -458,6 +457,17 @@ button {
   from { left: -100%; } /* البداية خارج الشاشة على اليسار */
   to { left: 100%; }    /* تصل إلى خارج الشاشة على اليمين */
 }
+.announcement-bar {
+  background: orange;
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+.announcement-wrapper {
+  display: flex;
+  flex-direction: column; /* يجعلهم سطرين */
+  gap: 5px;
+}
 
 .announcement-text {
   white-space: nowrap;
@@ -465,7 +475,17 @@ button {
   font-size: 16px;
   display: inline-block;
   position: relative;
-  left: -100%; /* البداية خارج الشاشة على اليسار */
-  animation: slide-right 15s linear infinite; /* الحركة الافتراضية */
+  left: -100%;
+  animation: slide-right 15s linear infinite;
 }
+
+@keyframes slide-right {
+  from {
+    left: -100%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
 
