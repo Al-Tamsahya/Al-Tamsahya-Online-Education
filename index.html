@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿<!DOCTYPE html>
+=======
+<!DOCTYPE html>
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
 <html lang="ar" dir="rtl">
 
 <head>
@@ -11,9 +15,13 @@
 
     <meta name="application-name" content="منصة التمساحية التعليمية">
     <meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
+<<<<<<< HEAD
     <div id="announcementBar" class="announcement-bar" style="display:none;">
         <span id="announcementText" class="announcement-text"></span>
     </div>
+=======
+    
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
 
     <!-- Open Graph (للمشاركة على السوشيال ميديا) -->
     <meta property="og:title" content="منصة التمساحية التعليمية">
@@ -50,6 +58,9 @@
 </head>
 
 <body>
+    <div id="announcementBar" class="announcement-bar" style="display:none;">
+        <span id="announcementText" class="announcement-text"></span>
+    </div>
     <div class="app-container">
 
         <nav class="top-nav">
@@ -995,12 +1006,21 @@
 
                 // مسار الدرس
                 document.getElementById("lessonPath").innerHTML = `
+<<<<<<< HEAD
                                                                                                                                 <span>${currentSubject}</span>
                                                                                                                                 <span> &gt; </span>
                                                                                                                                 <span>${currentUnit}</span>
                                                                                                                                 <span> &gt; </span>
                                                                                                                                 <strong>${lesson.title}</strong>
                                                                                                                             `;
+=======
+                <span>${currentSubject}</span>
+               <span> &gt; </span>
+                <span>${currentUnit}</span>
+                <span> &gt; </span>
+                <strong>${lesson.title}</strong>
+                `;
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
 
                 showLessonDetail(lesson);
 
@@ -1618,8 +1638,11 @@
                 document.body.classList.add("dark-mode");
             }
 
+<<<<<<< HEAD
 
         </script>
+=======
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
         <!--<div>
         <script src="js/auth.js"></script>
         <script src="js/data.js"></script>
@@ -1632,6 +1655,7 @@
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
         <!-- Firebase init -->
+<<<<<<< HEAD
 
         <script src="js/firebase.js"></script>
 
@@ -1677,6 +1701,70 @@
             }
         </style>
 
+=======
+<script>
+  // إعداد Firebase
+  var firebaseConfig = {
+    apiKey: "AIzaSyDRAwI-FZxQyD_KRPcdtLhAVbjgwLSZ9xU",
+    authDomain: "ai-tamsahya-online-education.firebaseapp.com",
+    projectId: "ai-tamsahya-online-education",
+    storageBucket: "ai-tamsahya-online-education.firebasestorage.app",
+    messagingSenderId: "853000263503",
+    appId: "1:853000263503:web:5c6406ac42c8dcffbb573a"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const db = firebase.firestore();
+
+  const firestoreTools = {
+      db: db,
+      collection: (name) => db.collection(name),
+      addDoc: (collectionRef, data) => collectionRef.add(data)
+  };
+
+  console.log("✅ Firebase Ready");
+</script>
+
+
+
+        <style>
+            .announcement-bar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: #f59e0b;
+                color: #000;
+                overflow: hidden;
+                z-index: 9999;
+                height: 45px;
+                display: flex;
+                align-items: center;
+                font-family: Arial, sans-serif;
+            }
+
+            .announcement-text {
+                white-space: nowrap;
+                font-weight: bold;
+                font-size: 16px;
+                display: inline-block;
+                position: relative;
+                left: -100%;
+            }
+
+            @keyframes slide-right {
+                0% {
+                    left: -100%;
+                }
+
+                100% {
+                    left: 100%;
+                }
+            }
+        </style>
+
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
         <script>
             document.addEventListener("DOMContentLoaded", async () => {
                 const announcementBar = document.getElementById("announcementBar");
@@ -1927,11 +2015,14 @@
         <!-- زر تثبيت التطبيق -->
         <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
+<<<<<<< HEAD
         <!-- ======= شريط الإعلان العام ======= -->
         <div id="announcementBar" class="announcement-bar" style="display:none;">
             <span id="announcementText" class="announcement-text"></span>
         </div>
 
+=======
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
         <!-- ======= لوحة الأدمن للتحكم بالإعلان ======= -->
         <div id="adminAdBox" style="margin-top:60px; display:none;">
             <h4>📢 إعلان عام للطلاب</h4>
@@ -2122,7 +2213,11 @@
             // تفعيل الإعلان عند تحميل الصفحة
             document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
         </script>
+<<<<<<< HEAD
         >
+=======
+
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
 
         <!-- 🔔 إشعار تحديث التطبيق -->
         <div id="updateNotification" style="
@@ -2153,10 +2248,13 @@
             </button>
         </div>
 
+<<<<<<< HEAD
         <!-- شريط الإعلان العام -->
         <div id="announcementBar" class="announcement-bar" style="display:none;">
             <span id="announcementText" class="announcement-text"></span>
         </div>
+=======
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
 
         <!-- لوحة الأدمن للتحكم بالإعلان -->
         <div id="adminAdBox" style="margin-top:60px; display:none;">
@@ -2170,8 +2268,36 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <script src="/Al-Tamsahya-Online-Education/js/firebase.js"></script>
+=======
+        <script>
+            // هذه قائمة كل الصفحات الرئيسية
+            const pages = ['loginPage', 'registerPage', 'welcomeMessage'];
+
+            // دالة لإظهار صفحة واحدة فقط وإخفاء البقية
+            function showPage(pageId) {
+                pages.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.style.display = 'none'; // يخفي كل الصفحات
+                });
+                const page = document.getElementById(pageId);
+                if (page) page.style.display = 'block'; // يظهر الصفحة المطلوبة
+            }
+
+            // عند تحميل الصفحة، نعرض صفحة البداية (مثلاً welcomeMessage)
+            window.onload = () => {
+                showPage('welcomeMessage'); // يمكنك تغييره إلى 'loginPage' إذا أردت
+            };
+        </script>
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
 
 </body>
 </html>
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
