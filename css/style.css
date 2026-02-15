@@ -597,5 +597,18 @@ body.dark-mode #welcomeMessage h3 {
   color: var(--text-primary-dark);
   font-weight: 500;
 }
+/* =====================
+   PAGE SYSTEM FIX
+===================== */
+
+/* إخفاء جميع الصفحات */
+.page {
+  display: none;
+}
+
+/* الصفحة النشطة فقط تظهر */
+.page.active {
+  display: block;
+}
 
 
