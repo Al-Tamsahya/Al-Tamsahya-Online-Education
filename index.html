@@ -4,40 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Tamsahya Online Education</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hidden { display:none; }
+        .custom-btn { padding:6px 12px; margin-right:5px; cursor:pointer; border:none; border-radius:4px; background-color:#f59e0b; color:#000; font-weight:bold; }
+        .custom-btn.danger { background-color:#e53e3e; color:#fff; }
+        .announcement-bar { position:fixed; top:0; left:0; width:100%; background:#f59e0b; color:#000; overflow:hidden; z-index:9999; height:45px; display:flex; align-items:center; }
+        .announcement-text { white-space:nowrap; font-weight:bold; font-size:16px; display:inline-block; position:relative; left:-100%; }
+        @keyframes slide-right { 0%{left:-100%;} 100%{left:100%;} }
+    </style>
 </head>
 <body>
 
-    <!-- 🔔 شريط الإعلان -->
+    <!-- صفحات الموقع الرئيسية -->
+    <div id="loginPage" class="hidden"></div>
+    <div id="registerPage" class="hidden"></div>
+    <div id="welcomeMessage" class="hidden"></div>
+
+    <!-- صفحات الدروس -->
+    <div id="gradePage" class="hidden"></div>
+    <div id="subjectPage" class="hidden"></div>
+    <div id="unitPage" class="hidden"></div>
+    <div id="lessonPage" class="hidden"></div>
+
+    <!-- لوحة الأدمن -->
+    <div id="admin-panel" class="hidden"></div>
+
+    <!-- شريط الإعلان -->
     <div id="announcementBar" class="announcement-bar" style="display:none;">
         <span id="announcementText" class="announcement-text"></span>
     </div>
 
-    <!-- لوحة الأدمن للتحكم بالإعلان -->
+    <!-- لوحة إدارة الإعلان -->
     <div id="adminAdBox" style="margin-top:60px; display:none;">
         <h4>📢 إعلان عام للطلاب</h4>
-        <textarea id="adminAdText" placeholder="اكتب الإعلان هنا..."
-                  style="width:100%; min-height:80px; padding:8px;"></textarea>
+        <textarea id="adminAdText" placeholder="اكتب الإعلان هنا..." style="width:100%; min-height:80px; padding:8px;"></textarea>
         <div style="margin-top:10px;">
             <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
             <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
         </div>
     </div>
 
+    <!-- زر تثبيت التطبيق -->
+    <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
+
     <!-- إشعار تحديث التطبيق -->
     <div id="updateNotification" style="
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #1e40af;
-        color: #fff;
-        padding: 15px 20px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        display: none;
-        z-index: 9999;
-        font-family: Arial;
-    ">
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1e40af;
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 9999;
+      font-family: Arial;">
         🔄 يوجد تحديث جديد للتطبيق
         <button id="updateBtn" style="
             margin-right:10px;
@@ -47,129 +70,104 @@
             background:#fff;
             color:#1e40af;
             cursor:pointer;
-            font-weight:bold;
-        ">تحديث الآن</button>
+            font-weight:bold;">
+            تحديث الآن
+        </button>
     </div>
 
-    <!-- زر تثبيت التطبيق PWA -->
-    <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
-
-    <!-- صفحات التطبيق الرئيسية (مخفية افتراضياً) -->
-    <div id="loginPage" style="display:none;">صفحة تسجيل الدخول</div>
-    <div id="registerPage" style="display:none;">صفحة التسجيل</div>
-    <div id="welcomeMessage" style="display:none;">مرحبا بك!</div>
-
-    <!-- صفحات الدروس -->
-    <div id="gradePage" class="hidden"></div>
-    <div id="subjectPage" class="hidden"></div>
-    <div id="unitPage" class="hidden"></div>
-    <div id="lessonPage" class="hidden">
-        <div id="lessonPath" style="display:none;"></div>
-        <h2 id="lessonTitle"></h2>
-        <div id="lessonVideo"></div>
-        <div id="lessonText"></div>
-        <button id="prevLessonBtn" onclick="prevLesson()">السابق</button>
-        <button id="nextLessonBtn" onclick="nextLesson()">التالي</button>
-        <div id="progressBar" style="height:6px; background:#f59e0b; width:0%; margin-top:5px;"></div>
-    </div>
-
-    <!-- صفحات الإدارة -->
-    <div id="studentsList" class="hidden"></div>
-    <div id="supervisorsList" class="hidden"></div>
-    <div id="testsList" class="hidden"></div>
-    <div id="resultsList" class="hidden"></div>
-    <style>
-        .hidden { display: none !important; }
-        .announcement-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #f59e0b;
-            color: #000;
-            overflow: hidden;
-            z-index: 9999;
-            height: 45px;
-            display: flex;
-            align-items: center;
-        }
-
-        .announcement-text {
-            white-space: nowrap;
-            font-weight: bold;
-            font-size: 16px;
-            display: inline-block;
-            position: relative;
-            left: -100%;
-        }
-
-        @keyframes slide-right {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .custom-btn {
-            padding: 6px 12px;
-            margin-right: 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            background-color: #f59e0b;
-            color: #000;
-            font-weight: bold;
-        }
-
-        .custom-btn.danger {
-            background-color: #e53e3e;
-            color: #fff;
-        }
-
-        .lessons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill,minmax(120px,1fr));
-            gap:10px;
-        }
-    </style>
-
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="js/firebase.js"></script>
+
+    <!-- ==============================
+         بداية سكربتات الموقع الرئيسية والدروس
+         ============================== -->
     <script>
-        // ====== عرض صفحات واحدة فقط ======
-        function showSection(idToShow) {
-            ["gradePage","subjectPage","unitPage","lessonPage",
-             "studentsList","supervisorsList","testsList","resultsList"].forEach(id=>{
-                const el = document.getElementById(id);
-                if(el) el.classList.toggle("hidden", id !== idToShow);
-            });
+        // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
+        const adminEmail = "admin@gmail.com";
+        const loggedEmail = localStorage.getItem("loggedEmail") || "";
+
+        // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
+        window.currentUser = window.currentUser || {
+            email: loggedEmail,
+            role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+        };
+
+        // متغير لتثبيت التطبيق PWA
+        let deferredPrompt = null;
+
+        // 🔹 إعلان متغير واحد فقط لجميع التحركات
+        let animationTimeout = null;
+
+        // المتغيرات الخاصة بالدروس
+        let currentGrade=null, currentSubject=null, currentUnit=null;
+        let currentLessonsList=[], currentLessonIndex=0, lessonCompleted=false;
+
+        // ==============================
+        // عرض الدروس
+        function renderLessons(grade, subject, unit) {
+            resetNavigation();
+
+            currentLessonsList = lessons[grade][subject][unit];
+
+            const lastIndex = getLastLesson();
+            currentLessonIndex = lastIndex!==null && lastIndex<currentLessonsList.length ? lastIndex : 0;
+            document.getElementById("lessonPath").style.display="block";
+
+            showSection("lessonPage");
+            updateBackButton();
+
+            document.getElementById("lessonTitle").textContent=`${grade} - ${subject} - ${unit}`;
+
+            renderLessonList();
+            loadLesson(currentLessonIndex);
         }
 
-        function resetNavigation() {
-            ["gradePage","subjectPage","unitPage","lessonPage"].forEach(id=>{
-                const el = document.getElementById(id);
-                if(el) el.classList.add("hidden");
-            });
-            const path = document.getElementById("lessonPath");
-            if(path) path.style.display="none";
+        function showLessonDetail(lesson) {
+            const videoDiv=document.getElementById("lessonVideo");
+            const textDiv=document.getElementById("lessonText");
+
+            videoDiv.innerHTML=`
+                <video id="lessonPlayer" controls playsinline preload="auto" muted width="100%" style="max-height:220px; border-radius:12px;">
+                    <source src="./videos/Lesson1.mp4.mp4?v=1" type="video/mp4">
+                    المتصفح لا يدعم تشغيل الفيديو
+                </video>
+            `;
+
+            const video=document.getElementById("lessonPlayer");
+            if(video){
+                video.play().catch(err=>console.log("Autoplay blocked:",err));
+
+                lessonCompleted=false;
+                const nextBtn=document.getElementById("nextLessonBtn");
+                if(nextBtn) nextBtn.disabled=true;
+
+                video.addEventListener("loadeddata",()=>{
+                    video.muted=false;
+                    video.play().catch(()=>console.log("المتصفح منع التشغيل التلقائي بالصوت"));
+                });
+
+                video.addEventListener("ended",()=>{
+                    lessonCompleted=true;
+                    if(nextBtn) nextBtn.disabled=false;
+                    saveLastLesson(currentLessonIndex);
+                });
+            }
+
+            textDiv.textContent=lesson.content;
+            updateLessonNav(true);
         }
 
-        function stopVideo() {
-            const video = document.getElementById("lessonPlayer");
-            if(video) { video.pause(); video.currentTime=0; video.src=""; }
-        }
-
-        function updateLessonNav(showBackUnit=true) {
-            const btnBackUnit = document.getElementById("btnBackUnit");
-            const btnHome = document.getElementById("btnHome");
-            if(btnBackUnit) btnBackUnit.style.display=showBackUnit?"inline-block":"none";
-            if(btnHome) btnHome.style.display="inline-block";
-        }
-
+        // ==============================
+        // عرض قائمة الدروس
         function renderLessonList() {
             const listDiv=document.getElementById("lessonList");
             if(!listDiv) return;
+
             listDiv.innerHTML=`<div class="lessons-grid"></div>`;
             const grid=listDiv.querySelector(".lessons-grid");
+
             currentLessonsList.forEach((lesson,index)=>{
                 const btn=document.createElement("button");
                 btn.textContent=lesson.title;
@@ -179,93 +177,813 @@
             });
         }
 
-        function loadLesson(index) {
+        // تحميل درس معين
+        function loadLesson(index){
             currentLessonIndex=index;
             lessonCompleted=false;
             document.getElementById("lessonList").style.display="none";
+
             const lesson=currentLessonsList[index];
+
             document.getElementById("lessonPath").innerHTML=`
-                <span>${currentSubject}</span> &gt;
-                <span>${currentUnit}</span> &gt;
-                <strong>${lesson.title}</strong>`;
+                <span>${currentSubject}</span>
+                <span> &gt; </span>
+                <span>${currentUnit}</span>
+                <span> &gt; </span>
+                <strong>${lesson.title}</strong>
+            `;
+
             showLessonDetail(lesson);
+
             const prevBtn=document.getElementById("prevLessonBtn");
             const nextBtn=document.getElementById("nextLessonBtn");
+
             if(prevBtn) prevBtn.disabled=index===0;
             if(nextBtn) nextBtn.disabled=true;
+
             const progress=((index+1)/currentLessonsList.length)*100;
             document.getElementById("progressBar").style.width=progress+"%";
+
             saveLastLesson(index);
         }
 
-        function prevLesson(){ if(currentLessonIndex>0){ currentLessonIndex--; loadLesson(currentLessonIndex); } }
+        // التنقل بين الدروس
+        function prevLesson(){
+            if(currentLessonIndex>0){
+                currentLessonIndex--;
+                loadLesson(currentLessonIndex);
+            }
+        }
+
         function nextLesson(){
-            if(!lessonCompleted){ alert("يجب مشاهدة الفيديو كاملًا قبل الانتقال للدرس التالي"); return; }
-            if(currentLessonIndex<currentLessonsList.length-1){ currentLessonIndex++; loadLesson(currentLessonIndex); }
-            else alert("🎉 أحسنت! انتهيت من جميع دروس هذه الوحدة");
+            if(!lessonCompleted){
+                alert("يجب مشاهدة الفيديو كاملًا قبل الانتقال للدرس التالي");
+                return;
+            }
+            if(currentLessonIndex<currentLessonsList.length-1){
+                currentLessonIndex++;
+                loadLesson(currentLessonIndex);
+            } else {
+                alert("🎉 أحسنت! انتهيت من جميع دروس هذه الوحدة");
+            }
+        }
+
+        // العودة للصفحات السابقة
+        function back(page){
+            stopVideo();
+            updateLessonNav(false);
+            document.getElementById("lessonList").style.display="block";
+
+            switch(page){
+                case "grade": renderGrades(); break;
+                case "subject": if(currentGrade) renderSubjects(currentGrade); break;
+                case "unit": if(currentGrade && currentSubject) renderUnits(currentGrade,currentSubject); break;
+                default: renderGrades();
+            }
         }
 
         function smartBack(){
             stopVideo();
-            if(currentUnit){ currentUnit=null; renderUnits(currentGrade,currentSubject);}
-            else if(currentSubject){ currentSubject=null; renderSubjects(currentGrade);}
-            else if(currentGrade){ currentGrade=null; renderGrades();}
+            if(currentUnit){ currentUnit=null; renderUnits(currentGrade,currentSubject); }
+            else if(currentSubject){ currentSubject=null; renderSubjects(currentGrade); }
+            else if(currentGrade){ currentGrade=null; renderGrades(); }
         }
-    </script>
-    <script>
+
+        // عرض قسم واحد وإخفاء البقية
+        function showSection(idToShow){
+            ["gradePage","subjectPage","unitPage","lessonPage"].forEach(id=>{
+                document.getElementById(id).classList.toggle("hidden",id!==idToShow);
+            });
+        }
+
+        function hideAllAdminSections(){
+            ["studentsList","supervisorsList","testsList","resultsList"].forEach(id=>{
+                document.getElementById(id).classList.add("hidden");
+            });
+        }
+
+        function showAdminSection(section){
+            hideAllAdminSections();
+            switch(section){
+                case "students": renderStudents(); break;
+                case "supervisors": renderSupervisors(); break;
+                case "tests": renderTests(); break;
+                case "results": renderResults(); break;
+            }
+        }
+
+        async function loadPendingStudents(){
+            const res=await fetch("/api/students/pending");
+            const data=await res.json();
+            console.log(data);
+        }
+
+        // ==============================
+        // 👨‍💼 إدارة الطلاب والمشرفين
+        async function renderStudents(){
+            const container=document.getElementById("studentsList");
+            container.classList.remove("hidden");
+            ["supervisorsList","testsList","resultsList"].forEach(id=>document.getElementById(id)?.classList.add("hidden"));
+
+            try{
+                const db=window.firestoreTools.db;
+                const snapshot=await db.collection("students").get();
+                savedStudents=[];
+
+                let totalStudents=snapshot.size;
+                let approvedStudents=0;
+                let pendingStudents=0;
+                let rows="";
+
+                snapshot.forEach(doc=>{
+                    const student=doc.data();
+                    savedStudents.push({
+                        id:doc.id,
+                        email:student.email||"",
+                        approved:student.approved===true,
+                        grade:student.grade||"-"
+                    });
+
+                    if(student.approved) approvedStudents++;
+                    else pendingStudents++;
+
+                    rows+=`
+<tr data-email="${(student.email||"").toLowerCase()}">
+  <td>${student.email||"-"}</td>
+  <td>${student.approved?"🟢 مفعل":"🟡 قيد المراجعة"}</td>
+  <td>${student.grade||"-"}</td>
+  <td class="actions-cell">
+    <div class="actions-wrapper">
+      ${currentUser?.role==="ADMIN"?`
+        <button class="custom-btn" onclick="editStudent('${student.email}')">✏️ تعديل</button>
+        <button class="custom-btn danger" onclick="deleteUser('${doc.id}','students')">🗑 حذف</button>
+        ${!student.approved?`
+          <button class="custom-btn" onclick="setApprove('${doc.id}',true)">✅ موافقة</button>
+          <button class="custom-btn danger" onclick="rejectStudent('${doc.id}')">❌ رفض</button>
+        `:""}
+      `:""}
+      ${currentUser?.role==="SUPERVISOR" && !student.approved?`
+        <button class="custom-btn" onclick="setApprove('${doc.id}',true)">✅ موافقة</button>
+      `:""}
+    </div>
+  </td>
+</tr>`;
+                });
+
+                container.innerHTML=`
+<h4>قائمة الطلاب</h4>
+<input id="studentSearch" onkeyup="filterStudents()" placeholder="🔍 ابحث بالبريد">
+<div style="margin:10px 0;">📚 عدد الطلاب: <strong>${totalStudents}</strong></div>
+<div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+  <div class="stat-box approved">🟢 مفعلين: ${approvedStudents}</div>
+  <div class="stat-box pending">🟡 قيد المراجعة: ${pendingStudents}</div>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>البريد الإلكتروني</th>
+<th>الحالة</th>
+<th>الدرجة</th>
+<th>خيارات</th>
+</tr>
+</thead>
+<tbody>
+${rows||`<tr><td colspan="4">لا يوجد طلاب</td></tr>`}
+</tbody>
+</table>
+</div>
+`;
+            } catch(err){
+                console.error(err);
+                container.innerHTML=`<p>حدث خطأ ❌<br>${err.message}</p>`;
+            }
+        }
+
+        async function editStudent(studentEmail){
+            try{
+                const db=window.firestoreTools.db;
+                const snap=await db.collection("students").where("email","==",(studentEmail||"").toLowerCase()).get();
+                if(snap.empty){ alert("لم يتم العثور على الطالب ❌"); return; }
+
+                const docSnap=snap.docs[0];
+                const student=docSnap.data();
+                const docId=docSnap.id;
+
+                const newEmail=prompt("تعديل البريد الإلكتروني:",student.email||"");
+                if(!newEmail) return;
+                const newPassword=prompt("تعديل كلمة المرور:",student.password||"");
+                if(!newPassword) return;
+
+                await db.collection("students").doc(docId).update({
+                    email:newEmail.trim().toLowerCase(),
+                    password:newPassword.trim(),
+                    name:newEmail.trim().toLowerCase().split("@")[0]
+                });
+
+                alert("تم تعديل بيانات الطالب ✅");
+                renderStudents();
+            } catch(err){
+                console.error(err);
+                alert("فشل التعديل ❌\n"+err.message);
+            }
+        }
+
+        function showAddStudentModal(){
+            document.getElementById("newStudentEmail").value="";
+            document.getElementById("newStudentPassword").value="";
+            document.getElementById("studentModal").style.display="flex";
+        }
+
+        async function addStudent(){
+            const email=document.getElementById("newStudentEmail").value.trim().toLowerCase();
+            const password=document.getElementById("newStudentPassword").value.trim();
+            if(!email||!password){ alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!"); return; }
+
+            try{
+                const db=window.firestoreTools.db;
+                const snap=await db.collection("students").where("email","==",email).get();
+                if(!snap.empty){ alert("هذا البريد مستخدم بالفعل!"); return; }
+
+                await db.collection("students").add({
+                    name: email.split("@")[0],
+                    email,
+                    password,
+                    role: "STUDENT",
+                    approved: true,
+                    createdAt: new Date().toISOString()
+                });
+
+                alert("تمت إضافة الطالب بنجاح ✅");
+                closeModal("studentModal");
+                renderStudents();
+            } catch(err){
+                console.error(err);
+                alert("حدث خطأ أثناء إضافة الطالب ❌");
+            }
+        }
+
+        // ==============================
+        // 👨‍🏫 إدارة المشرفين
+        // ==============================
+        async function renderSupervisors(){
+            const container=document.getElementById("supervisorsList");
+            container.classList.remove("hidden");
+            ["studentsList","testsList","resultsList"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+
+            container.innerHTML=`
+<h4>المشرفون</h4>
+<button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+<p>جاري تحميل المشرفين...</p>
+`;
+
+            try{
+                if(!window.firestoreTools||!window.firestoreTools.db){
+                    container.innerHTML=`<p>Firebase لم يتم تحميله بعد ❌</p>`;
+                    return;
+                }
+
+                const db=window.firestoreTools.db;
+                const snap=await db.collection("users").where("role","==","SUPERVISOR").get();
+                let rows="";
+                snap.forEach(docSnap=>{
+                    const s=docSnap.data();
+                    const id=docSnap.id;
+                    rows+=`
+<tr>
+<td>${s.email||"-"}</td>
+<td>
+<button class="custom-btn" onclick="deleteUser('${id}','users')">حذف</button>
+</td>
+</tr>`;
+                });
+
+                container.innerHTML=`
+<h4>المشرفون</h4>
+<button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+<div style="margin:10px 0;">
+  <button onclick="filterStudents('all')">الكل</button>
+  <button onclick="filterStudents('approved')">🟢 مفعلين</button>
+  <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>البريد الإلكتروني</th>
+<th>خيارات</th>
+</tr>
+</thead>
+<tbody>
+${rows||`<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>`}
+</tbody>
+</table>
+</div>
+`;
+            } catch(err){
+                console.error(err);
+                container.innerHTML=`<p>حدث خطأ أثناء تحميل المشرفين ❌<br>${err.message}</p>`;
+            }
+        }
+
+        function showAddSupervisorModal(){
+            document.getElementById("newSupervisorEmail").value="";
+            document.getElementById("newSupervisorPassword").value="";
+            document.getElementById("supervisorModal").style.display="flex";
+        }
+
+        async function addSupervisor(){
+            const email=document.getElementById("newSupervisorEmail").value.trim().toLowerCase();
+            const password=document.getElementById("newSupervisorPassword").value.trim();
+            if(!email||!password){ alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!"); return; }
+
+            try{
+                if(!window.firestoreTools||!window.firestoreTools.db){ alert("Firebase لم يتم تحميله بعد ❌"); return; }
+                const db=window.firestoreTools.db;
+                const snap=await db.collection("users").where("email","==",email).get();
+                if(!snap.empty){ alert("هذا البريد مستخدم بالفعل!"); return; }
+
+                await db.collection("users").add({
+                    name: email.split("@")[0],
+                    email,
+                    password,
+                    role: "SUPERVISOR",
+                    createdAt: new Date().toISOString()
+                });
+
+                alert("تمت إضافة المشرف بنجاح ✅");
+                closeModal("supervisorModal");
+                renderSupervisors();
+            } catch(err){
+                console.error(err);
+                alert("حدث خطأ أثناء إضافة المشرف ❌\n"+err.message);
+            }
+        }
+
+        // ==============================
+        // 🗑️ حذف مستخدم/طالب (Firestore)
+        async function deleteUser(docId,collectionName){
+            if(!confirm("هل أنت متأكد من الحذف؟")) return;
+            try{
+                const db=window.firestoreTools.db;
+                await db.collection(collectionName).doc(docId).delete();
+                alert("تم الحذف بنجاح ✅");
+                if(collectionName==="students") renderStudents();
+                if(collectionName==="users") renderSupervisors();
+            } catch(err){
+                console.error(err);
+                alert("فشل الحذف ❌\n"+err.message);
+            }
+        }
+
+        // ✅ موافقة / رفض طالب
+        async function setApprove(studentDocId,approvedValue){
+            try{
+                const db=window.firestoreTools.db;
+                const ref=db.collection("students").doc(studentDocId);
+                const snap=await ref.get();
+                if(!snap.exists) return;
+
+                if(snap.data().approved===true){
+                    alert("هذا الطالب مفعل بالفعل ✅");
+                    return;
+                }
+
+                await ref.update({approved:approvedValue});
+                alert("تمت الموافقة ✅");
+                renderStudents();
+            } catch(err){
+                console.error(err);
+                alert("فشل التحديث ❌");
+            }
+        }
+
+        // ❌ رفض الطالب
+        async function rejectStudent(studentDocId){
+            if(!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
+            try{
+                const db=window.firestoreTools.db;
+                await db.collection("students").doc(studentDocId).delete();
+                alert("تم رفض الطلب وحذفه ❌");
+                renderStudents();
+            } catch(err){
+                console.error(err);
+                alert("فشل الرفض ❌\n"+err.message);
+            }
+        }
+
+        // إغلاق النماذج
+        function closeModal(id){
+            document.getElementById(id).style.display="none";
+        }
+
+        function renderTests(){
+            const container=document.getElementById("testsList");
+            container.innerHTML=`<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
+            container.classList.remove("hidden");
+            ["studentsList","supervisorsList","resultsList"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+        }
+
+        function renderResults(){
+            const container=document.getElementById("resultsList");
+            container.innerHTML=`<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
+            container.classList.remove("hidden");
+            ["studentsList","supervisorsList","testsList"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+        }
+
+        function resetNavigation(){
+            document.getElementById("gradePage").classList.add("hidden");
+            document.getElementById("subjectPage").classList.add("hidden");
+            document.getElementById("unitPage").classList.add("hidden");
+            document.getElementById("lessonPage").classList.add("hidden");
+            document.getElementById("lessonPath").style.display="none";
+        }
+
+        function stopVideo(){
+            const video=document.getElementById("lessonPlayer");
+            if(video){ video.pause(); video.currentTime=0; video.src=""; }
+        }
+
+        function updateLessonNav(showBackUnit=true){
+            const btnBackUnit=document.getElementById("btnBackUnit");
+            const btnHome=document.getElementById("btnHome");
+            if(btnBackUnit) btnBackUnit.style.display=showBackUnit?"inline-block":"none";
+            if(btnHome) btnHome.style.display="inline-block";
+        }
+
+        function updateGlobalNav(show){
+            const nav=document.getElementById("globalNav");
+            if(!nav) return;
+            if(show) nav.classList.remove("hidden");
+            else nav.classList.add("hidden");
+        }
+
+        function toggleLessons(){
+            const list=document.getElementById("lessonList");
+            list.style.display=list.style.display==="none"?"block":"none";
+        }
+
+        function toggleDarkMode(){
+            document.body.classList.toggle("dark-mode");
+        }
+
+        localStorage.setItem("darkMode",document.body.classList.contains("dark-mode"));
+        if(localStorage.getItem("darkMode")==="true") document.body.classList.add("dark-mode");
+
+        // 🔔 إشعارات وتحديث PWA
+        const updateBtn=document.getElementById("updateBtn");
+        if(updateBtn) updateBtn.addEventListener("click",()=>{
+            if(newWorker) newWorker.postMessage({type:"SKIP_WAITING"});
+        });
+
+        navigator.serviceWorker.addEventListener("controllerchange",()=>{ window.location.reload(); });
+
+        const adminEmail="admin@gmail.com";
+        const loggedEmail=localStorage.getItem("loggedEmail")||"";
+        window.currentUser=window.currentUser||{email:loggedEmail,role:loggedEmail===adminEmail?"ADMIN":"STUDENT"};
+
+        let deferredPrompt=null;
+        animationTimeout=null;
+
         document.addEventListener("DOMContentLoaded",()=>{
+            if(window.currentUser.role==="ADMIN"){
+                const adminPanel=document.getElementById("admin-panel");
+                if(adminPanel) adminPanel.style.display="block";
 
-            // 🔹 إعداد المستخدم
-            const adminEmail="admin@gmail.com";
-            const loggedEmail=localStorage.getItem("loggedEmail")||"";
-            window.currentUser=window.currentUser||{ email:loggedEmail, role:loggedEmail===adminEmail?"ADMIN":"STUDENT"};
+                const titleInput=document.getElementById("ad-title");
+                const contentInput=document.getElementById("ad-content");
+                const addBtn=document.getElementById("add-ad-btn");
 
-            // 🔹 Service Worker
-            let newWorker;
-            if('serviceWorker' in navigator){
-                navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
-                    .then(reg=>{
-                        console.log("Service Worker registered ✅");
-                        reg.addEventListener('updatefound',()=>{
-                            newWorker=reg.installing;
-                            newWorker.addEventListener('statechange',()=>{
-                                if(newWorker.state==='installed' && navigator.serviceWorker.controller){
-                                    newWorker.postMessage({type:'SKIP_WAITING'});
-                                    const updateBox=document.getElementById("updateNotification");
-                                    if(updateBox) updateBox.style.display="block";
-                                }
-                            });
-                        });
-                    }).catch(err=>console.error("SW failed ❌",err));
+                if(addBtn&&titleInput&&contentInput){
+                    addBtn.addEventListener("click",async ()=>{
+                        const title=titleInput.value.trim();
+                        const content=contentInput.value.trim();
+                        if(!title||!content) return alert("الرجاء ملء العنوان والمحتوى!");
+
+                        try{
+                            await firestoreTools.addDoc(firestoreTools.collection("ads"),{title,content,date:new Date()});
+                            titleInput.value="";
+                            contentInput.value="";
+                            alert("تم إضافة الإعلان بنجاح!");
+                        } catch(err){
+                            console.error(err);
+                            alert("حدث خطأ أثناء إضافة الإعلان ❌\n"+err.message);
+                        }
+                    });
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            const adsContainer=document.getElementById("ads-container");
+            if(adsContainer&&window.firestoreTools&&firestoreTools.collection){
+                firestoreTools.collection("ads").orderBy("date","desc").onSnapshot(snapshot=>{
+                    adsContainer.innerHTML="";
+                    snapshot.forEach(doc=>{
+                        const ad=doc.data();
+                        const adElement=document.createElement("div");
+                        adElement.className="ad";
+                        adElement.innerHTML=`
+<h3>${ad.title}</h3>
+<p>${ad.content}</p>
+<small>${ad.date.toDate().toLocaleString()}</small>`;
+                        adsContainer.appendChild(adElement);
+                    });
+                });
             }
 
-            // زر التحديث
-            const updateBtn=document.getElementById("updateBtn");
-            if(updateBtn){ updateBtn.addEventListener("click",()=>{ if(newWorker) newWorker.postMessage({type:"SKIP_WAITING"}); }); }
-            navigator.serviceWorker.addEventListener("controllerchange",()=>window.location.reload());
-
-            // إعلان متحرك
-            AnnouncementManager.init();
-
-            // إظهار صفحة البداية
-            showPage('welcomeMessage');
-
-            // زر تثبيت التطبيق PWA
             const installBtn=document.getElementById("installBtn");
-            let deferredPrompt;
-            window.addEventListener("beforeinstallprompt", (e)=>{
-                e.preventDefault(); deferredPrompt=e;
+            window.addEventListener("beforeinstallprompt",e=>{
+                e.preventDefault();
+                deferredPrompt=e;
                 if(installBtn) installBtn.hidden=false;
             });
-            if(installBtn){ installBtn.addEventListener("click", async ()=>{
-                if(!deferredPrompt){ alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)"); return; }
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if(outcome==="accepted") installBtn.hidden=true;
-                deferredPrompt=null;
-            });}
-            window.addEventListener("appinstalled",()=>{ if(installBtn) installBtn.hidden=true; alert("تم تثبيت التطبيق بنجاح ✅"); });
+
+            if(installBtn){
+                installBtn.addEventListener("click",async ()=>{
+                    if(!deferredPrompt){ alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)"); return; }
+                    deferredPrompt.prompt();
+                    const {outcome}=await deferredPrompt.userChoice;
+                    if(outcome==="accepted") installBtn.hidden=true;
+                    deferredPrompt=null;
+                });
+            }
+
+            window.addEventListener("appinstalled",()=>{
+                if(installBtn) installBtn.hidden=true;
+                alert("تم تثبيت التطبيق بنجاح ✅");
+            });
         });
-    </script>
+
+        let animationTimeout=null;
+        function startAnnouncementAnimation(text,duration=12000){
+            const bar=document.getElementById("announcementBar");
+            const textBox=document.getElementById("announcementText");
+            if(!bar||!textBox||!text?.trim()){ hideAnnouncementBar(); return; }
+
+            textBox.innerText="📢 "+text+" 📢";
+            bar.style.display="flex";
+
+            const screenWidth=bar.offsetWidth;
+            const textWidth=textBox.offsetWidth;
+
+            function move(){
+                textBox.style.transition="none";
+                textBox.style.left=-textWidth+"px";
+                setTimeout(()=>{
+                    textBox.style.transition=`left ${duration}ms linear`;
+                    textBox.style.left=screenWidth+"px";
+                },50);
+                animationTimeout=setTimeout(move,duration+2000);
+            }
+
+            move();
+        }
+
+        function hideAnnouncementBar(){
+            const bar=document.getElementById("announcementBar");
+            if(bar) bar.style.display="none";
+            if(animationTimeout){ clearTimeout(animationTimeout); animationTimeout=null; }
+        }
+
+        const AnnouncementManager={
+            lastText:"",
+            init(){
+                this.announcementText=document.getElementById("announcementText");
+                this.saveBtn=document.getElementById("saveAdBtn");
+                this.stopBtn=document.getElementById("stopAdBtn");
+                this.adminTextarea=document.getElementById("adminAdText");
+
+                const isAdmin=true;
+                if(isAdmin) document.getElementById("adminAdBox").style.display="block";
+
+                this.bindEvents();
+            },
+            bindEvents(){
+                if(this.saveBtn) this.saveBtn.addEventListener("click",()=>this.saveAnnouncement());
+                if(this.stopBtn) this.stopBtn.addEventListener("click",()=>this.deleteAnnouncement());
+
+                if(this.adminTextarea){
+                    let timeout=null;
+                    this.adminTextarea.addEventListener("input",()=>{
+                        clearTimeout(timeout);
+                        timeout=setTimeout(()=>this.saveLiveAnnouncement(),500);
+                    });
+                }
+            },
+            showBar(){ const bar=document.getElementById("announcementBar"); if(bar) bar.style.display="flex"; },
+            hideBar(){ const bar=document.getElementById("announcementBar"); if(bar) bar.style.display="none"; },
+            restartAnimation(){
+                if(!this.announcementText) return;
+                this.announcementText.style.animation="none";
+                this.announcementText.style.left="-100%";
+                this.announcementText.offsetHeight;
+                const textLength=this.announcementText.offsetWidth;
+                const duration=Math.max(15,textLength/50);
+                this.announcementText.style.animation=`slide-right ${duration}s linear infinite`;
+            },
+            updateAnnouncementText(text){
+                if(!this.announcementText) return;
+                if(text?.trim()&&text!==this.lastText){
+                    this.announcementText.innerText="📢 "+text+" 📢";
+                    this.restartAnimation();
+                    this.showBar();
+                    this.lastText=text;
+                } else if(!text?.trim()){ this.announcementText.innerText=""; this.hideBar(); this.lastText=""; }
+            },
+            async saveAnnouncement(){
+                const text=this.adminTextarea?.value.trim()||"";
+                if(!text) return alert("يرجى كتابة نص الإعلان أولاً!");
+                try{ await firestoreTools.db.collection("announcements").doc("current").set({text}); alert("تم حفظ الإعلان ✅"); }
+                catch(err){ console.error(err); alert("حدث خطأ أثناء الحفظ ❌\n"+err.message); }
+                this.updateAnnouncementText(text);
+            },
+            deleteAnnouncement(){ this.adminTextarea.value=""; this.updateAnnouncementText(""); try{ firestoreTools.db.collection("announcements").doc("current").delete(); } catch(err){ console.warn("لم يتم الحذف من قاعدة البيانات:",err.message); } },
+            saveLiveAnnouncement(){ const text=this.adminTextarea.value; this.updateAnnouncementText(text); }
+        };
+
+        document.addEventListener("DOMContentLoaded",()=>AnnouncementManager.init());
+
+        const pages=['loginPage','registerPage','welcomeMessage'];
+        function showPage(pageId){ pages.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; }); const page=document.getElementById(pageId); if(page) page.style.display='block'; }
+        window.onload=()=>{ showPage('welcomeMessage'); };
+        // 🔔 إشعارات وتحديث PWA
+        const updateBtn=document.getElementById("updateBtn");
+        if(updateBtn) updateBtn.addEventListener("click",()=>{
+            if(newWorker) newWorker.postMessage({type:"SKIP_WAITING"});
+        });
+
+        navigator.serviceWorker.addEventListener("controllerchange",()=>{ window.location.reload(); });
+
+        const adminEmail="admin@gmail.com";
+        const loggedEmail=localStorage.getItem("loggedEmail")||"";
+        window.currentUser=window.currentUser||{email:loggedEmail,role:loggedEmail===adminEmail?"ADMIN":"STUDENT"};
+
+        let deferredPrompt=null;
+        animationTimeout=null;
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            if(window.currentUser.role==="ADMIN"){
+                const adminPanel=document.getElementById("admin-panel");
+                if(adminPanel) adminPanel.style.display="block";
+
+                const titleInput=document.getElementById("ad-title");
+                const contentInput=document.getElementById("ad-content");
+                const addBtn=document.getElementById("add-ad-btn");
+
+                if(addBtn&&titleInput&&contentInput){
+                    addBtn.addEventListener("click",async ()=>{
+                        const title=titleInput.value.trim();
+                        const content=contentInput.value.trim();
+                        if(!title||!content) return alert("الرجاء ملء العنوان والمحتوى!");
+
+                        try{
+                            await firestoreTools.addDoc(firestoreTools.collection("ads"),{title,content,date:new Date()});
+                            titleInput.value="";
+                            contentInput.value="";
+                            alert("تم إضافة الإعلان بنجاح!");
+                        } catch(err){
+                            console.error(err);
+                            alert("حدث خطأ أثناء إضافة الإعلان ❌\n"+err.message);
+                        }
+                    });
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            const adsContainer=document.getElementById("ads-container");
+            if(adsContainer&&window.firestoreTools&&firestoreTools.collection){
+                firestoreTools.collection("ads").orderBy("date","desc").onSnapshot(snapshot=>{
+                    adsContainer.innerHTML="";
+                    snapshot.forEach(doc=>{
+                        const ad=doc.data();
+                        const adElement=document.createElement("div");
+                        adElement.className="ad";
+                        adElement.innerHTML=`
+<h3>${ad.title}</h3>
+<p>${ad.content}</p>
+<small>${ad.date.toDate().toLocaleString()}</small>`;
+                        adsContainer.appendChild(adElement);
+                    });
+                });
+            }
+
+            const installBtn=document.getElementById("installBtn");
+            window.addEventListener("beforeinstallprompt",e=>{
+                e.preventDefault();
+                deferredPrompt=e;
+                if(installBtn) installBtn.hidden=false;
+            });
+
+            if(installBtn){
+                installBtn.addEventListener("click",async ()=>{
+                    if(!deferredPrompt){ alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)"); return; }
+                    deferredPrompt.prompt();
+                    const {outcome}=await deferredPrompt.userChoice;
+                    if(outcome==="accepted") installBtn.hidden=true;
+                    deferredPrompt=null;
+                });
+            }
+
+            window.addEventListener("appinstalled",()=>{
+                if(installBtn) installBtn.hidden=true;
+                alert("تم تثبيت التطبيق بنجاح ✅");
+            });
+        });
+
+        let animationTimeout=null;
+        function startAnnouncementAnimation(text,duration=12000){
+            const bar=document.getElementById("announcementBar");
+            const textBox=document.getElementById("announcementText");
+            if(!bar||!textBox||!text?.trim()){ hideAnnouncementBar(); return; }
+
+            textBox.innerText="📢 "+text+" 📢";
+            bar.style.display="flex";
+
+            const screenWidth=bar.offsetWidth;
+            const textWidth=textBox.offsetWidth;
+
+            function move(){
+                textBox.style.transition="none";
+                textBox.style.left=-textWidth+"px";
+                setTimeout(()=>{
+                    textBox.style.transition=`left ${duration}ms linear`;
+                    textBox.style.left=screenWidth+"px";
+                },50);
+                animationTimeout=setTimeout(move,duration+2000);
+            }
+
+            move();
+        }
+
+        function hideAnnouncementBar(){
+            const bar=document.getElementById("announcementBar");
+            if(bar) bar.style.display="none";
+            if(animationTimeout){ clearTimeout(animationTimeout); animationTimeout=null; }
+        }
+
+        const AnnouncementManager={
+            lastText:"",
+            init(){
+                this.announcementText=document.getElementById("announcementText");
+                this.saveBtn=document.getElementById("saveAdBtn");
+                this.stopBtn=document.getElementById("stopAdBtn");
+                this.adminTextarea=document.getElementById("adminAdText");
+
+                const isAdmin=true;
+                if(isAdmin) document.getElementById("adminAdBox").style.display="block";
+
+                this.bindEvents();
+            },
+            bindEvents(){
+                if(this.saveBtn) this.saveBtn.addEventListener("click",()=>this.saveAnnouncement());
+                if(this.stopBtn) this.stopBtn.addEventListener("click",()=>this.deleteAnnouncement());
+
+                if(this.adminTextarea){
+                    let timeout=null;
+                    this.adminTextarea.addEventListener("input",()=>{
+                        clearTimeout(timeout);
+                        timeout=setTimeout(()=>this.saveLiveAnnouncement(),500);
+                    });
+                }
+            },
+            showBar(){ const bar=document.getElementById("announcementBar"); if(bar) bar.style.display="flex"; },
+            hideBar(){ const bar=document.getElementById("announcementBar"); if(bar) bar.style.display="none"; },
+            restartAnimation(){
+                if(!this.announcementText) return;
+                this.announcementText.style.animation="none";
+                this.announcementText.style.left="-100%";
+                this.announcementText.offsetHeight;
+                const textLength=this.announcementText.offsetWidth;
+                const duration=Math.max(15,textLength/50);
+                this.announcementText.style.animation=`slide-right ${duration}s linear infinite`;
+            },
+            updateAnnouncementText(text){
+                if(!this.announcementText) return;
+                if(text?.trim()&&text!==this.lastText){
+                    this.announcementText.innerText="📢 "+text+" 📢";
+                    this.restartAnimation();
+                    this.showBar();
+                    this.lastText=text;
+                } else if(!text?.trim()){ this.announcementText.innerText=""; this.hideBar(); this.lastText=""; }
+            },
+            async saveAnnouncement(){
+                const text=this.adminTextarea?.value.trim()||"";
+                if(!text) return alert("يرجى كتابة نص الإعلان أولاً!");
+                try{ await firestoreTools.db.collection("announcements").doc("current").set({text}); alert("تم حفظ الإعلان ✅"); }
+                catch(err){ console.error(err); alert("حدث خطأ أثناء الحفظ ❌\n"+err.message); }
+                this.updateAnnouncementText(text);
+            },
+            deleteAnnouncement(){ this.adminTextarea.value=""; this.updateAnnouncementText(""); try{ firestoreTools.db.collection("announcements").doc("current").delete(); } catch(err){ console.warn("لم يتم الحذف من قاعدة البيانات:",err.message); } },
+            saveLiveAnnouncement(){ const text=this.adminTextarea.value; this.updateAnnouncementText(text); }
+        };
+
+        document.addEventListener("DOMContentLoaded",()=>AnnouncementManager.init());
+
+        const pages=['loginPage','registerPage','welcomeMessage'];
+        function showPage(pageId){ pages.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; }); const page=document.getElementById(pageId); if(page) page.style.display='block'; }
+        window.onload=()=>{ showPage('welcomeMessage'); };
+</script>
 </body>
 </html>
