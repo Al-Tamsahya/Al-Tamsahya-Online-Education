@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EducationalPlatform.API.Data;
 using Microsoft.EntityFrameworkCore;
+using EducationalPlatform.API.Models;
 
 namespace EducationalPlatform.API.Controllers
 {

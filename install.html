@@ -1,282 +1,98 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تثبيت منصة التمساحية</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>تثبيت منصة التمساحية</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            background: #f3f6fb;
+            margin: 0;
+        }
 
-  <!-- Analytics (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXX');
-  </script>
+        .card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 28px rgba(0,0,0,.15);
+            max-width: 400px;
+            width: 90%;
+        }
 
-  <!-- Google Analytics (duplicate kept intentionally) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXX');
-  </script>
+        .btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            background: #1e40af;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            margin-top: 16px;
+        }
 
-  <link rel="icon" href="/Al-Tamsahya-Online-Education/favicon.ico">
-  <link rel="apple-touch-icon" href="/Al-Tamsahya-Online-Education/icon-192.png">
+            .btn:hover {
+                background: #1d4ed8;
+            }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --primary:#1e40af;
-      --primary-hover:#1d4ed8;
-      --bg:#f3f6fb;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --radius:16px;
-      --transition:200ms ease;
-    }
-
-    [data-theme="dark"]{
-      --bg:#0f172a;
-      --card:#111827;
-      --text:#f9fafb;
-      --muted:#9ca3af;
-    }
-
-    *{ box-sizing:border-box; }
-
-    body{
-      margin:0;
-      font-family:'Cairo', sans-serif;
-      background:var(--bg);
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      color:var(--text);
-    }
-
-    .splash{
-      position:fixed;
-      inset:0;
-      background:var(--bg);
-      display:grid;
-      place-items:center;
-      z-index:9999;
-      transition:opacity .4s ease;
-    }
-    .splash.hide{ opacity:0; pointer-events:none; }
-
-    .wrapper{
-      width:100%;
-      padding:16px;
-      display:grid;
-      place-items:center;
-    }
-
-    .card{
-      position:relative;
-      width:100%;
-      max-width:420px;
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:24px 20px;
-      text-align:center;
-      box-shadow:0 10px 28px rgba(0,0,0,.15);
-      display:grid;
-      gap:16px;
-      animation:fadeUp .5s ease both;
-    }
-
-    @keyframes fadeUp{
-      from{ opacity:0; transform:translateY(16px); }
-      to{ opacity:1; transform:none; }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      *{ animation:none!important; transition:none!important; }
-    }
-
-    .theme-toggle{
-      position:absolute;
-      top:16px;
-      left:16px;
-      border:none;
-      background:none;
-      font-size:20px;
-      cursor:pointer;
-    }
-
-    .app-icon{
-      width:72px;
-      height:72px;
-      margin:auto;
-      border-radius:18px;
-      box-shadow:0 4px 10px rgba(0,0,0,.2);
-    }
-
-    h1{ margin:0; font-size:20px; color:var(--primary); }
-    .desc{ font-size:15px; line-height:1.7; color:var(--muted); }
-
-    .btn{
-      position:relative;
-      height:48px;
-      border:none;
-      border-radius:14px;
-      background:var(--primary);
-      color:#fff;
-      font-size:16px;
-      font-weight:600;
-      cursor:pointer;
-      transition:background var(--transition), transform var(--transition);
-      overflow:hidden;
-    }
-
-    .btn:hover{ background:var(--primary-hover); transform:scale(1.02); }
-    .btn:active{ transform:scale(.97); }
-    .btn[hidden]{ display:none; }
-
-    .btn.loading{
-      pointer-events:none;
-      color:transparent;
-    }
-
-    .btn.loading::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      margin:auto;
-      width:22px;
-      height:22px;
-      border:3px solid rgba(255,255,255,.4);
-      border-top-color:#fff;
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-    }
-
-    @keyframes spin{ to{ transform:rotate(360deg); } }
-
-    .success{ display:none; gap:12px; }
-    .success.show{ display:grid; }
-  </style>
+        #installBtn {
+            display: none;
+        }
+    </style>
 </head>
-
 <body>
 
-  <div class="splash" id="splash">
-    <img src="/Al-Tamsahya-Online-Education/icon-192.png" width="96" alt="">
-  </div>
+    <div class="card">
+        <h1>أهلًا بك في منصة التمساحية</h1>
+        <p>اضغط على الزر أدناه لتثبيت التطبيق للوصول السريع للموقع من الشاشة الرئيسية.</p>
+        <button id="installBtn" class="btn">📲 تثبيت التطبيق</button>
+    </div>
 
-  <main class="wrapper">
-    <section class="card" id="card">
+    <script>
+        let deferredPrompt;
 
-      <button class="theme-toggle" id="themeToggle">🌙</button>
-
-      <img src="/Al-Tamsahya-Online-Education/icon-192.png" class="app-icon">
-
-      <h1 id="title"></h1>
-      <p class="desc" id="desc"></p>
-
-      <button id="installBtn" class="btn" hidden></button>
-
-      <div class="success" id="success">
-        <h1>تم التثبيت بنجاح ✅</h1>
-        <p class="desc">يمكنك الآن فتح التطبيق من الشاشة الرئيسية</p>
-        <button class="btn" onclick="location.reload()">فتح التطبيق</button>
-      </div>
-
-    </section>
-  </main>
-
-  <script>
-    /* ---------- DOM SAFE REFERENCES ---------- */
-    const splash = document.getElementById("splash");
-    const title = document.getElementById("title");
-    const desc = document.getElementById("desc");
-    const installBtn = document.getElementById("installBtn");
-    const themeToggle = document.getElementById("themeToggle");
-    const success = document.getElementById("success");
-
-    /* Splash hide */
-    setTimeout(()=>splash.classList.add('hide'),1500);
-
-    /* ---------- A/B TEST + Analytics ---------- */
-    const variants=[
-      {title:"أهلًا بك في منصة التمساحية",desc:"منصة تعليمية رقمية آمنة.",btn:"تثبيت التطبيق"},
-      {title:"تعليم أسهل لكل بيت",desc:"تجربة تعليمية منظمة وسريعة.",btn:"ابدأ الآن"}
-    ];
-
-    const v = localStorage.abVariant ?? Math.floor(Math.random()*variants.length);
-    localStorage.abVariant = v;
-
-    title.textContent = variants[v].title;
-    desc.textContent = variants[v].desc;
-    installBtn.textContent = variants[v].btn;
-
-    gtag('event','ab_variant_view',{
-      variant: v === 0 ? 'A' : 'B'
-    });
-
-    /* ---------- Dark Mode ---------- */
-    const savedTheme = localStorage.theme;
-    if(savedTheme){
-      document.documentElement.dataset.theme = savedTheme;
-      themeToggle.textContent = savedTheme==="dark"?"☀️":"🌙";
-    }
-
-    themeToggle.onclick = ()=>{
-      const isDark = document.documentElement.dataset.theme==="dark";
-      document.documentElement.dataset.theme = isDark ? "" : "dark";
-      localStorage.theme = isDark ? "" : "dark";
-      themeToggle.textContent = isDark ? "🌙" : "☀️";
-    };
-
-    /* ---------- PWA INSTALL (CORE NOT TOUCHED) ---------- */
-    let deferredPrompt;
-
-    window.addEventListener("beforeinstallprompt",e=>{
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.hidden = false;
-
-      gtag('event','install_prompt_shown',{
-        variant: v === 0 ? 'A' : 'B'
-      });
-    });
-
-    installBtn.onclick = async ()=>{
-      if(!deferredPrompt) return;
-      installBtn.classList.add("loading");
-
-      gtag('event','install_button_clicked',{
-        variant: v === 0 ? 'A' : 'B'
-      });
-
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      installBtn.classList.remove("loading");
-
-      if(outcome==="accepted"){
-        gtag('event','install_accepted',{
-          variant: v === 0 ? 'A' : 'B'
+        // التقاط حدث قبل التثبيت (قبل ظهور مربع تثبيت PWA)
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault();           // منع ظهور المربع التلقائي
+            deferredPrompt = e;           // حفظ الحدث لاستخدامه عند الضغط على الزر
+            document.getElementById("installBtn").style.display = "inline-block"; // إظهار الزر
         });
-        installBtn.hidden = true;
-      }
-      deferredPrompt = null;
-    };
 
-    window.addEventListener("appinstalled",()=>{
-      gtag('event','app_installed',{
-        variant: v === 0 ? 'A' : 'B'
-      });
-      success.classList.add("show");
-    });
-  </script>
+        // عند الضغط على زر التثبيت
+        document.getElementById("installBtn").addEventListener("click", async () => {
+            if (!deferredPrompt) return;
+
+            deferredPrompt.prompt();       // يظهر مربع تثبيت التطبيق الرسمي
+            const choice = await deferredPrompt.userChoice;
+            deferredPrompt = null;        // إعادة تعيين الحدث بعد استخدامه
+            document.getElementById("installBtn").style.display = "none";
+
+            if (choice.outcome === "accepted") {
+                alert("✅ تم تثبيت التطبيق، يمكنك الآن فتح الموقع من الشاشة الرئيسية");
+            }
+        });
+
+        // تسجيل الـ Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log("SW مسجل ✅"))
+                .catch(err => console.error("فشل تسجيل SW ❌", err));
+        }
+
+        // إعادة التوجيه تلقائيًا إلى index.html إذا تم فتح install.html من أيقونة PWA
+        window.addEventListener("load", () => {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                window.location.href = "index.html";
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -1,4 +1,6 @@
-﻿namespace EducationalPlatform.API.Models
+﻿using static System.Collections.Specialized.BitVector32;
+
+namespace EducationalPlatform.API.Models
 {
     public class Lesson
     {
@@ -10,9 +12,9 @@
         public string? VideoUrl { get; set; }
 
         public int SubjectId { get; set; }
-        public Subject Subject { get; set; }
+        public required Subject Subject { get; set; }
         public int SectionId { get; set; }
-        public Section Section { get; set; }
+        public required Section Section { get; set; }
 
     }
 }
