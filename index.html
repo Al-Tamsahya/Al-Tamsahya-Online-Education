@@ -11,45 +11,45 @@
 
     <meta name="application-name" content="منصة التمساحية التعليمية">
     <meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-    <!-- Open Graph -->
+    <!-- Open Graph (للمشاركة على السوشيال ميديا) -->
     <meta property="og:title" content="منصة التمساحية التعليمية">
     <meta property="og:description" content="منصة عربية متخصصة في التعليم الأونلاين للمرحلة الإعدادية المصرية">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/">
     <meta property="og:image" content="https://elkhatib-ai.github.io/Al-Tamsahya-Online-Education/icon-192.png">
 
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
 
     <!-- الخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
     <!-- PWA -->
     <link rel="manifest" href="/Al-Tamsahya-Online-Education/manifest.json">
-    <meta name="theme-color" content="#1e40af">
+<meta name="theme-color" content="#1e40af">
+
 
     <!-- الأيقونات -->
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="icon" type="image/x-icon" href="/Al-Tamsahya-Online-Education/favicon.ico">
 
-    <!-- Google Analytics -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E4BFPGRT2R"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
+
         gtag('config', 'G-E4BFPGRT2R');
     </script>
 
 </head>
 
 <body>
-
-    <div id="announcementBar" class="announcement-bar" style="display:none;">
-        <span id="announcementText" class="announcement-text"></span>
-    </div>
-
     <div class="app-container">
 
         <nav class="top-nav">
@@ -177,59 +177,59 @@
     <!-- الصفحة الرئيسية بعد تسجيل الدخول -->
     <div id="mainPage" class="hidden"></div>
 
-    <!-- صفحة اختيار الصف -->
-    <div id="gradePage" class="list-container"></div>
+        <!-- صفحة اختيار الصف -->
+        <div id="gradePage" class="list-container"></div>
 
-    <!-- صفحة اختيار المادة -->
-    <div id="subjectPage" class="list-container hidden"></div>
+        <!-- صفحة اختيار المادة -->
+        <div id="subjectPage" class="list-container hidden"></div>
 
-    <!-- صفحة اختيار الوحدة -->
-    <div id="unitPage" class="list-container hidden"></div>
+        <!-- صفحة اختيار الوحدة -->
+        <div id="unitPage" class="list-container hidden"></div>
 
-    <div id="lessonPath" class="lesson-path"></div>
-    <!-- صفحة الدرس -->
-    <div id="lessonPage" class="hidden">
+        <div id="lessonPath" class="lesson-path"></div>
+        <!-- صفحة الدرس -->
+        <div id="lessonPage" class="hidden">
 
-        <div class="nav-btns"></div>
+            <div class="nav-btns"></div>
 
-        <!-- شريط التقدم -->
-        <div class="progress-box">
-            <div id="progressBar" class="progress-bar"></div>
+            <!-- شريط التقدم -->
+            <div class="progress-box">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <h2 id="lessonTitle"></h2>
+
+            <button id="toggleLessonsBtn" class="toggle-lessons-btn" onclick="toggleLessons()">
+                📚 قائمة الدروس
+            </button>
+
+            <div id="lessonList" class="list-container"></div>
+
+            <!-- أزرار التنقل بين الدروس -->
+            <div class="nav-btns">
+                <button id="prevLessonBtn" onclick="prevLesson()">⬅️ الدرس السابق</button>
+                <button id="nextLessonBtn" onclick="nextLesson()">➡️ الدرس التالي</button>
+            </div>
+
+            <div id="lessonPageContent">
+                <div id="lessonVideo"></div>
+                <div id="lessonText"></div>
+            </div>
+
         </div>
 
-        <h2 id="lessonTitle"></h2>
 
-        <button id="toggleLessonsBtn" class="toggle-lessons-btn" onclick="toggleLessons()">
-            📚 قائمة الدروس
-        </button>
+        <!-- لوحة التحكم للمدير والمشرف -->
 
-        <div id="lessonList" class="list-container"></div>
+        <div id="adminPanel" class="admin-box hidden">
+            <h3>الإدارة</h3>
 
-        <!-- أزرار التنقل بين الدروس -->
-        <div class="nav-btns">
-            <button id="prevLessonBtn" onclick="prevLesson()">⬅️ الدرس السابق</button>
-            <button id="nextLessonBtn" onclick="nextLesson()">➡️ الدرس التالي</button>
-        </div>
-
-        <div id="lessonPageContent">
-            <div id="lessonVideo"></div>
-            <div id="lessonText"></div>
-        </div>
-
-    </div>
-
-
-    <!-- لوحة التحكم للمدير والمشرف -->
-
-    <div id="adminPanel" class="admin-box hidden">
-        <h3>الإدارة</h3>
-
-        <div class="nav-btns">
-            <button class="custom-btn" onclick="showAdminSection('students')">قائمة الطلاب</button>
-            <button class="custom-btn" onclick="showAdminSection('supervisors')">المشرفون</button>
-            <button class="custom-btn" onclick="showAdminSection('tests')">الاختبارات</button>
-            <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
-        </div>
+            <div class="nav-btns">
+                <button class="custom-btn" onclick="showAdminSection('students')">قائمة الطلاب</button>
+                <button class="custom-btn" onclick="showAdminSection('supervisors')">المشرفون</button>
+                <button class="custom-btn" onclick="showAdminSection('tests')">الاختبارات</button>
+                <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
+            </div>
 
 
         <!-- النماذج المنبثقة -->
@@ -321,12 +321,12 @@
                                 {
                                     title: "درس 1 " + unit,
                                     content: "شرح نصي مفصل لدرس 1 في " + unit,
-                                    video: `videos/${sub}/${unit}-lesson1.mp4`,
+                                    video: videos/${sub}/${unit}-lesson1.mp4,
                                 },
                                 {
                                     title: "درس 2 " + unit,
                                     content: "شرح نصي مفصل لدرس 2 في " + unit,
-                                    video: `videos/${sub}/${unit}-lesson2.mp4`,
+                                    video: videos/${sub}/${unit}-lesson2.mp4,
                                 },
                             ];
                         });
@@ -374,49 +374,49 @@
 
                     // 👑 ADMIN
                     if (currentUser?.role === "ADMIN") {
-                        actions += `
-                        <button class="custom-btn"
-                          onclick="editStudent('${s.email}')">✏️ تعديل</button>
-                      `;
+                        actions += 
+                <button class="custom-btn"
+                  onclick="editStudent('${s.email}')">✏️ تعديل</button>
+              ;
 
                         if (!s.approved) {
-                            actions += `
-                          <button class="custom-btn"
-                            onclick="setApprove('${s.id}', true)">✅ موافقة</button>
+                            actions += 
+                  <button class="custom-btn"
+                    onclick="setApprove('${s.id}', true)">✅ موافقة</button>
 
-                          <button class="custom-btn danger"
-                            onclick="rejectStudent('${s.id}')">❌ رفض</button>
-                        `;
+                  <button class="custom-btn danger"
+                    onclick="rejectStudent('${s.id}')">❌ رفض</button>
+                ;
                         }
                     }
 
                     // 👤 SUPERVISOR (موافقة فقط)
                     if (currentUser?.role === "SUPERVISOR" && !s.approved) {
-                        actions += `
-                        <button class="custom-btn"
-                          onclick="setApprove('${s.id}', true)">✅ موافقة</button>
-                      `;
+                        actions += 
+                <button class="custom-btn"
+                  onclick="setApprove('${s.id}', true)">✅ موافقة</button>
+              ;
                     }
 
-                    rows += `
-                      <tr data-email="${(s.email || "").toLowerCase()}">
-                        <td>${s.email || "-"}</td>
-                        <td>
-                          ${s.approved
-                            ? `<span class="status approved">🟢 مفعل</span>`
-                            : `<span class="status pending">🟡 قيد المراجعة</span>`
+                    rows += 
+              <tr data-email="${(s.email || "").toLowerCase()}">
+                <td>${s.email || "-"}</td>
+                <td>
+                  ${s.approved
+                            ? <span class="status approved">🟢 مفعل</span>
+                            : <span class="status pending">🟡 قيد المراجعة</span>
                         }
-                        </td>
-                        <td>${s.grade ?? "-"}</td>
-                        <td style="display:flex; gap:6px; justify-content:center;">
-                          ${actions || "-"}
-                        </td>
-                      </tr>
-                    `;
+                </td>
+                <td>${s.grade ?? "-"}</td>
+                <td style="display:flex; gap:6px; justify-content:center;">
+                  ${actions || "-"}
+                </td>
+              </tr>
+            ;
                 });
 
                 document.getElementById("studentsTableBody").innerHTML =
-                    rows || `<tr><td colspan="4">لا يوجد طلاب</td></tr>`;
+                    rows || <tr><td colspan="4">لا يوجد طلاب</td></tr>;
             }
 
 
@@ -452,7 +452,7 @@
             function saveLastLesson(index) {
                 if (!currentUser || !currentGrade || !currentSubject || !currentUnit) return;
 
-                const key = `lastLesson_${currentUser.email}_${currentGrade}_${currentSubject}_${currentUnit}`;
+                const key = lastLesson_${currentUser.email}_${currentGrade}_${currentSubject}_${currentUnit};
                 localStorage.setItem(key, index);
             }
 
@@ -460,7 +460,7 @@
             function getLastLesson() {
                 if (!currentUser || !currentGrade || !currentSubject || !currentUnit) return null;
 
-                const key = `lastLesson_${currentUser.email}_${currentGrade}_${currentSubject}_${currentUnit}`;
+                const key = lastLesson_${currentUser.email}_${currentGrade}_${currentSubject}_${currentUnit};
                 const index = localStorage.getItem(key);
 
                 return index !== null ? parseInt(index) : null;
@@ -782,12 +782,12 @@
                 const container = document.getElementById("gradePage");
 
                 // هيكل منسق
-                container.innerHTML = `
-                                                                                                                                        <section class="grades-section">
-                                                                                                                                            <h2>اختر الصف الدراسي</h2>
-                                                                                                                                            <div class="grades-grid"></div>
-                                                                                                                                        </section>
-                                                                                                                                    `;
+                container.innerHTML = 
+                                                                                                                                <section class="grades-section">
+                                                                                                                                    <h2>اختر الصف الدراسي</h2>
+                                                                                                                                    <div class="grades-grid"></div>
+                                                                                                                                </section>
+                                                                                                                            ;
 
                 const grid = container.querySelector(".grades-grid");
 
@@ -820,13 +820,13 @@
 
                 const container = document.getElementById("subjectPage");
 
-                container.innerHTML = `
-                                                                                                                                        <section class="subjects-section">
-                                                                                                                                            <h2>${grade}</h2>
-                                                                                                                                            <p class="section-subtitle">اختر المادة الدراسية</p>
-                                                                                                                                            <div class="subjects-grid"></div>
-                                                                                                                                        </section>
-                                                                                                                                    `;
+                container.innerHTML = 
+                                                                                                                                <section class="subjects-section">
+                                                                                                                                    <h2>${grade}</h2>
+                                                                                                                                    <p class="section-subtitle">اختر المادة الدراسية</p>
+                                                                                                                                    <div class="subjects-grid"></div>
+                                                                                                                                </section>
+                                                                                                                            ;
 
                 const grid = container.querySelector(".subjects-grid");
 
@@ -842,10 +842,10 @@
                         "النشاط الفني/الحاسب الآلي/الرياضة": "🎨"
                     };
 
-                    btn.innerHTML = `
-                                                                                                                            <div class="subject-icon">${icons[sub] || "📘"}</div>
-                                                                                                                            <div>${sub}</div>
-`;
+                    btn.innerHTML = 
+                                                                                                                    <div class="subject-icon">${icons[sub] || "📘"}</div>
+                                                                                                                    <div>${sub}</div>
+;
 
                     btn.className = "subject-card";
                     btn.onclick = () => {
@@ -871,13 +871,13 @@
 
                 const container = document.getElementById("unitPage");
 
-                container.innerHTML = `
-                                                                                                                                        <section class="units-section">
-                                                                                                                                            <h2>${subject}</h2>
-                                                                                                                                            <p class="section-subtitle">اختر الوحدة</p>
-                                                                                                                                            <div class="units-grid"></div>
-                                                                                                                                        </section>
-                                                                                                                                    `;
+                container.innerHTML = 
+                                                                                                                                <section class="units-section">
+                                                                                                                                    <h2>${subject}</h2>
+                                                                                                                                    <p class="section-subtitle">اختر الوحدة</p>
+                                                                                                                                    <div class="units-grid"></div>
+                                                                                                                                </section>
+                                                                                                                            ;
 
                 const grid = container.querySelector(".units-grid");
 
@@ -917,7 +917,7 @@
                 updateBackButton();
 
                 document.getElementById("lessonTitle").textContent =
-                    `${grade} - ${subject} - ${unit}`;
+                    ${grade} - ${subject} - ${unit};
 
                 renderLessonList();
                 loadLesson(currentLessonIndex);
@@ -927,20 +927,20 @@
                 const videoDiv = document.getElementById("lessonVideo");
                 const textDiv = document.getElementById("lessonText");
 
-                videoDiv.innerHTML = `
-                        <video
-                          id="lessonPlayer"
-                          controls
-                          playsinline
-                          preload="auto"
-                          muted
-                          width="100%"
-                          style="max-height: 220px; border-radius: 12px;"
-                        >
-                          <source src="./videos/Lesson1.mp4.mp4?v=1" type="video/mp4">
-                          المتصفح لا يدعم تشغيل الفيديو
-                        </video>
-                      `;
+                videoDiv.innerHTML = 
+                <video
+                  id="lessonPlayer"
+                  controls
+                  playsinline
+                  preload="auto"
+                  muted
+                  width="100%"
+                  style="max-height: 220px; border-radius: 12px;"
+                >
+                  <source src="./videos/Lesson1.mp4.mp4?v=1" type="video/mp4">
+                  المتصفح لا يدعم تشغيل الفيديو
+                </video>
+              ;
 
                 const video = document.getElementById("lessonPlayer");
                 if (video) {
@@ -972,7 +972,7 @@
                 const listDiv = document.getElementById("lessonList");
                 if (!listDiv) return;
 
-                listDiv.innerHTML = `<div class="lessons-grid"></div>`;
+                listDiv.innerHTML = <div class="lessons-grid"></div>;
                 const grid = listDiv.querySelector(".lessons-grid");
 
                 currentLessonsList.forEach((lesson, index) => {
@@ -994,22 +994,13 @@
                 const lesson = currentLessonsList[index];
 
                 // مسار الدرس
-                document.getElementById("lessonPath").innerHTML = `
-<<<<<<< HEAD
-                                                                                                                                <span>${currentSubject}</span>
-                                                                                                                                <span> &gt; </span>
-                                                                                                                                <span>${currentUnit}</span>
-                                                                                                                                <span> &gt; </span>
-                                                                                                                                <strong>${lesson.title}</strong>
-                                                                                                                            `;
-=======
-                <span>${currentSubject}</span>
-               <span> &gt; </span>
-                <span>${currentUnit}</span>
-                <span> &gt; </span>
-                <strong>${lesson.title}</strong>
-                `;
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
+                document.getElementById("lessonPath").innerHTML = 
+                                                                                                                        <span>${currentSubject}</span>
+                                                                                                                        <span> &gt; </span>
+                                                                                                                        <span>${currentUnit}</span>
+                                                                                                                        <span> &gt; </span>
+                                                                                                                        <strong>${lesson.title}</strong>
+                                                                                                                    ;
 
                 showLessonDetail(lesson);
 
@@ -1170,77 +1161,77 @@
                         if (student.approved) approvedStudents++;
                         else pendingStudents++;
 
-                        rows += `
+                        rows += 
 <tr data-email="${(student.email || "").toLowerCase()}">
-                  <td>${student.email || "-"}</td>
-                  <td>${student.approved ? "🟢 مفعل" : "🟡 قيد المراجعة"}</td>
-                  <td>${student.grade || "-"}</td>
+          <td>${student.email || "-"}</td>
+          <td>${student.approved ? "🟢 مفعل" : "🟡 قيد المراجعة"}</td>
+          <td>${student.grade || "-"}</td>
 
-                  <td class="actions-cell">
-                    <div class="actions-wrapper">
+          <td class="actions-cell">
+            <div class="actions-wrapper">
 
-                      ${currentUser?.role === "ADMIN"
-                                ? `
-                            <button class="custom-btn" onclick="editStudent('${student.email}')">✏️ تعديل</button>
-                            <button class="custom-btn danger" onclick="deleteUser('${doc.id}', 'students')">🗑 حذف</button>
-                            ${!student.approved
-                                    ? `
-                                  <button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>
-                                  <button class="custom-btn danger" onclick="rejectStudent('${doc.id}')">❌ رفض</button>
-                                `
+              ${currentUser?.role === "ADMIN"
+                                ? 
+                    <button class="custom-btn" onclick="editStudent('${student.email}')">✏️ تعديل</button>
+                    <button class="custom-btn danger" onclick="deleteUser('${doc.id}', 'students')">🗑 حذف</button>
+                    ${!student.approved
+                                    ? 
+                          <button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>
+                          <button class="custom-btn danger" onclick="rejectStudent('${doc.id}')">❌ رفض</button>
+                        
                                     : ""
                                 }
-                          `
+                  
                                 : ""
                             }
 
-                      ${currentUser?.role === "SUPERVISOR" && !student.approved
-                                ? `<button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>`
+              ${currentUser?.role === "SUPERVISOR" && !student.approved
+                                ? <button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>
                                 : ""
                             }
 
-                    </div>
-                  </td>
-</tr>`;
+            </div>
+          </td>
+</tr>;
                     });
 
                     // ✅ رسم الصفحة مرة واحدة فقط
-                    container.innerHTML = `
-                      <h4>قائمة الطلاب</h4>
+                    container.innerHTML = 
+              <h4>قائمة الطلاب</h4>
 
-                      <input id="studentSearch"
-                        onkeyup="filterStudents()"
-                        placeholder="🔍 ابحث بالبريد">
+              <input id="studentSearch"
+                onkeyup="filterStudents()"
+                placeholder="🔍 ابحث بالبريد">
 
-                      <div style="margin:10px 0;">
-                        📚 عدد الطلاب: <strong>${totalStudents}</strong>
-                      </div>
+              <div style="margin:10px 0;">
+                📚 عدد الطلاب: <strong>${totalStudents}</strong>
+              </div>
 
-                      <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
-                        <div class="stat-box approved">🟢 مفعلين: ${approvedStudents}</div>
-                        <div class="stat-box pending">🟡 قيد المراجعة: ${pendingStudents}</div>
-                      </div>
+              <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                <div class="stat-box approved">🟢 مفعلين: ${approvedStudents}</div>
+                <div class="stat-box pending">🟡 قيد المراجعة: ${pendingStudents}</div>
+              </div>
 
-                      <div class="table-container">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>البريد الإلكتروني</th>
-                              <th>الحالة</th>
-                              <th>الدرجة</th>
-                              <th>خيارات</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            ${rows || `<tr><td colspan="4">لا يوجد طلاب</td></tr>`}
-                          </tbody>
-                        </table>
-                      </div>
-                    `;
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>البريد الإلكتروني</th>
+                      <th>الحالة</th>
+                      <th>الدرجة</th>
+                      <th>خيارات</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rows || <tr><td colspan="4">لا يوجد طلاب</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            ;
 
                 } catch (err) {
                     console.error(err);
-                    container.innerHTML = `<p>حدث خطأ ❌<br>${err.message}</p>`;
+                    container.innerHTML = <p>حدث خطأ ❌<br>${err.message}</p>;
                 }
             }
 
@@ -1278,6 +1269,8 @@
                         password: newPassword.trim(),
                         name: newEmail.trim().toLowerCase().split("@")[0]
                     });
+
+
 
                     alert("تم تعديل بيانات الطالب ✅");
                     renderStudents();
@@ -1354,15 +1347,15 @@
                     document.getElementById(id).classList.add("hidden")
                 );
 
-                container.innerHTML = `
-                        <h4>المشرفون</h4>
-                        <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
-                        <p>جاري تحميل المشرفين...</p>
-                      `;
+                container.innerHTML = 
+                <h4>المشرفون</h4>
+                <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+                <p>جاري تحميل المشرفين...</p>
+              ;
 
                 try {
                     if (!window.firestoreTools || !window.firestoreTools.db) {
-                        container.innerHTML = `<p>Firebase لم يتم تحميله بعد ❌</p>`;
+                        container.innerHTML = <p>Firebase لم يتم تحميله بعد ❌</p>;
                         return;
                     }
 
@@ -1380,42 +1373,42 @@
                         const s = docSnap.data();
                         const id = docSnap.id;
 
-                        rows += `
-                            <tr>
-                              <td>${s.email || "-"}</td>
-                              <td>
-                                <button class="custom-btn" onclick="deleteUser('${id}', 'users')">حذف</button>
-                              </td>
-                            </tr>
-                          `;
+                        rows += 
+                    <tr>
+                      <td>${s.email || "-"}</td>
+                      <td>
+                        <button class="custom-btn" onclick="deleteUser('${id}', 'users')">حذف</button>
+                      </td>
+                    </tr>
+                  ;
                     });
 
-                    container.innerHTML = `
-                          <h4>المشرفون</h4>
-                          <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
-                          <div style="margin:10px 0;">
-                  <button onclick="filterStudents('all')">الكل</button>
-                  <button onclick="filterStudents('approved')">🟢 مفعلين</button>
-                  <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
+                    container.innerHTML = 
+                  <h4>المشرفون</h4>
+                  <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+                  <div style="margin:10px 0;">
+          <button onclick="filterStudents('all')">الكل</button>
+          <button onclick="filterStudents('approved')">🟢 مفعلين</button>
+          <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
 </div>
 
-                          <div class="table-container">
-                            <table>
-                              <thead>
-                                <tr>
-                                  <th>البريد الإلكتروني</th>
-                                  <th>خيارات</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                ${rows || `<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>`}
-                              </tbody>
-                            </table>
-                          </div>
-                        `;
+                  <div class="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>البريد الإلكتروني</th>
+                          <th>خيارات</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${rows || <tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>}
+                      </tbody>
+                    </table>
+                  </div>
+                ;
                 } catch (err) {
                     console.error(err);
-                    container.innerHTML = `<p>حدث خطأ أثناء تحميل المشرفين ❌<br>${err.message}</p>`;
+                    container.innerHTML = <p>حدث خطأ أثناء تحميل المشرفين ❌<br>${err.message}</p>;
                 }
             }
 
@@ -1546,7 +1539,7 @@
             // أقسام الإدارة الأخرى (نموذج مبدئي)
             function renderTests() {
                 const container = document.getElementById("testsList");
-                container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
+                container.innerHTML = <h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>;
                 container.classList.remove("hidden");
                 ["studentsList", "supervisorsList", "resultsList"].forEach((id) =>
                     document.getElementById(id).classList.add("hidden")
@@ -1554,7 +1547,7 @@
             }
             function renderResults() {
                 const container = document.getElementById("resultsList");
-                container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
+                container.innerHTML = <h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>;
                 container.classList.remove("hidden");
                 ["studentsList", "supervisorsList", "testsList"].forEach((id) =>
                     document.getElementById(id).classList.add("hidden")
@@ -1609,29 +1602,26 @@
                 list.style.display = list.style.display === "none" ? "block" : "none";
             }
 
+            
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
 
-            function toggleDarkMode() {
-                document.body.classList.toggle("dark-mode");
-            }
 
-
-            // حفظ الاختيار
-            localStorage.setItem(
-                "darkMode",
-                document.body.classList.contains("dark-mode")
-            );
-
+                // حفظ الاختيار
+                localStorage.setItem(
+                    "darkMode",
+                    document.body.classList.contains("dark-mode")
+                );
+            
 
             // تحميل الوضع المحفوظ
             if (localStorage.getItem("darkMode") === "true") {
                 document.body.classList.add("dark-mode");
             }
 
-<<<<<<< HEAD
 
         </script>
-=======
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
         <!--<div>
         <script src="js/auth.js"></script>
         <script src="js/data.js"></script>
@@ -1643,389 +1633,314 @@
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-        <!-- Firebase init -->
-<<<<<<< HEAD
+<!-- Firebase init -->
+     
+    <script src="js/firebase.js"></script>
 
-        <script src="js/firebase.js"></script>
 
+<!-- 🔹 شريط الإعلان لجميع الزوار -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-        <!-- 🔹 شريط الإعلان لجميع الزوار -->
-        <div id="announcementBar" class="announcement-bar" style="display:none;">
-            <span id="announcementText" class="announcement-text"></span>
-        </div>
+<style>
+.announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f59e0b;
+    color: #000;
+    overflow: hidden;
+    z-index: 9999;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
+}
+@keyframes slide-right {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+</style>
 
-        <style>
-            .announcement-bar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: #f59e0b;
-                color: #000;
-                overflow: hidden;
-                z-index: 9999;
-                height: 45px;
-                display: flex;
-                align-items: center;
-                font-family: Arial, sans-serif;
-            }
-
-            .announcement-text {
-                white-space: nowrap;
-                font-weight: bold;
-                font-size: 16px;
-                display: inline-block;
-                position: relative;
-                left: -100%;
-            }
-
-            @keyframes slide-right {
-                0% {
-                    left: -100%;
-                }
-
-                100% {
-                    left: 100%;
-                }
-            }
-        </style>
-
-=======
 <script>
-  // إعداد Firebase
-  var firebaseConfig = {
-    apiKey: "AIzaSyDRAwI-FZxQyD_KRPcdtLhAVbjgwLSZ9xU",
-    authDomain: "ai-tamsahya-online-education.firebaseapp.com",
-    projectId: "ai-tamsahya-online-education",
-    storageBucket: "ai-tamsahya-online-education.firebasestorage.app",
-    messagingSenderId: "853000263503",
-    appId: "1:853000263503:web:5c6406ac42c8dcffbb573a"
-  };
+document.addEventListener("DOMContentLoaded", async () => {
+    const announcementBar = document.getElementById("announcementBar");
+    const announcementText = document.getElementById("announcementText");
 
-  firebase.initializeApp(firebaseConfig);
+    if (!announcementBar || !announcementText || !firestoreTools) return;
 
-  const db = firebase.firestore();
+    async function loadAnnouncement() {
+        try {
+            const doc = await firestoreTools.db.collection("announcements").doc("current").get();
+            if (doc.exists && doc.data().text?.trim()) {
+                announcementText.innerText = "📢 " + doc.data().text + " 📢";
+                announcementText.style.animation = "none";
+                announcementText.style.left = "-100%";
+                announcementText.offsetHeight;
+                const duration = Math.max(15, announcementText.offsetWidth / 50);
+                announcementText.style.animation = slide-right ${duration}s linear infinite;
+                announcementBar.style.display = "flex";
+            } else {
+                announcementBar.style.display = "none";
+            }
+        } catch (err) {
+            console.error("Error loading announcement:", err);
+        }
+    }
 
-  const firestoreTools = {
-      db: db,
-      collection: (name) => db.collection(name),
-      addDoc: (collectionRef, data) => collectionRef.add(data)
-  };
+    loadAnnouncement();              // تحميل الإعلان عند فتح الصفحة
+    setInterval(loadAnnouncement, 60000); // تحديث كل دقيقة
+});
+    
+let newWorker; // إعلان متغير عام للوصول له في كل مكان
 
-  console.log("✅ Firebase Ready");
+if ('serviceWorker' in navigator) {
+
+  // تسجيل Service Worker
+  navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
+    .then(registration => {
+      console.log("Service Worker registered successfully ✅");
+
+      // تحديث تلقائي عند وجود نسخة جديدة
+      registration.addEventListener('updatefound', () => {
+        newWorker = registration.installing;
+
+        newWorker.addEventListener('statechange', () => {
+          // إذا تم تثبيت نسخة جديدة وكانت هناك نسخة سابقة
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+
+            // إرسال رسالة لتخطي الانتظار
+            newWorker.postMessage({ type: 'SKIP_WAITING' });
+
+            // إظهار صندوق التحديث للمستخدم
+            const updateBox = document.getElementById("updateNotification");
+            if (updateBox) {
+              updateBox.style.display = "block";
+            }
+          }
+        });
+      });
+
+    })
+    .catch(error => {
+      console.error("Service Worker registration failed ❌", error);
+    });
+}
+
+// زر تحديث التطبيق
+const updateBtn = document.getElementById("updateBtn");
+if (updateBtn) {
+  updateBtn.addEventListener("click", () => {
+    if (newWorker) {
+      newWorker.postMessage({ type: "SKIP_WAITING" });
+    }
+  });
+}
+
+// إعادة تحميل الصفحة عند تغيير الـ Service Worker
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+  window.location.reload();
+});
 </script>
 
 
 
-        <style>
-            .announcement-bar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: #f59e0b;
-                color: #000;
-                overflow: hidden;
-                z-index: 9999;
-                height: 45px;
-                display: flex;
-                align-items: center;
-                font-family: Arial, sans-serif;
-            }
+<!-- جميع وظائف الأدمن والإعلانات -->
+<script>
+    // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
+    const adminEmail = "admin@gmail.com";
+    const loggedEmail = localStorage.getItem("loggedEmail") || "";
 
-            .announcement-text {
-                white-space: nowrap;
-                font-weight: bold;
-                font-size: 16px;
-                display: inline-block;
-                position: relative;
-                left: -100%;
-            }
+    // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
+    window.currentUser = window.currentUser || {
+        email: loggedEmail,
+        role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+    };
 
-            @keyframes slide-right {
-                0% {
-                    left: -100%;
+    // متغير لتثبيت التطبيق PWA
+    let deferredPrompt = null;
+
+    // 🔹 إعلان متغير واحد فقط لجميع التحركات
+  animationTimeout = null;
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ======= لوحة الأدمن =======
+    if (window.currentUser.role === "ADMIN") {
+        const adminPanel = document.getElementById("admin-panel");
+        if (adminPanel) adminPanel.style.display = "block";
+
+        const titleInput = document.getElementById("ad-title");
+        const contentInput = document.getElementById("ad-content");
+        const addBtn = document.getElementById("add-ad-btn");
+
+        if (addBtn && titleInput && contentInput) {
+            addBtn.addEventListener("click", async () => {
+                const title = titleInput.value.trim();
+                const content = contentInput.value.trim();
+                if (!title || !content) return alert("الرجاء ملء العنوان والمحتوى!");
+
+                try {
+                    await firestoreTools.addDoc(
+                        firestoreTools.collection("ads"),
+                        { title, content, date: new Date() }
+                    );
+                    titleInput.value = "";
+                    contentInput.value = "";
+                    alert("تم إضافة الإعلان بنجاح!");
+                } catch (err) {
+                    console.error(err);
+                    alert("حدث خطأ أثناء إضافة الإعلان ❌\n" + err.message);
                 }
-
-                100% {
-                    left: 100%;
-                }
-            }
-        </style>
-
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
-        <script>
-            document.addEventListener("DOMContentLoaded", async () => {
-                const announcementBar = document.getElementById("announcementBar");
-                const announcementText = document.getElementById("announcementText");
-
-                if (!announcementBar || !announcementText || !firestoreTools) return;
-
-                async function loadAnnouncement() {
-                    try {
-                        const doc = await firestoreTools.db.collection("announcements").doc("current").get();
-                        if (doc.exists && doc.data().text?.trim()) {
-                            announcementText.innerText = "📢 " + doc.data().text + " 📢";
-                            announcementText.style.animation = "none";
-                            announcementText.style.left = "-100%";
-                            announcementText.offsetHeight;
-                            const duration = Math.max(15, announcementText.offsetWidth / 50);
-                            announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-                            announcementBar.style.display = "flex";
-                        } else {
-                            announcementBar.style.display = "none";
-                        }
-                    } catch (err) {
-                        console.error("Error loading announcement:", err);
-                    }
-                }
-
-                loadAnnouncement();              // تحميل الإعلان عند فتح الصفحة
-                setInterval(loadAnnouncement, 60000); // تحديث كل دقيقة
             });
+        }
+    }
 
-            let newWorker; // إعلان متغير عام للوصول له في كل مكان
-
-            if ('serviceWorker' in navigator) {
-
-                // تسجيل Service Worker
-                navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
-                    .then(registration => {
-                        console.log("Service Worker registered successfully ✅");
-
-                        // تحديث تلقائي عند وجود نسخة جديدة
-                        registration.addEventListener('updatefound', () => {
-                            newWorker = registration.installing;
-
-                            newWorker.addEventListener('statechange', () => {
-                                // إذا تم تثبيت نسخة جديدة وكانت هناك نسخة سابقة
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-
-                                    // إرسال رسالة لتخطي الانتظار
-                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-
-                                    // إظهار صندوق التحديث للمستخدم
-                                    const updateBox = document.getElementById("updateNotification");
-                                    if (updateBox) {
-                                        updateBox.style.display = "block";
-                                    }
-                                }
-                            });
-                        });
-
-                    })
-                    .catch(error => {
-                        console.error("Service Worker registration failed ❌", error);
-                    });
-            }
-
-            // زر تحديث التطبيق
-            const updateBtn = document.getElementById("updateBtn");
-            if (updateBtn) {
-                updateBtn.addEventListener("click", () => {
-                    if (newWorker) {
-                        newWorker.postMessage({ type: "SKIP_WAITING" });
-                    }
-                });
-            }
-
-            // إعادة تحميل الصفحة عند تغيير الـ Service Worker
-            navigator.serviceWorker.addEventListener("controllerchange", () => {
-                window.location.reload();
-            });
-        </script>
+}); // << نهاية DOMContentLoaded
+</script>
 
 
+<!-- ======= عرض الإعلانات ======= -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const adsContainer = document.getElementById("ads-container");
 
-        <!-- جميع وظائف الأدمن والإعلانات -->
-        <script>
-            // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
-            const adminEmail = "admin@gmail.com";
-            const loggedEmail = localStorage.getItem("loggedEmail") || "";
-
-            // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
-            window.currentUser = window.currentUser || {
-                email: loggedEmail,
-                role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-            };
-
-            // متغير لتثبيت التطبيق PWA
-            let deferredPrompt = null;
-
-            // 🔹 إعلان متغير واحد فقط لجميع التحركات
-            animationTimeout = null;
-        </script>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-
-                // ======= لوحة الأدمن =======
-                if (window.currentUser.role === "ADMIN") {
-                    const adminPanel = document.getElementById("admin-panel");
-                    if (adminPanel) adminPanel.style.display = "block";
-
-                    const titleInput = document.getElementById("ad-title");
-                    const contentInput = document.getElementById("ad-content");
-                    const addBtn = document.getElementById("add-ad-btn");
-
-                    if (addBtn && titleInput && contentInput) {
-                        addBtn.addEventListener("click", async () => {
-                            const title = titleInput.value.trim();
-                            const content = contentInput.value.trim();
-                            if (!title || !content) return alert("الرجاء ملء العنوان والمحتوى!");
-
-                            try {
-                                await firestoreTools.addDoc(
-                                    firestoreTools.collection("ads"),
-                                    { title, content, date: new Date() }
-                                );
-                                titleInput.value = "";
-                                contentInput.value = "";
-                                alert("تم إضافة الإعلان بنجاح!");
-                            } catch (err) {
-                                console.error(err);
-                                alert("حدث خطأ أثناء إضافة الإعلان ❌\n" + err.message);
-                            }
-                        });
-                    }
-                }
-
-            }); // << نهاية DOMContentLoaded
-        </script>
-
-
-        <!-- ======= عرض الإعلانات ======= -->
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const adsContainer = document.getElementById("ads-container");
-
-                if (adsContainer && window.firestoreTools && firestoreTools.collection) {
-                    firestoreTools.collection("ads")
-                        .orderBy("date", "desc")
-                        .onSnapshot(snapshot => {
-                            adsContainer.innerHTML = "";
-                            snapshot.forEach(doc => {
-                                const ad = doc.data();
-                                const adElement = document.createElement("div");
-                                adElement.className = "ad";
-                                adElement.innerHTML = `
-                                <h3>${ad.title}</h3>
-                                <p>${ad.content}</p>
-                                <small>${ad.date.toDate().toLocaleString()}</small>
-                            `;
-                                adsContainer.appendChild(adElement);
-                            });
-                        });
-                }
-
-                // ======= تثبيت التطبيق PWA =======
-                const installBtn = document.getElementById("installBtn");
-                let deferredPrompt;
-
-                window.addEventListener("beforeinstallprompt", (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    if (installBtn) installBtn.hidden = false;
-                });
-
-                if (installBtn) {
-                    installBtn.addEventListener("click", async () => {
-                        if (!deferredPrompt) {
-                            alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
-                            return;
-                        }
-
-                        deferredPrompt.prompt();
-                        const { outcome } = await deferredPrompt.userChoice;
-                        if (outcome === "accepted") {
-                            installBtn.hidden = true;
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-
-                window.addEventListener("appinstalled", () => {
-                    if (installBtn) installBtn.hidden = true;
-                    alert("تم تثبيت التطبيق بنجاح ✅");
+    if (adsContainer && window.firestoreTools && firestoreTools.collection) {
+        firestoreTools.collection("ads")
+            .orderBy("date", "desc")
+            .onSnapshot(snapshot => {
+                adsContainer.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const ad = doc.data();
+                    const adElement = document.createElement("div");
+                    adElement.className = "ad";
+                    adElement.innerHTML = 
+                        <h3>${ad.title}</h3>
+                        <p>${ad.content}</p>
+                        <small>${ad.date.toDate().toLocaleString()}</small>
+                    ;
+                    adsContainer.appendChild(adElement);
                 });
             });
-        </script>
+    }
+
+    // ======= تثبيت التطبيق PWA =======
+    const installBtn = document.getElementById("installBtn");
+    let deferredPrompt;
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) installBtn.hidden = false;
+    });
+
+    if (installBtn) {
+        installBtn.addEventListener("click", async () => {
+            if (!deferredPrompt) {
+                alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
+                return;
+            }
+
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === "accepted") {
+                installBtn.hidden = true;
+            }
+            deferredPrompt = null;
+        });
+    }
+
+    window.addEventListener("appinstalled", () => {
+        if (installBtn) installBtn.hidden = true;
+        alert("تم تثبيت التطبيق بنجاح ✅");
+    });
+});
+</script>
 
 
 
         <!-- ======= وظائف الشريط المتحرك (تم التعديل) ======= -->
-        <script>
-            let animationTimeout = null;
+<script>
+let animationTimeout = null;
 
-            // تشغيل الإعلان المتحرك
-            function startAnnouncementAnimation(text, duration = 12000) {
-                const bar = document.getElementById("announcementBar");
-                const textBox = document.getElementById("announcementText");
+// تشغيل الإعلان المتحرك
+function startAnnouncementAnimation(text, duration = 12000) {
+    const bar = document.getElementById("announcementBar");
+    const textBox = document.getElementById("announcementText");
 
-                if (!bar || !textBox || !text?.trim()) {
-                    hideAnnouncementBar();
-                    return;
-                }
+    if (!bar || !textBox || !text?.trim()) {
+        hideAnnouncementBar();
+        return;
+    }
 
-                textBox.innerText = "📢 " + text + " 📢";
-                bar.style.display = "flex";
+    textBox.innerText = "📢 " + text + " 📢";
+    bar.style.display = "flex";
 
-                const screenWidth = bar.offsetWidth;
-                const textWidth = textBox.offsetWidth;
+    const screenWidth = bar.offsetWidth;
+    const textWidth = textBox.offsetWidth;
 
-                function move() {
-                    textBox.style.transition = "none";
-                    textBox.style.left = -textWidth + "px";
+    function move() {
+        textBox.style.transition = "none";
+        textBox.style.left = -textWidth + "px";
 
-                    setTimeout(() => {
-                        textBox.style.transition = `left ${duration}ms linear`;
-                        textBox.style.left = screenWidth + "px";
-                    }, 50);
+        setTimeout(() => {
+            textBox.style.transition = left ${duration}ms linear;
+            textBox.style.left = screenWidth + "px";
+        }, 50);
 
-                    animationTimeout = setTimeout(move, duration + 2000);
-                }
+        animationTimeout = setTimeout(move, duration + 2000);
+    }
 
-                move();
-            }
+    move();
+}
 
-            // إخفاء شريط الإعلان
-            function hideAnnouncementBar() {
-                const bar = document.getElementById("announcementBar");
-                if (bar) bar.style.display = "none";
+// إخفاء شريط الإعلان
+function hideAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
 
-                if (animationTimeout) {
-                    clearTimeout(animationTimeout);
-                    animationTimeout = null;
-                }
-            }
-        </script>
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
+    }
+}
+</script>
 
 
-        <!-- زر تثبيت التطبيق -->
-        <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
+<!-- زر تثبيت التطبيق -->
+<button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
-<<<<<<< HEAD
-        <!-- ======= شريط الإعلان العام ======= -->
-        <div id="announcementBar" class="announcement-bar" style="display:none;">
-            <span id="announcementText" class="announcement-text"></span>
-        </div>
+<!-- ======= شريط الإعلان العام ======= -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-=======
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
-        <!-- ======= لوحة الأدمن للتحكم بالإعلان ======= -->
-        <div id="adminAdBox" style="margin-top:60px; display:none;">
-            <h4>📢 إعلان عام للطلاب</h4>
-            <textarea id="adminAdText"
-                      placeholder="اكتب الإعلان هنا..."
-                      style="width:100%; min-height:80px; padding:8px;"></textarea>
-            <div style="margin-top:10px;">
-                <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
-                <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
-            </div>
-        </div>
+<!-- ======= لوحة الأدمن للتحكم بالإعلان ======= -->
+<div id="adminAdBox" style="margin-top:60px; display:none;">
+    <h4>📢 إعلان عام للطلاب</h4>
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
 
-        <!-- ======= إشعار تحديث التطبيق ======= -->
-        <div id="updateNotification" style="
+<!-- ======= إشعار تحديث التطبيق ======= -->
+<div id="updateNotification" style="
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -2038,8 +1953,8 @@
   z-index: 9999;
   font-family: Arial;
 ">
-            🔄 يوجد تحديث جديد للتطبيق
-            <button id="updateBtn" style="
+  🔄 يوجد تحديث جديد للتطبيق
+  <button id="updateBtn" style="
     margin-right:10px;
     padding:6px 12px;
     border:none;
@@ -2049,167 +1964,155 @@
     cursor:pointer;
     font-weight:bold;
   ">
-                تحديث الآن
-            </button>
-        </div>
+    تحديث الآن
+  </button>
+</div>
 
-        <style>
-            .announcement-bar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                background: #f59e0b;
-                color: #000;
-                overflow: hidden;
-                z-index: 9999;
-                height: 45px;
-                display: flex;
-                align-items: center;
-            }
+<style>
+.announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #f59e0b;
+    color: #000;
+    overflow: hidden;
+    z-index: 9999;
+    height: 45px;
+    display: flex;
+    align-items: center;
+}
 
-            .announcement-text {
-                white-space: nowrap;
-                font-weight: bold;
-                font-size: 16px;
-                display: inline-block;
-                position: relative;
-                left: -100%;
-            }
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
+}
 
-            @keyframes slide-right {
-                0% {
-                    left: -100%;
-                }
+@keyframes slide-right {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
 
-                100% {
-                    left: 100%;
-                }
-            }
+.custom-btn {
+    padding: 6px 12px;
+    margin-right: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #f59e0b;
+    color: #000;
+    font-weight: bold;
+}
 
-            .custom-btn {
-                padding: 6px 12px;
-                margin-right: 5px;
-                cursor: pointer;
-                border: none;
-                border-radius: 4px;
-                background-color: #f59e0b;
-                color: #000;
-                font-weight: bold;
-            }
+.custom-btn.danger { background-color: #e53e3e; color: #fff; }
+</style>
 
-                .custom-btn.danger {
-                    background-color: #e53e3e;
-                    color: #fff;
-                }
-        </style>
+<script>
+const AnnouncementManager = {
+    lastText: "",
 
-        <script>
-            const AnnouncementManager = {
-                lastText: "",
+    init() {
+        this.announcementText = document.getElementById("announcementText");
+        this.saveBtn = document.getElementById("saveAdBtn");
+        this.stopBtn = document.getElementById("stopAdBtn");
+        this.adminTextarea = document.getElementById("adminAdText");
 
-                init() {
-                    this.announcementText = document.getElementById("announcementText");
-                    this.saveBtn = document.getElementById("saveAdBtn");
-                    this.stopBtn = document.getElementById("stopAdBtn");
-                    this.adminTextarea = document.getElementById("adminAdText");
+        // إظهار لوحة الأدمن فقط إذا الأدمن
+        const isAdmin = true; 
+        if (isAdmin) document.getElementById("adminAdBox").style.display = "block";
 
-                    // إظهار لوحة الأدمن فقط إذا الأدمن
-                    const isAdmin = true;
-                    if (isAdmin) document.getElementById("adminAdBox").style.display = "block";
+        this.bindEvents();
+    },
 
-                    this.bindEvents();
-                },
+    bindEvents() {
+        if (this.saveBtn) this.saveBtn.addEventListener("click", () => this.saveAnnouncement());
+        if (this.stopBtn) this.stopBtn.addEventListener("click", () => this.deleteAnnouncement());
 
-                bindEvents() {
-                    if (this.saveBtn) this.saveBtn.addEventListener("click", () => this.saveAnnouncement());
-                    if (this.stopBtn) this.stopBtn.addEventListener("click", () => this.deleteAnnouncement());
+        if (this.adminTextarea) {
+            let timeout = null;
+            this.adminTextarea.addEventListener("input", () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => this.saveLiveAnnouncement(), 500);
+            });
+        }
+    },
 
-                    if (this.adminTextarea) {
-                        let timeout = null;
-                        this.adminTextarea.addEventListener("input", () => {
-                            clearTimeout(timeout);
-                            timeout = setTimeout(() => this.saveLiveAnnouncement(), 500);
-                        });
-                    }
-                },
+    showBar() {
+        const bar = document.getElementById("announcementBar");
+        if (bar) bar.style.display = "flex";
+    },
 
-                showBar() {
-                    const bar = document.getElementById("announcementBar");
-                    if (bar) bar.style.display = "flex";
-                },
+    hideBar() {
+        const bar = document.getElementById("announcementBar");
+        if (bar) bar.style.display = "none";
+    },
 
-                hideBar() {
-                    const bar = document.getElementById("announcementBar");
-                    if (bar) bar.style.display = "none";
-                },
+    restartAnimation() {
+        if (!this.announcementText) return;
+        this.announcementText.style.animation = "none";
+        this.announcementText.style.left = "-100%";
+        this.announcementText.offsetHeight;
 
-                restartAnimation() {
-                    if (!this.announcementText) return;
-                    this.announcementText.style.animation = "none";
-                    this.announcementText.style.left = "-100%";
-                    this.announcementText.offsetHeight;
+        const textLength = this.announcementText.offsetWidth;
+        const duration = Math.max(15, textLength / 50);
+        this.announcementText.style.animation = slide-right ${duration}s linear infinite;
+    },
 
-                    const textLength = this.announcementText.offsetWidth;
-                    const duration = Math.max(15, textLength / 50);
-                    this.announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-                },
+    updateAnnouncementText(text) {
+        if (!this.announcementText) return;
+        if (text?.trim() && text !== this.lastText) {
+            this.announcementText.innerText = "📢 " + text + " 📢";
+            this.restartAnimation();
+            this.showBar();
+            this.lastText = text;
+        } else if (!text?.trim()) {
+            this.announcementText.innerText = "";
+            this.hideBar();
+            this.lastText = "";
+        }
+    },
 
-                updateAnnouncementText(text) {
-                    if (!this.announcementText) return;
-                    if (text?.trim() && text !== this.lastText) {
-                        this.announcementText.innerText = "📢 " + text + " 📢";
-                        this.restartAnimation();
-                        this.showBar();
-                        this.lastText = text;
-                    } else if (!text?.trim()) {
-                        this.announcementText.innerText = "";
-                        this.hideBar();
-                        this.lastText = "";
-                    }
-                },
+    async saveAnnouncement() {
+        const text = this.adminTextarea?.value.trim() || "";
+        if (!text) return alert("يرجى كتابة نص الإعلان أولاً!");
+        try {
+            // حفظ إلى Firebase Firestore إذا موجود
+            await firestoreTools.db.collection("announcements").doc("current").set({ text });
+            alert("تم حفظ الإعلان ✅");
+        } catch (err) {
+            console.error(err);
+            alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+        }
+        this.updateAnnouncementText(text);
+    },
 
-                async saveAnnouncement() {
-                    const text = this.adminTextarea?.value.trim() || "";
-                    if (!text) return alert("يرجى كتابة نص الإعلان أولاً!");
-                    try {
-                        // حفظ إلى Firebase Firestore إذا موجود
-                        await firestoreTools.db.collection("announcements").doc("current").set({ text });
-                        alert("تم حفظ الإعلان ✅");
-                    } catch (err) {
-                        console.error(err);
-                        alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
-                    }
-                    this.updateAnnouncementText(text);
-                },
+    deleteAnnouncement() {
+        this.adminTextarea.value = "";
+        this.updateAnnouncementText("");
+        try {
+            firestoreTools.db.collection("announcements").doc("current").delete();
+        } catch (err) {
+            console.warn("لم يتم الحذف من قاعدة البيانات:", err.message);
+        }
+    },
 
-                deleteAnnouncement() {
-                    this.adminTextarea.value = "";
-                    this.updateAnnouncementText("");
-                    try {
-                        firestoreTools.db.collection("announcements").doc("current").delete();
-                    } catch (err) {
-                        console.warn("لم يتم الحذف من قاعدة البيانات:", err.message);
-                    }
-                },
+    saveLiveAnnouncement() {
+        const text = this.adminTextarea.value;
+        this.updateAnnouncementText(text);
+    }
+};
 
-                saveLiveAnnouncement() {
-                    const text = this.adminTextarea.value;
-                    this.updateAnnouncementText(text);
-                }
-            };
+// تفعيل الإعلان عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
+</script>
+>
 
-            // تفعيل الإعلان عند تحميل الصفحة
-            document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
-        </script>
-<<<<<<< HEAD
-        >
-=======
-
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
-
-        <!-- 🔔 إشعار تحديث التطبيق -->
-        <div id="updateNotification" style="
+<!-- 🔔 إشعار تحديث التطبيق -->
+<div id="updateNotification" style="
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -2222,8 +2125,8 @@
   z-index: 9999;
   font-family: Arial;
 ">
-            🔄 يوجد تحديث جديد للتطبيق
-            <button id="updateBtn" style="
+  🔄 يوجد تحديث جديد للتطبيق
+  <button id="updateBtn" style="
     margin-right:10px;
     padding:6px 12px;
     border:none;
@@ -2233,61 +2136,28 @@
     cursor:pointer;
     font-weight:bold;
   ">
-                تحديث الآن
-            </button>
-        </div>
+    تحديث الآن
+  </button>
+</div>
 
-<<<<<<< HEAD
-        <!-- شريط الإعلان العام -->
-        <div id="announcementBar" class="announcement-bar" style="display:none;">
-            <span id="announcementText" class="announcement-text"></span>
-        </div>
-=======
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
+      <!-- شريط الإعلان العام -->
+<div id="announcementBar" class="announcement-bar" style="display:none;">
+    <span id="announcementText" class="announcement-text"></span>
+</div>
 
-        <!-- لوحة الأدمن للتحكم بالإعلان -->
-        <div id="adminAdBox" style="margin-top:60px; display:none;">
-            <h4>📢 إعلان عام للطلاب</h4>
-            <textarea id="adminAdText"
-                      placeholder="اكتب الإعلان هنا..."
-                      style="width:100%; min-height:80px; padding:8px;"></textarea>
-            <div style="margin-top:10px;">
-                <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
-                <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
-            </div>
-        </div>
+<!-- لوحة الأدمن للتحكم بالإعلان -->
+<div id="adminAdBox" style="margin-top:60px; display:none;">
+    <h4>📢 إعلان عام للطلاب</h4>
+    <textarea id="adminAdText"
+              placeholder="اكتب الإعلان هنا..."
+              style="width:100%; min-height:80px; padding:8px;"></textarea>
+    <div style="margin-top:10px;">
+        <button id="saveAdBtn" class="custom-btn">💾 حفظ الإعلان</button>
+        <button id="stopAdBtn" class="custom-btn danger">🗑 إيقاف الإعلان</button>
+    </div>
+</div>
 
-<<<<<<< HEAD
-        <script src="/Al-Tamsahya-Online-Education/js/firebase.js"></script>
-=======
-        <script>
-            // هذه قائمة كل الصفحات الرئيسية
-            const pages = ['loginPage', 'registerPage', 'welcomeMessage'];
-
-            // دالة لإظهار صفحة واحدة فقط وإخفاء البقية
-            function showPage(pageId) {
-                pages.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.style.display = 'none'; // يخفي كل الصفحات
-                });
-                const page = document.getElementById(pageId);
-                if (page) page.style.display = 'block'; // يظهر الصفحة المطلوبة
-            }
-
-            // عند تحميل الصفحة، نعرض صفحة البداية (مثلاً welcomeMessage)
-            window.onload = () => {
-                showPage('welcomeMessage'); // يمكنك تغييره إلى 'loginPage' إذا أردت
-            };
-        </script>
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
+<script src="/Al-Tamsahya-Online-Education/js/firebase.js"></script>     
 
 </body>
 </html>
-
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
-
