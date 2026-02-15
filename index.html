@@ -1635,12 +1635,6 @@ function toggleDarkMode() {
      
     <script src="js/firebase.js"></script>
 
-
-<!-- 🔹 شريط الإعلان لجميع الزوار -->
-<div id="announcementBar" class="announcement-bar" style="display:none;">
-    <span id="announcementText" class="announcement-text"></span>
-</div>
-
 <style>
 .announcement-bar {
     position: fixed;
@@ -1920,11 +1914,6 @@ function hideAnnouncementBar() {
 <!-- زر تثبيت التطبيق -->
 <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
 
-<!-- ======= شريط الإعلان العام ======= -->
-<div id="announcementBar" class="announcement-bar" style="display:none;">
-    <span id="announcementText" class="announcement-text"></span>
-</div>
-
 <!-- ======= لوحة الأدمن للتحكم بالإعلان ======= -->
 <div id="adminAdBox" style="margin-top:60px; display:none;">
     <h4>📢 إعلان عام للطلاب</h4>
@@ -2107,7 +2096,7 @@ const AnnouncementManager = {
 // تفعيل الإعلان عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 </script>
->
+
 
 <!-- 🔔 إشعار تحديث التطبيق -->
 <div id="updateNotification" style="
@@ -2138,11 +2127,7 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
   </button>
 </div>
 
-      <!-- شريط الإعلان العام -->
-<div id="announcementBar" class="announcement-bar" style="display:none;">
-    <span id="announcementText" class="announcement-text"></span>
-</div>
-
+  
 <!-- لوحة الأدمن للتحكم بالإعلان -->
 <div id="adminAdBox" style="margin-top:60px; display:none;">
     <h4>📢 إعلان عام للطلاب</h4>
@@ -2159,5 +2144,6 @@ document.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
