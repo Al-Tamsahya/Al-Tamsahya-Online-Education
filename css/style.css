@@ -378,6 +378,21 @@ body.dark-mode textarea {
   color: var(--text-primary-dark);
   border: 1px solid #cbd5e1;
 }
+/* =====================
+   LOGIN & REGISTER PAGES
+===================== */
+
+#loginPage {
+  position: relative;
+  z-index: 10000;   /* يضمن ظهور الصفحة فوق الباقي */
+  display: none;     /* مخفية بشكل افتراضي */
+}
+
+#registerPage {
+  position: relative;
+  z-index: 10001;   /* أعلى من LoginPage */
+  display: none;     /* مخفية بشكل افتراضي */
+}
 
 /* =====================
    DARK MODE FIXES (وضوح النصوص والأزرار)
@@ -444,15 +459,6 @@ body.dark-mode textarea::placeholder {
 }
 
 
-#loginPage {
-  position: relative;
-  z-index: 10000;
-}
-
-#registerPage {
-  position: relative;
-  z-index: 10001;
-}
 
 button {
   touch-action: manipulation;
