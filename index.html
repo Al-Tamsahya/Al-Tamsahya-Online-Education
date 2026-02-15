@@ -1630,8 +1630,31 @@
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
         <!-- Firebase init -->
+         <script>
+  // إعداد Firebase
+  var firebaseConfig = {
+    apiKey: "AIzaSyDRAwI-FZxQyD_KRPcdtLhAVbjgwLSZ9xU",
+    authDomain: "ai-tamsahya-online-education.firebaseapp.com",
+    projectId: "ai-tamsahya-online-education",
+    storageBucket: "ai-tamsahya-online-education.firebasestorage.app",
+    messagingSenderId: "853000263503",
+    appId: "1:853000263503:web:5c6406ac42c8dcffbb573a"
+  };
 
-       <script src="/Al-Tamsahya-Online-Education/js/firebase.js"></script>
+  firebase.initializeApp(firebaseConfig);
+
+  const db = firebase.firestore();
+
+  // 🔥 هذا هو المهم
+  const firestoreTools = {
+      db: db,
+      collection: (name) => db.collection(name),
+      addDoc: (collectionRef, data) => collectionRef.add(data)
+  };
+
+  console.log("✅ Firebase Ready");
+</script>
+
 
         <style>
             .announcement-bar {
@@ -2153,7 +2176,6 @@
             </div>
         </div>
 
-        <script src="/Al-Tamsahya-Online-Education/js/firebase.js"></script>
         <script>
             // هذه قائمة كل الصفحات الرئيسية
             const pages = ['loginPage', 'registerPage', 'welcomeMessage'];
@@ -2176,4 +2198,5 @@
 
 </body>
 </html>
+
 
