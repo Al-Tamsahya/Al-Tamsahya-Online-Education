@@ -444,6 +444,16 @@ body.dark-mode textarea::placeholder {
 }
 
 
+#loginPage {
+  position: relative;
+  z-index: 10000;
+}
+
+#registerPage {
+  position: relative;
+  z-index: 10001;
+}
+
 button {
   touch-action: manipulation;
 }
@@ -587,24 +597,3 @@ body.dark-mode #welcomeMessage h3 {
   color: var(--text-primary-dark);
   font-weight: 500;
 }
-/* ===============================
-   FIX: إخفاء كل الصفحات افتراضيًا
-================================= */
-
-#gradePage,
-#subjectPage,
-#unitPage,
-#lessonPage,
-#mainPage,
-#studentsList,
-#supervisorsList,
-#testsList,
-#resultsList {
-  display: none;
-}
-
-/* الصفحة الأولى فقط تظهر */
-#loginPage {
-  display: block;
-}
-
