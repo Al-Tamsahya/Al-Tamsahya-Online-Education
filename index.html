@@ -1100,433 +1100,457 @@
                     document.getElementById(id).classList.add("hidden");
                 });
             }
-<!-- ============================== -->
-<!--  🔹 إدارة الطلاب والمشرفين -->
-<!-- ============================== -->
-<script>
-    // عرض أقسام الإدارة
-    function showAdminSection(section) {
-        hideAllAdminSections();
-        switch (section) {
-            case "students":
-                renderStudents();
-                break;
-            case "supervisors":
-                renderSupervisors();
-                break;
-            case "tests":
-                renderTests();
-                break;
-            case "results":
-                renderResults();
-                break;
-        }
-    }
 
-    async function loadPendingStudents() {
-        const res = await fetch("/api/students/pending"); // نطلب الطلبات من السيرفر
-        const data = await res.json();                    // نحولها JSON
-        console.log(data);                                // نعرضها في Console
-    }
-
-    // ==============================
-    // 👨‍💼 إدارة الطلاب
-    // ==============================
-    async function renderStudents() {
-        const container = document.getElementById("studentsList");
-
-        container.classList.remove("hidden");
-        ["supervisorsList", "testsList", "resultsList"].forEach(id =>
-            document.getElementById(id)?.classList.add("hidden")
-        );
-
-        try {
-            const db = window.firestoreTools.db;
-            const snapshot = await db.collection("students").get();
-            savedStudents = [];
-
-            let totalStudents = snapshot.size;
-            let approvedStudents = 0;
-            let pendingStudents = 0;
-            let rows = "";
-
-            snapshot.forEach(doc => {
-                const student = doc.data();
-
-                savedStudents.push({
-                    id: doc.id,
-                    email: student.email || "",
-                    approved: student.approved === true,
-                    grade: student.grade || "-"
-                });
-
-                if (student.approved) approvedStudents++;
-                else pendingStudents++;
-
-                rows += `
-<tr data-email="${(student.email || "").toLowerCase()}">
-  <td>${student.email || "-"}</td>
-  <td>${student.approved ? "🟢 مفعل" : "🟡 قيد المراجعة"}</td>
-  <td>${student.grade || "-"}</td>
-
-  <td class="actions-cell">
-    <div class="actions-wrapper">
-
-      ${currentUser?.role === "ADMIN"
-                ? `
-            <button class="custom-btn" onclick="editStudent('${student.email}')">✏️ تعديل</button>
-            <button class="custom-btn danger" onclick="deleteUser('${doc.id}', 'students')">🗑 حذف</button>
-            ${!student.approved
-                    ? `
-                      <button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>
-                      <button class="custom-btn danger" onclick="rejectStudent('${doc.id}')">❌ رفض</button>
-                    `
-                    : ""
+            // عرض أقسام الإدارة
+            function showAdminSection(section) {
+                hideAllAdminSections();
+                switch (section) {
+                    case "students":
+                        renderStudents();
+                        break;
+                    case "supervisors":
+                        renderSupervisors();
+                        break;
+                    case "tests":
+                        renderTests();
+                        break;
+                    case "results":
+                        renderResults();
+                        break;
                 }
-          `
-                : ""
+            }
+            async function loadPendingStudents() {
+                const res = await fetch("/api/students/pending"); // نطلب الطلبات من السيرفر
+                const data = await res.json();                    // نحولها JSON
+                console.log(data);                                // نعرضها في Console
             }
 
-      ${currentUser?.role === "SUPERVISOR" && !student.approved
-                ? `<button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>`
-                : ""
-            }
+            // إدارة الطلاب (تعرض فقط للمدير والمشرف)
+            // ==============================
+            // 👨‍💼 إدارة الطلاب والمشرفين (Firestore)
+            // ==============================
+            // عرض قائمة الطلاب
+            async function renderStudents() {
+                const container = document.getElementById("studentsList");
 
-    </div>
-  </td>
+                container.classList.remove("hidden");
+                ["supervisorsList", "testsList", "resultsList"].forEach(id =>
+                    document.getElementById(id)?.classList.add("hidden")
+                );
+
+                try {
+                    const db = window.firestoreTools.db;
+                    const snapshot = await db.collection("students").get();
+                    savedStudents = [];
+
+                    let totalStudents = snapshot.size;
+                    let approvedStudents = 0;
+                    let pendingStudents = 0;
+                    let rows = "";
+
+                    snapshot.forEach(doc => {
+                        const student = doc.data();
+
+                        savedStudents.push({
+                            id: doc.id,
+                            email: student.email || "",
+                            approved: student.approved === true,
+                            grade: student.grade || "-"
+                        });
+
+                        if (student.approved) approvedStudents++;
+                        else pendingStudents++;
+
+                        rows += `
+<tr data-email="${(student.email || "").toLowerCase()}">
+                  <td>${student.email || "-"}</td>
+                  <td>${student.approved ? "🟢 مفعل" : "🟡 قيد المراجعة"}</td>
+                  <td>${student.grade || "-"}</td>
+
+                  <td class="actions-cell">
+                    <div class="actions-wrapper">
+
+                      ${currentUser?.role === "ADMIN"
+                                ? `
+                            <button class="custom-btn" onclick="editStudent('${student.email}')">✏️ تعديل</button>
+                            <button class="custom-btn danger" onclick="deleteUser('${doc.id}', 'students')">🗑 حذف</button>
+                            ${!student.approved
+                                    ? `
+                                  <button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>
+                                  <button class="custom-btn danger" onclick="rejectStudent('${doc.id}')">❌ رفض</button>
+                                `
+                                    : ""
+                                }
+                          `
+                                : ""
+                            }
+
+                      ${currentUser?.role === "SUPERVISOR" && !student.approved
+                                ? `<button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>`
+                                : ""
+                            }
+
+                    </div>
+                  </td>
 </tr>`;
-            });
+                    });
 
-            container.innerHTML = `
-              <h4>قائمة الطلاب</h4>
+                    // ✅ رسم الصفحة مرة واحدة فقط
+                    container.innerHTML = `
+                      <h4>قائمة الطلاب</h4>
 
-              <input id="studentSearch"
-                onkeyup="filterStudents()"
-                placeholder="🔍 ابحث بالبريد">
+                      <input id="studentSearch"
+                        onkeyup="filterStudents()"
+                        placeholder="🔍 ابحث بالبريد">
 
-              <div style="margin:10px 0;">
-                📚 عدد الطلاب: <strong>${totalStudents}</strong>
-              </div>
+                      <div style="margin:10px 0;">
+                        📚 عدد الطلاب: <strong>${totalStudents}</strong>
+                      </div>
 
-              <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
-                <div class="stat-box approved">🟢 مفعلين: ${approvedStudents}</div>
-                <div class="stat-box pending">🟡 قيد المراجعة: ${pendingStudents}</div>
-              </div>
+                      <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                        <div class="stat-box approved">🟢 مفعلين: ${approvedStudents}</div>
+                        <div class="stat-box pending">🟡 قيد المراجعة: ${pendingStudents}</div>
+                      </div>
 
-              <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>البريد الإلكتروني</th>
-                      <th>الحالة</th>
-                      <th>الدرجة</th>
-                      <th>خيارات</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${rows || `<tr><td colspan="4">لا يوجد طلاب</td></tr>`}
-                  </tbody>
-                </table>
-              </div>
-            `;
+                      <div class="table-container">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>البريد الإلكتروني</th>
+                              <th>الحالة</th>
+                              <th>الدرجة</th>
+                              <th>خيارات</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${rows || `<tr><td colspan="4">لا يوجد طلاب</td></tr>`}
+                          </tbody>
+                        </table>
+                      </div>
+                    `;
 
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = `<p>حدث خطأ ❌<br>${err.message}</p>`;
-        }
-    }
-
-    // ✏️ تعديل بيانات الطالب
-    async function editStudent(studentEmail) {
-        try {
-            const db = window.firestoreTools.db;
-            const snap = await db.collection("students")
-                .where("email", "==", (studentEmail || "").toLowerCase())
-                .get();
-
-            if (snap.empty) {
-                alert("لم يتم العثور على الطالب ❌");
-                return;
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = `<p>حدث خطأ ❌<br>${err.message}</p>`;
+                }
             }
 
-            const docSnap = snap.docs[0];
-            const student = docSnap.data();
-            const docId = docSnap.id;
 
-            const newEmail = prompt("تعديل البريد الإلكتروني:", student.email || "");
-            if (!newEmail) return;
 
-            const newPassword = prompt("تعديل كلمة المرور:", student.password || "");
-            if (!newPassword) return;
+            // ✏️ تعديل بيانات الطالب (email + password)
+            async function editStudent(studentEmail) {
+                try {
+                    const db = window.firestoreTools.db;
 
-            await db.collection("students").doc(docId).update({
-                email: newEmail.trim().toLowerCase(),
-                password: newPassword.trim(),
-                name: newEmail.trim().toLowerCase().split("@")[0]
-            });
+                    // 1) نبحث عن الطالب بالبريد
+                    const snap = await db.collection("students")
+                        .where("email", "==", (studentEmail || "").toLowerCase())
+                        .get();
 
-            alert("تم تعديل بيانات الطالب ✅");
-            renderStudents();
+                    if (snap.empty) {
+                        alert("لم يتم العثور على الطالب ❌");
+                        return;
+                    }
 
-        } catch (err) {
-            console.error(err);
-            alert("فشل التعديل ❌\n" + err.message);
-        }
-    }
+                    const docSnap = snap.docs[0];
+                    const student = docSnap.data();
+                    const docId = docSnap.id;
 
-    function showAddStudentModal() {
-        document.getElementById("newStudentEmail").value = "";
-        document.getElementById("newStudentPassword").value = "";
-        document.getElementById("studentModal").style.display = "flex";
-    }
+                    // 2) نطلب بيانات جديدة
+                    const newEmail = prompt("تعديل البريد الإلكتروني:", student.email || "");
+                    if (!newEmail) return;
 
-    async function addStudent() {
-        const email = document.getElementById("newStudentEmail").value.trim().toLowerCase();
-        const password = document.getElementById("newStudentPassword").value.trim();
+                    const newPassword = prompt("تعديل كلمة المرور:", student.password || "");
+                    if (!newPassword) return;
 
-        if (!email || !password) {
-            alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-            return;
-        }
+                    // 3) تحديث Firestore
+                    await db.collection("students").doc(docId).update({
+                        email: newEmail.trim().toLowerCase(),
+                        password: newPassword.trim(),
+                        name: newEmail.trim().toLowerCase().split("@")[0]
+                    });
 
-        try {
-            const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
-            const db = window.firestoreTools.db;
+                    alert("تم تعديل بيانات الطالب ✅");
+                    renderStudents();
 
-            const q = query(collection(db, "students"), where("email", "==", email));
-            const snap = await getDocs(q);
-
-            if (!snap.empty) {
-                alert("هذا البريد مستخدم بالفعل!");
-                return;
+                } catch (err) {
+                    console.error(err);
+                    alert("فشل التعديل ❌\n" + err.message);
+                }
             }
 
-            await addDoc(collection(db, "students"), {
-                name: email.split("@")[0],
-                email,
-                password,
-                role: "STUDENT",
-                approved: true,
-                createdAt: new Date().toISOString()
-            });
 
-            alert("تمت إضافة الطالب بنجاح ✅");
-            closeModal("studentModal");
-            renderStudents();
-
-        } catch (err) {
-            console.error(err);
-            alert("حدث خطأ أثناء إضافة الطالب ❌");
-        }
-    }
-
-    // ==============================
-    // 👨‍🏫 إدارة المشرفين
-    // ==============================
-    async function renderSupervisors() {
-        const container = document.getElementById("supervisorsList");
-
-        container.classList.remove("hidden");
-        ["studentsList", "testsList", "resultsList"].forEach((id) =>
-            document.getElementById(id).classList.add("hidden")
-        );
-
-        container.innerHTML = `
-                <h4>المشرفون</h4>
-                <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
-                <p>جاري تحميل المشرفين...</p>
-              `;
-
-        try {
-            if (!window.firestoreTools || !window.firestoreTools.db) {
-                container.innerHTML = `<p>Firebase لم يتم تحميله بعد ❌</p>`;
-                return;
+            // عرض نموذج إضافة طالب
+            function showAddStudentModal() {
+                document.getElementById("newStudentEmail").value = "";
+                document.getElementById("newStudentPassword").value = "";
+                document.getElementById("studentModal").style.display = "flex";
             }
 
-            const db = window.firestoreTools.db;
-            const snap = await db
-                .collection("users")
-                .where("role", "==", "SUPERVISOR")
-                .get();
+            // إضافة طالب جديد (Firestore)
+            async function addStudent() {
+                const email = document.getElementById("newStudentEmail").value.trim().toLowerCase();
+                const password = document.getElementById("newStudentPassword").value.trim();
 
-            let rows = "";
+                if (!email || !password) {
+                    alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+                    return;
+                }
 
-            snap.forEach((docSnap) => {
-                const s = docSnap.data();
-                const id = docSnap.id;
+                try {
+                    const { collection, addDoc, getDocs, query, where } = window.firestoreTools;
 
-                rows += `
-                    <tr>
-                      <td>${s.email || "-"}</td>
-                      <td>
-                        <button class="custom-btn" onclick="deleteUser('${id}', 'users')">حذف</button>
-                      </td>
-                    </tr>
-                  `;
-            });
+                    // ✅ منع التكرار
+                    const db = window.firestoreTools.db;
 
-            container.innerHTML = `
-                  <h4>المشرفون</h4>
-                  <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
-                  <div style="margin:10px 0;">
-                      <button onclick="filterStudents('all')">الكل</button>
-                      <button onclick="filterStudents('approved')">🟢 مفعلين</button>
-                      <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
-                  </div>
+                    const q = query(collection(db, "students"), where("email", "==", email));
 
-                  <div class="table-container">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>البريد الإلكتروني</th>
-                          <th>خيارات</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${rows || `<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>`}
-                      </tbody>
-                    </table>
-                  </div>
-                `;
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = `<p>حدث خطأ أثناء تحميل المشرفين ❌<br>${err.message}</p>`;
-        }
-    }
+                    const snap = await getDocs(q);
 
-    function showAddSupervisorModal() {
-        document.getElementById("newSupervisorEmail").value = "";
-        document.getElementById("newSupervisorPassword").value = "";
-        document.getElementById("supervisorModal").style.display = "flex";
-    }
+                    if (!snap.empty) {
+                        alert("هذا البريد مستخدم بالفعل!");
+                        return;
+                    }
 
-    async function addSupervisor() {
-        const email = document.getElementById("newSupervisorEmail").value.trim().toLowerCase();
-        const password = document.getElementById("newSupervisorPassword").value.trim();
+                    await addDoc(collection(db, "students"), {
+                        name: email.split("@")[0],
+                        email,
+                        password,
+                        role: "STUDENT",
+                        approved: true, // الأدمن يضيفه مفعل
+                        createdAt: new Date().toISOString()
+                    });
 
-        if (!email || !password) {
-            alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-            return;
-        }
+                    alert("تمت إضافة الطالب بنجاح ✅");
 
-        try {
-            if (!window.firestoreTools || !window.firestoreTools.db) {
-                alert("Firebase لم يتم تحميله بعد ❌");
-                return;
+                    closeModal("studentModal");
+                    renderStudents();
+
+                } catch (err) {
+                    console.error(err);
+                    alert("حدث خطأ أثناء إضافة الطالب ❌");
+                }
             }
 
-            const db = window.firestoreTools.db;
-            const snap = await db.collection("users").where("email", "==", email).get();
 
-            if (!snap.empty) {
-                alert("هذا البريد مستخدم بالفعل!");
-                return;
+            // ==============================
+            // 👨‍🏫 إدارة المشرفين
+            // ==============================
+
+            async function renderSupervisors() {
+                const container = document.getElementById("supervisorsList");
+
+                container.classList.remove("hidden");
+                ["studentsList", "testsList", "resultsList"].forEach((id) =>
+                    document.getElementById(id).classList.add("hidden")
+                );
+
+                container.innerHTML = `
+                        <h4>المشرفون</h4>
+                        <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+                        <p>جاري تحميل المشرفين...</p>
+                      `;
+
+                try {
+                    if (!window.firestoreTools || !window.firestoreTools.db) {
+                        container.innerHTML = `<p>Firebase لم يتم تحميله بعد ❌</p>`;
+                        return;
+                    }
+
+                    const db = window.firestoreTools.db;
+
+                    // ✅ compat query
+                    const snap = await db
+                        .collection("users")
+                        .where("role", "==", "SUPERVISOR")
+                        .get();
+
+                    let rows = "";
+
+                    snap.forEach((docSnap) => {
+                        const s = docSnap.data();
+                        const id = docSnap.id;
+
+                        rows += `
+                            <tr>
+                              <td>${s.email || "-"}</td>
+                              <td>
+                                <button class="custom-btn" onclick="deleteUser('${id}', 'users')">حذف</button>
+                              </td>
+                            </tr>
+                          `;
+                    });
+
+                    container.innerHTML = `
+                          <h4>المشرفون</h4>
+                          <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+                          <div style="margin:10px 0;">
+                  <button onclick="filterStudents('all')">الكل</button>
+                  <button onclick="filterStudents('approved')">🟢 مفعلين</button>
+                  <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
+</div>
+
+                          <div class="table-container">
+                            <table>
+                              <thead>
+                                <tr>
+                                  <th>البريد الإلكتروني</th>
+                                  <th>خيارات</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                ${rows || `<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>`}
+                              </tbody>
+                            </table>
+                          </div>
+                        `;
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = `<p>حدث خطأ أثناء تحميل المشرفين ❌<br>${err.message}</p>`;
+                }
             }
 
-            await db.collection("users").add({
-                name: email.split("@")[0],
-                email,
-                password,
-                role: "SUPERVISOR",
-                createdAt: new Date().toISOString()
-            });
 
-            alert("تمت إضافة المشرف بنجاح ✅");
-            closeModal("supervisorModal");
-            renderSupervisors();
-
-        } catch (err) {
-            console.error(err);
-            alert("حدث خطأ أثناء إضافة المشرف ❌\n" + err.message);
-        }
-    }
-
-    // ==============================
-    // 🗑️ حذف مستخدم/طالب
-    // ==============================
-    async function deleteUser(docId, collectionName) {
-        if (!confirm("هل أنت متأكد من الحذف؟")) return;
-
-        try {
-            const db = window.firestoreTools.db;
-            await db.collection(collectionName).doc(docId).delete();
-            alert("تم الحذف بنجاح ✅");
-
-            if (collectionName === "students") renderStudents();
-            if (collectionName === "users") renderSupervisors();
-
-        } catch (err) {
-            console.error(err);
-            alert("فشل الحذف ❌\n" + err.message);
-        }
-    }
-
-    // ✅ موافقة / رفض طالب
-    async function setApprove(studentDocId, approvedValue) {
-        try {
-            const db = window.firestoreTools.db;
-            const ref = db.collection("students").doc(studentDocId);
-            const snap = await ref.get();
-
-            if (!snap.exists) return;
-            if (snap.data().approved === true) {
-                alert("هذا الطالب مفعل بالفعل ✅");
-                return;
+            // عرض نموذج إضافة مشرف
+            function showAddSupervisorModal() {
+                document.getElementById("newSupervisorEmail").value = "";
+                document.getElementById("newSupervisorPassword").value = "";
+                document.getElementById("supervisorModal").style.display = "flex";
             }
 
-            await ref.update({ approved: approvedValue });
-            alert("تمت الموافقة ✅");
-            renderStudents();
+            // إضافة مشرف جديد (Firestore)
+            async function addSupervisor() {
+                const email = document.getElementById("newSupervisorEmail").value.trim().toLowerCase();
+                const password = document.getElementById("newSupervisorPassword").value.trim();
 
-        } catch (err) {
-            console.error(err);
-            alert("فشل التحديث ❌");
-        }
-    }
+                if (!email || !password) {
+                    alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+                    return;
+                }
 
-    async function rejectStudent(studentDocId) {
-        if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
+                try {
+                    if (!window.firestoreTools || !window.firestoreTools.db) {
+                        alert("Firebase لم يتم تحميله بعد ❌");
+                        return;
+                    }
 
-        try {
-            const db = window.firestoreTools.db;
-            await db.collection("students").doc(studentDocId).delete();
-            alert("تم رفض الطلب وحذفه ❌");
-            renderStudents();
+                    const db = window.firestoreTools.db;
 
-        } catch (err) {
-            console.error(err);
-            alert("فشل الرفض ❌\n" + err.message);
-        }
-    }
+                    // ✅ منع التكرار
+                    const snap = await db.collection("users").where("email", "==", email).get();
 
-    function closeModal(id) {
-        document.getElementById(id).style.display = "none";
-    }
+                    if (!snap.empty) {
+                        alert("هذا البريد مستخدم بالفعل!");
+                        return;
+                    }
 
-</script>
+                    await db.collection("users").add({
+                        name: email.split("@")[0],
+                        email,
+                        password,
+                        role: "SUPERVISOR",
+                        createdAt: new Date().toISOString()
+                    });
 
-<!-- ============================== -->
-<!--  باقي أقسام الإدارة (الاختبارات والنتائج) -->
-<!-- ============================== -->
-<script>
-    function renderTests() {
-        const container = document.getElementById("testsList");
-        container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
-        container.classList.remove("hidden");
-        ["studentsList", "supervisorsList", "resultsList"].forEach((id) =>
-            document.getElementById(id).classList.add("hidden")
-        );
-    }
+                    alert("تمت إضافة المشرف بنجاح ✅");
 
-    function renderResults() {
-        const container = document.getElementById("resultsList");
-        container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
-        container.classList.remove("hidden");
-        ["studentsList", "supervisorsList", "testsList"].forEach((id) =>
-            document.getElementById(id).classList.add("hidden")
-        );
-    }
-</script>
+                    closeModal("supervisorModal");
+                    renderSupervisors();
+
+                } catch (err) {
+                    console.error(err);
+                    alert("حدث خطأ أثناء إضافة المشرف ❌\n" + err.message);
+                }
+            }
+
+
+
+
+            // ==============================
+            // 🗑️ حذف مستخدم/طالب (Firestore)
+            async function deleteUser(docId, collectionName) {
+                if (!confirm("هل أنت متأكد من الحذف؟")) return;
+
+                try {
+                    const db = window.firestoreTools.db;
+
+                    await db.collection(collectionName).doc(docId).delete();
+
+                    alert("تم الحذف بنجاح ✅");
+
+                    if (collectionName === "students") renderStudents();
+                    if (collectionName === "users") renderSupervisors();
+
+                } catch (err) {
+                    console.error(err);
+                    alert("فشل الحذف ❌\n" + err.message);
+                }
+            }
+            // ✅ موافقة / رفض طالب
+            async function setApprove(studentDocId, approvedValue) {
+                try {
+                    const db = window.firestoreTools.db;
+                    const ref = db.collection("students").doc(studentDocId);
+                    const snap = await ref.get();
+
+                    if (!snap.exists) return;
+
+                    if (snap.data().approved === true) {
+                        alert("هذا الطالب مفعل بالفعل ✅");
+                        return;
+                    }
+
+                    await ref.update({ approved: approvedValue });
+
+                    alert("تمت الموافقة ✅");
+                    renderStudents();
+
+                } catch (err) {
+                    console.error(err);
+                    alert("فشل التحديث ❌");
+                }
+            }
+
+            // ❌ رفض الطالب (حذف الطلب نهائياً)
+            async function rejectStudent(studentDocId) {
+                if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
+
+                try {
+                    const db = window.firestoreTools.db;
+
+                    await db.collection("students").doc(studentDocId).delete();
+
+                    alert("تم رفض الطلب وحذفه ❌");
+                    renderStudents();
+
+                } catch (err) {
+                    console.error(err);
+                    alert("فشل الرفض ❌\n" + err.message);
+                }
+            }
+
+            // إغلاق النماذج
+            function closeModal(id) {
+                document.getElementById(id).style.display = "none";
+            }
+
+            // أقسام الإدارة الأخرى (نموذج مبدئي)
+            function renderTests() {
+                const container = document.getElementById("testsList");
+                container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
+                container.classList.remove("hidden");
+                ["studentsList", "supervisorsList", "resultsList"].forEach((id) =>
+                    document.getElementById(id).classList.add("hidden")
+                );
+            }
+            function renderResults() {
+                const container = document.getElementById("resultsList");
+                container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
+                container.classList.remove("hidden");
+                ["studentsList", "supervisorsList", "testsList"].forEach((id) =>
+                    document.getElementById(id).classList.add("hidden")
+                );
+            }
 
             // إعادة تعيين التنقل (اخفاء كل الصفحات عدا الرئيسية)
             function resetNavigation() {
@@ -2154,8 +2178,3 @@
 
 </body>
 </html>
-
-
-
-
-
