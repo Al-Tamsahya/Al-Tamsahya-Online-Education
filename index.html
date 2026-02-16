@@ -1631,103 +1631,115 @@
 
         <!-- Firebase init -->
         <script src="./js/firebase.js"></script>
-        <script>
-        
-                        // تحديث تلقائي عند وجود نسخة جديدة
-                        const reg.addEventListener('updatefound', () => {
-                            const newWorker = reg.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                }
-                            });
-                        });
+            
+       <script>
+// 🔹 تعريف المتغيرات المهمة لمرة واحدة
+var animationTimeout = null;
+var deferredPrompt = null;
 
-         
+// 🔹 تسجيل Service Worker
 if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
+        .then(function(registration) {
+            console.log("Service Worker registered successfully ✅");
 
-  let newWorker;
-
-  navigator.serviceWorker.register('/Al-Tamsahya-Online-Education/service-worker.js')
-    .then(registration => {
-
-      console.log("Service Worker registered successfully ✅");
-
-      registration.addEventListener('updatefound', () => {
-
-        newWorker = registration.installing;
-
-        newWorker.addEventListener('statechange', () => {
-
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-
-            const updateBox = document.getElementById("updateNotification");
-            if (updateBox) {
-              updateBox.style.display = "block";
-            }
-
-          }
+            registration.addEventListener('updatefound', function() {
+                var newWorker = registration.installing;
+                newWorker.addEventListener('statechange', function() {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        var updateBox = document.getElementById("updateNotification");
+                        if (updateBox) updateBox.style.display = "block";
+                    }
+                });
+            });
+        })
+        .catch(function(error) {
+            console.error('Service Worker registration failed ❌:', error);
         });
-      });
-    })
-    .catch(error => console.error('Service Worker registration failed ❌:', error));
 
-  const updateBtn = document.getElementById("updateBtn");
-  if (updateBtn) {
-    updateBtn.addEventListener("click", () => {
-      if (newWorker) {
-        newWorker.postMessage({ type: "SKIP_WAITING" });
-      }
+    navigator.serviceWorker.addEventListener("controllerchange", function() {
+        window.location.reload();
     });
-  }
 
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    window.location.reload();
-  });
+    var updateBtn = document.getElementById("updateBtn");
+    if (updateBtn) {
+        updateBtn.addEventListener("click", function() {
+            var newWorker = navigator.serviceWorker.controller;
+            if (newWorker) newWorker.postMessage({ type: "SKIP_WAITING" });
+        });
+    }
 }
-</script>
 
+// 🔹 إعلان وظائف الإعلان المتحرك
+function startAnnouncementAnimation(text, duration = 12000) {
+    var bar = document.getElementById("announcementBar");
+    var textBox = document.getElementById("announcementText");
 
-        <!-- جميع وظائف الأدمن والإعلانات -->
-        <script>
-            // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
-            const adminEmail = "admin@gmail.com";
-            const loggedEmail = localStorage.getItem("loggedEmail") || "";
+    if (!bar || !textBox || !text || !text.trim()) {
+        hideAnnouncementBar();
+        return;
+    }
 
-            // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
-            window.currentUser = window.currentUser || {
-                email: loggedEmail,
-                role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
-            };
+    textBox.innerText = "📢 " + text + " 📢";
+    bar.style.display = "flex";
 
-            // متغير لتثبيت التطبيق PWA
-            let deferredPrompt = null;
+    var screenWidth = bar.offsetWidth;
+    var textWidth = textBox.offsetWidth;
 
-            // 🔹 إعلان متغير واحد فقط لجميع التحركات
-            let animationTimeout = null;
-        </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+    function move() {
+        textBox.style.transition = "none";
+        textBox.style.left = -textWidth + "px";
 
-    // ======= لوحة الأدمن =======
+        setTimeout(function() {
+            textBox.style.transition = "left " + duration + "ms linear";
+            textBox.style.left = screenWidth + "px";
+        }, 50);
+
+        animationTimeout = setTimeout(move, duration + 2000);
+    }
+
+    move();
+}
+
+function hideAnnouncementBar() {
+    var bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
+
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
+    }
+}
+
+// 🔹 DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function() {
+
+    // ===== لوحة الأدمن =====
+    var adminEmail = "admin@gmail.com";
+    var loggedEmail = localStorage.getItem("loggedEmail") || "";
+    window.currentUser = window.currentUser || {
+        email: loggedEmail,
+        role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT"
+    };
+
     if (window.currentUser.role === "ADMIN") {
-        const adminPanel = document.getElementById("admin-panel");
+        var adminPanel = document.getElementById("admin-panel");
         if (adminPanel) adminPanel.style.display = "block";
 
-        const titleInput = document.getElementById("ad-title");
-        const contentInput = document.getElementById("ad-content");
-        const addBtn = document.getElementById("add-ad-btn");
+        var titleInput = document.getElementById("ad-title");
+        var contentInput = document.getElementById("ad-content");
+        var addBtn = document.getElementById("add-ad-btn");
 
         if (addBtn && titleInput && contentInput) {
-            addBtn.addEventListener("click", async () => {
-                const title = titleInput.value.trim();
-                const content = contentInput.value.trim();
+            addBtn.addEventListener("click", async function() {
+                var title = titleInput.value.trim();
+                var content = contentInput.value.trim();
                 if (!title || !content) return alert("الرجاء ملء العنوان والمحتوى!");
 
                 try {
                     await firestoreTools.addDoc(
                         firestoreTools.collection("ads"),
-                        { title, content, date: new Date() }
+                        { title: title, content: content, date: new Date() }
                     );
                     titleInput.value = "";
                     contentInput.value = "";
@@ -1740,34 +1752,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ======= عرض الإعلانات =======
-    const adsContainer = document.getElementById("ads-container");
+    // ===== عرض الإعلانات =====
+    var adsContainer = document.getElementById("ads-container");
     if (adsContainer && window.firestoreTools && firestoreTools.collection) {
         firestoreTools.collection("ads")
             .orderBy("date", "desc")
-            .onSnapshot(snapshot => {
+            .onSnapshot(function(snapshot) {
                 adsContainer.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const ad = doc.data();
-                    const adElement = document.createElement("div");
+                snapshot.forEach(function(doc) {
+                    var ad = doc.data();
+                    var adElement = document.createElement("div");
                     adElement.className = "ad";
-                    adElement.innerHTML = `
-                        <h3>${ad.title}</h3>
-                        <p>${ad.content}</p>
-                        <small>${ad.date.toDate().toLocaleString()}</small>
-                    `;
+                    adElement.innerHTML = "<h3>" + ad.title + "</h3><p>" + ad.content + "</p><small>" + ad.date.toDate().toLocaleString() + "</small>";
                     adsContainer.appendChild(adElement);
                 });
             });
     }
 
-    // ======= شريط الإعلان المتحرك =======
-document.addEventListener("DOMContentLoaded", () => {
+    // ===== شريط الإعلان المتحرك =====
     if (window.firestoreTools && window.firestoreTools.db) {
-        const db = window.firestoreTools.db;
+        var db = window.firestoreTools.db;
         db.collection("announcements").doc("current")
-            .onSnapshot(doc => {
-                if (doc.exists && doc.data().text?.trim()) {
+            .onSnapshot(function(doc) {
+                if (doc.exists && doc.data().text && doc.data().text.trim()) {
                     startAnnouncementAnimation(doc.data().text, 12000);
                 } else {
                     hideAnnouncementBar();
@@ -1775,34 +1782,28 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    const installBtn = document.getElementById("installBtn");
-    let deferredPrompt;
-
-    window.addEventListener("beforeinstallprompt", (e) => {
+    // ===== تثبيت PWA =====
+    var installBtn = document.getElementById("installBtn");
+    window.addEventListener("beforeinstallprompt", function(e) {
         e.preventDefault();
         deferredPrompt = e;
         if (installBtn) installBtn.hidden = false;
     });
-});
-
 
     if (installBtn) {
-        installBtn.addEventListener("click", async () => {
+        installBtn.addEventListener("click", async function() {
             if (!deferredPrompt) {
                 alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
                 return;
             }
-
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === "accepted") {
-                installBtn.hidden = true;
-            }
+            var outcome = (await deferredPrompt.userChoice).outcome;
+            if (outcome === "accepted") installBtn.hidden = true;
             deferredPrompt = null;
         });
     }
 
-    window.addEventListener("appinstalled", () => {
+    window.addEventListener("appinstalled", function() {
         if (installBtn) installBtn.hidden = true;
         alert("تم تثبيت التطبيق بنجاح ✅");
     });
@@ -1810,9 +1811,6 @@ document.addEventListener("DOMContentLoaded", () => {
 }); // نهاية DOMContentLoaded
 </script>
 
-
-        <!-- ======= وظائف الشريط المتحرك ======= -->
-<script>
 var animationTimeout; // استخدمنا var لتجنب "already been declared"
 
 function startAnnouncementAnimation(text, duration = 12000) {
@@ -2113,6 +2111,7 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
