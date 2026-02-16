@@ -1643,7 +1643,7 @@
                             });
                         });
 
-            <script>
+         
 if ('serviceWorker' in navigator) {
 
   let newWorker;
@@ -1762,6 +1762,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ======= شريط الإعلان المتحرك =======
+document.addEventListener("DOMContentLoaded", () => {
     if (window.firestoreTools && window.firestoreTools.db) {
         const db = window.firestoreTools.db;
         db.collection("announcements").doc("current")
@@ -1774,7 +1775,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // ======= تثبيت التطبيق PWA =======
     const installBtn = document.getElementById("installBtn");
     let deferredPrompt;
 
@@ -1783,6 +1783,8 @@ document.addEventListener("DOMContentLoaded", () => {
         deferredPrompt = e;
         if (installBtn) installBtn.hidden = false;
     });
+});
+
 
     if (installBtn) {
         installBtn.addEventListener("click", async () => {
@@ -1810,45 +1812,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         <!-- ======= وظائف الشريط المتحرك ======= -->
-        <script>
-            function startAnnouncementAnimation(text, duration = 12000) {
-const bar = document.getElementById("announcementBar");
-            const textBox = document.getElementById("announcementText");
+      <script>
+let animationTimeout = null;
 
-            if (!bar || !textBox || !text?.trim()) {
-                hideAnnouncementBar();
-            return;
-}
+function startAnnouncementAnimation(text, duration = 12000) {
+    const bar = document.getElementById("announcementBar");
+    const textBox = document.getElementById("announcementText");
 
-            textBox.innerText = "📢 " + text + " 📢";
-            bar.style.display = "flex";
+    if (!bar || !textBox || !text?.trim()) {
+        hideAnnouncementBar();
+        return;
+    }
 
-            const screenWidth = bar.offsetWidth;
-            const textWidth = textBox.offsetWidth;
+    textBox.innerText = "📢 " + text + " 📢";
+    bar.style.display = "flex";
 
-            function move() {
-                textBox.style.transition = "none";
-            textBox.style.left = -textWidth + "px";
+    const screenWidth = bar.offsetWidth;
+    const textWidth = textBox.offsetWidth;
 
-setTimeout(() => {
-                textBox.style.transition = `left ${duration}ms linear`;
+    function move() {
+        textBox.style.transition = "none";
+        textBox.style.left = -textWidth + "px";
+
+        setTimeout(() => {
+            textBox.style.transition = `left ${duration}ms linear`;
             textBox.style.left = screenWidth + "px";
-}, 50);
+        }, 50);
 
-            animationTimeout = setTimeout(move, duration + 2000);
+        animationTimeout = setTimeout(move, duration + 2000);
+    }
+
+    move();
 }
 
-            function hideAnnouncementBar() {
-const bar = document.getElementById("announcementBar");
-            if (bar) bar.style.display = "none";
+function hideAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
 
-            if (animationTimeout) {
-                clearTimeout(animationTimeout);
-            animationTimeout = null;
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
+    }
 }
-
-        </script>
-
+</script>
 
            <!-- زر تثبيت التطبيق -->
         <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
@@ -2091,4 +2097,5 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
