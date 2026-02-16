@@ -1634,7 +1634,7 @@
         <script>
         
                         // تحديث تلقائي عند وجود نسخة جديدة
-                        reg.addEventListener('updatefound', () => {
+                        const reg.addEventListener('updatefound', () => {
                             const newWorker = reg.installing;
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
@@ -1812,14 +1812,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         <!-- ======= وظائف الشريط المتحرك ======= -->
-      <script>
-let animationTimeout = null;
+<script>
+var animationTimeout; // استخدمنا var لتجنب "already been declared"
 
 function startAnnouncementAnimation(text, duration = 12000) {
-    const bar = document.getElementById("announcementBar");
-    const textBox = document.getElementById("announcementText");
+    var bar = document.getElementById("announcementBar");
+    var textBox = document.getElementById("announcementText");
 
-    if (!bar || !textBox || !text?.trim()) {
+    if (!bar || !textBox || !text || !text.trim()) {
         hideAnnouncementBar();
         return;
     }
@@ -1827,15 +1827,15 @@ function startAnnouncementAnimation(text, duration = 12000) {
     textBox.innerText = "📢 " + text + " 📢";
     bar.style.display = "flex";
 
-    const screenWidth = bar.offsetWidth;
-    const textWidth = textBox.offsetWidth;
+    var screenWidth = bar.offsetWidth;
+    var textWidth = textBox.offsetWidth;
 
     function move() {
         textBox.style.transition = "none";
         textBox.style.left = -textWidth + "px";
 
-        setTimeout(() => {
-            textBox.style.transition = `left ${duration}ms linear`;
+        setTimeout(function() {
+            textBox.style.transition = "left " + duration + "ms linear";
             textBox.style.left = screenWidth + "px";
         }, 50);
 
@@ -1846,7 +1846,7 @@ function startAnnouncementAnimation(text, duration = 12000) {
 }
 
 function hideAnnouncementBar() {
-    const bar = document.getElementById("announcementBar");
+    var bar = document.getElementById("announcementBar");
     if (bar) bar.style.display = "none";
 
     if (animationTimeout) {
@@ -1854,7 +1854,23 @@ function hideAnnouncementBar() {
         animationTimeout = null;
     }
 }
+
+// تشغيل الإعلان بعد تحميل الصفحة
+document.addEventListener("DOMContentLoaded", function() {
+    if (window.firestoreTools && window.firestoreTools.db) {
+        var db = window.firestoreTools.db;
+        db.collection("announcements").doc("current")
+          .onSnapshot(function(doc) {
+              if (doc.exists && doc.data().text && doc.data().text.trim()) {
+                  startAnnouncementAnimation(doc.data().text, 12000);
+              } else {
+                  hideAnnouncementBar();
+              }
+          });
+    }
+});
 </script>
+
 
            <!-- زر تثبيت التطبيق -->
         <button id="installBtn" class="btn" hidden>📲 تثبيت التطبيق</button>
@@ -2097,5 +2113,6 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
