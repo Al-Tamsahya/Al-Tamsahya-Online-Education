@@ -50,24 +50,28 @@
 </head>
 
 <body>
-    <div class="app-container">
 
+    <!-- شريط الإعلان -->
+    <div id="studentAnnouncement"
+         style="display:none; background:#fff3cd; padding:15px; margin:10px; border-radius:8px; text-align:center;">
+        إعلان المنصة
+    </div>
+
+    <div class="app-container">
         <nav class="top-nav">
             <div class="nav-title">
                 منصة التمساحية التعليمية
             </div>
+
             <div id="navUser" class="nav-user"></div>
-<br>
+
             <button onclick="toggleDarkMode()" class="dark-btn">
                 🌙 الوضع الليلي
             </button>
-
         </nav>
+    </div>
 
-    </div>
-    <div id="studentAnnouncement"
-         style="display:none; background:#fff3cd; padding:15px; margin:15px; border-radius:8px;">
-    </div>
+</body>
 
     <!-- 🧑‍🎓 رسالة ترحيب رسمية -->
     <section class="welcome-message" id="welcomeMessage">
@@ -114,28 +118,29 @@
         <button id="homeBtn" onclick="goHome()">🏠 الصفحة الرئيسية</button>
     </div>
 
-    <!-- صفحة تسجيل الدخول -->
-    <div id="loginPage" class="login-container">
+   <!-- صفحة تسجيل الدخول -->
+<div id="loginPage" class="login-wrapper">
 
-        <h1>منصة التمساحية التعليمية</h1>
-        <p style="color:white">المرحلة الإعدادية – المنهج المصري</p>
+    <div class="login-box">
+        <h1 class="platform-title">منصة التمساحية التعليمية</h1>
+        <p class="subtitle">المرحلة الإعدادية – المنهج المصري</p>
+
         <input id="email" type="text" placeholder="البريد الإلكتروني">
         <input id="password" type="password" placeholder="كلمة المرور">
 
-        <!-- الأزرار داخل صفحة الدخول -->
         <div class="auth-buttons">
             <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
 
             <button type="button"
-                    class="register-btn secondary"
+                    class="register-btn"
                     onclick="registerStudentPage(); return false;">
                 تسجيل حساب جديد
             </button>
-
         </div>
-
-
     </div>
+
+</div>
+
 
     <!-- صفحة الأدمن -->
     <div id="adminPage" style="display:none; padding:20px; text-align:center;">
@@ -218,46 +223,45 @@
 
         </div>
 
+<!-- لوحة التحكم للمدير والمشرف -->
+<div id="adminPanel" class="admin-box hidden">
+    <h3>الإدارة</h3>
 
-        <!-- لوحة التحكم للمدير والمشرف -->
+    <div class="nav-btns">
+        <button class="custom-btn" onclick="showAdminSection('students')">قائمة الطلاب</button>
+        <button class="custom-btn" onclick="showAdminSection('supervisors')">المشرفون</button>
+        <button class="custom-btn" onclick="showAdminSection('tests')">الاختبارات</button>
+        <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
+    </div>
+</div>
 
-        <div id="adminPanel" class="admin-box hidden">
-            <h3>الإدارة</h3>
+<!-- النماذج المنبثقة -->
+<div id="studentModal" class="modal">
+    <div class="modal-content">
+        <h3>إضافة طالب جديد</h3>
+        <input type="text" id="newStudentEmail" placeholder="البريد الإلكتروني" />
+        <input type="password" id="newStudentPassword" placeholder="كلمة المرور" />
+        <br /><br />
+        <button onclick="addStudent()">إضافة</button>
+        <button class="close-btn" onclick="closeModal('studentModal')">إلغاء</button>
+    </div>
+</div>
 
-            <div class="nav-btns">
-                <button class="custom-btn" onclick="showAdminSection('students')">قائمة الطلاب</button>
-                <button class="custom-btn" onclick="showAdminSection('supervisors')">المشرفون</button>
-                <button class="custom-btn" onclick="showAdminSection('tests')">الاختبارات</button>
-                <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
-            </div>
+<div id="supervisorModal" class="modal">
+    <div class="modal-content">
+        <h3>إضافة مشرف جديد</h3>
+        <input type="text" id="newSupervisorEmail" placeholder="البريد الإلكتروني" />
+        <input type="password" id="newSupervisorPassword" placeholder="كلمة المرور" />
+        <br /><br />
+        <button onclick="addSupervisor()">إضافة</button>
+        <button class="close-btn" onclick="closeModal('supervisorModal')">إلغاء</button>
+    </div>
+</div>
 
+<button class="logout-btn hidden" onclick="logout()">
+    تسجيل الخروج
+</button>
 
-        <!-- النماذج المنبثقة -->
-        <div id="studentModal" class="modal">
-            <div class="modal-content">
-                <h3>إضافة طالب جديد</h3>
-                <input type="text" id="newStudentEmail" placeholder="البريد الإلكتروني" />
-                <input type="password" id="newStudentPassword" placeholder="كلمة المرور" />
-                <br />
-                <button onclick="addStudent()">إضافة</button>
-                <button class="close-btn" onclick="closeModal('studentModal')">إلغاء</button>
-            </div>
-        </div>
-
-        <div id="supervisorModal" class="modal">
-            <div class="modal-content">
-                <h3>إضافة مشرف جديد</h3>
-                <input type="text" id="newSupervisorEmail" placeholder="البريد الإلكتروني" />
-                <input type="password" id="newSupervisorPassword" placeholder="كلمة المرور" />
-                <br />
-                <button onclick="addSupervisor()">إضافة</button>
-                <button class="close-btn" onclick="closeModal('supervisorModal')">إلغاء</button>
-            </div>
-        </div>
-
-        <button class="logout-btn hidden" onclick="logout()">
-            تسجيل الخروج
-        </button>
 
         <footer>© 2026 منصة التمساحية التعليمية</footer>
 
@@ -2112,6 +2116,7 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
