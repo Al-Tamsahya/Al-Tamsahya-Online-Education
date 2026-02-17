@@ -118,7 +118,51 @@
         <button id="homeBtn" onclick="goHome()">🏠 الصفحة الرئيسية</button>
     </div>
 
-   <!-- صفحة تسجيل الدخول -->
+  <style>
+/* اخفاء كل الصفحات الأساسية */
+#loginPage,
+#adminPage,
+#registerPage,
+#mainPage,
+#gradePage,
+#subjectPage,
+#unitPage,
+#lessonPage,
+#adminPanel {
+    display: none;
+}
+</style>
+
+
+<script>
+/* دالة لإخفاء كل الصفحات */
+function hideAllPages() {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("adminPage").style.display = "none";
+    document.getElementById("registerPage").style.display = "none";
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("gradePage").style.display = "none";
+    document.getElementById("subjectPage").style.display = "none";
+    document.getElementById("unitPage").style.display = "none";
+    document.getElementById("lessonPage").style.display = "none";
+    document.getElementById("adminPanel").style.display = "none";
+}
+
+/* دالة لإظهار صفحة معينة */
+function showPage(pageId) {
+    hideAllPages();
+    document.getElementById(pageId).style.display = "block";
+}
+
+/* أول ما الموقع يفتح يظهر تسجيل الدخول فقط */
+window.onload = function () {
+    showPage("loginPage");
+};
+</script>
+
+
+
+<!-- صفحة تسجيل الدخول -->
 <div id="loginPage" class="login-wrapper">
 
     <div class="login-box">
@@ -133,7 +177,7 @@
 
             <button type="button"
                     class="register-btn"
-                    onclick="registerStudentPage(); return false;">
+                    onclick="showPage('registerPage'); return false;">
                 تسجيل حساب جديد
             </button>
         </div>
@@ -142,89 +186,91 @@
 </div>
 
 
-    <!-- صفحة الأدمن -->
-    <div id="adminPage" style="display:none; padding:20px; text-align:center;">
-        <h1>✅ مرحباً بك في لوحة الأدمن</h1>
-        <p>تم تسجيل الدخول بنجاح.</p>
+<!-- صفحة الأدمن -->
+<div id="adminPage" style="padding:20px; text-align:center;">
+    <h1>✅ مرحباً بك في لوحة الأدمن</h1>
+    <p>تم تسجيل الدخول بنجاح.</p>
 
-        <button onclick="logoutAdmin()">تسجيل خروج</button>
+    <button onclick="logoutAdmin()">تسجيل خروج</button>
+</div>
+
+
+
+<!-- صفحة التسجيل للطالب -->
+<div id="registerPage" class="login-container">
+
+    <h1 class="register-title">تسجيل حساب جديد</h1>
+
+    <input type="text" id="regEmail" placeholder="البريد الإلكتروني">
+    <input type="password" id="regPassword" placeholder="كلمة المرور">
+
+    <button class="register-btn primary"
+            onclick="registerStudent()">
+        إرسال طلب التسجيل
+    </button>
+
+    <button class="register-btn secondary"
+            onclick="showPage('loginPage')">
+        رجوع للصفحة الرئيسية
+    </button>
+
+    <p class="trust-message">
+        🔒 بيانات الطالب محفوظة بأمان<br>
+        ولا يتم مشاركتها مع أي جهة خارجية
+    </p>
+
+</div>
+
+
+
+<!-- الصفحة الرئيسية بعد تسجيل الدخول -->
+<div id="mainPage"></div>
+
+<!-- صفحة اختيار الصف -->
+<div id="gradePage" class="list-container"></div>
+
+<!-- صفحة اختيار المادة -->
+<div id="subjectPage" class="list-container"></div>
+
+<!-- صفحة اختيار الوحدة -->
+<div id="unitPage" class="list-container"></div>
+
+<div id="lessonPath" class="lesson-path"></div>
+
+<!-- صفحة الدرس -->
+<div id="lessonPage">
+
+    <div class="nav-btns"></div>
+
+    <!-- شريط التقدم -->
+    <div class="progress-box">
+        <div id="progressBar" class="progress-bar"></div>
     </div>
 
+    <h2 id="lessonTitle"></h2>
 
+    <button id="toggleLessonsBtn" class="toggle-lessons-btn" onclick="toggleLessons()">
+        📚 قائمة الدروس
+    </button>
 
-    <!-- صفحة التسجيل للطالب -->
-    <div id="registerPage" class="login-container hidden">
+    <div id="lessonList" class="list-container"></div>
 
-        <h1 class="register-title">تسجيل حساب جديد</h1>
-
-        <input type="text" id="regEmail" placeholder="البريد الإلكتروني">
-        <input type="password" id="regPassword" placeholder="كلمة المرور">
-
-        <button class="register-btn primary"
-                onclick="registerStudent()">
-            إرسال طلب التسجيل
-        </button>
-
-        <button class="register-btn secondary"
-                onclick="backToLogin()">
-            رجوع للصفحة الرئيسية
-        </button>
-
-        <p class="trust-message">
-            🔒 بيانات الطالب محفوظة بأمان<br>
-            ولا يتم مشاركتها مع أي جهة خارجية
-        </p>
-
+    <!-- أزرار التنقل بين الدروس -->
+    <div class="nav-btns">
+        <button id="prevLessonBtn" onclick="prevLesson()">⬅️ الدرس السابق</button>
+        <button id="nextLessonBtn" onclick="nextLesson()">➡️ الدرس التالي</button>
     </div>
 
+    <div id="lessonPageContent">
+        <div id="lessonVideo"></div>
+        <div id="lessonText"></div>
+    </div>
 
+</div>
 
-    <!-- الصفحة الرئيسية بعد تسجيل الدخول -->
-    <div id="mainPage" class="hidden"></div>
-
-        <!-- صفحة اختيار الصف -->
-        <div id="gradePage" class="list-container"></div>
-
-        <!-- صفحة اختيار المادة -->
-        <div id="subjectPage" class="list-container hidden"></div>
-
-        <!-- صفحة اختيار الوحدة -->
-        <div id="unitPage" class="list-container hidden"></div>
-
-        <div id="lessonPath" class="lesson-path"></div>
-        <!-- صفحة الدرس -->
-        <div id="lessonPage" class="hidden">
-
-            <div class="nav-btns"></div>
-
-            <!-- شريط التقدم -->
-            <div class="progress-box">
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-
-            <h2 id="lessonTitle"></h2>
-
-            <button id="toggleLessonsBtn" class="toggle-lessons-btn" onclick="toggleLessons()">
-                📚 قائمة الدروس
-            </button>
-
-            <div id="lessonList" class="list-container"></div>
-
-            <!-- أزرار التنقل بين الدروس -->
-            <div class="nav-btns">
-                <button id="prevLessonBtn" onclick="prevLesson()">⬅️ الدرس السابق</button>
-                <button id="nextLessonBtn" onclick="nextLesson()">➡️ الدرس التالي</button>
-            </div>
-
-            <div id="lessonPageContent">
-                <div id="lessonVideo"></div>
-                <div id="lessonText"></div>
-            </div>
-
-        </div>
 
 <!-- لوحة التحكم للمدير والمشرف -->
-<div id="adminPanel" class="admin-box hidden">
+<div id="adminPanel" class="admin-box">
     <h3>الإدارة</h3>
 
     <div class="nav-btns">
@@ -234,6 +280,7 @@
         <button class="custom-btn" onclick="showAdminSection('results')">النتائج الأسبوعية</button>
     </div>
 </div>
+
 
 <!-- النماذج المنبثقة -->
 <div id="studentModal" class="modal">
@@ -257,6 +304,7 @@
         <button class="close-btn" onclick="closeModal('supervisorModal')">إلغاء</button>
     </div>
 </div>
+
 
 <button class="logout-btn hidden" onclick="logout()">
     تسجيل الخروج
@@ -2116,6 +2164,7 @@ window.addEventListener("DOMContentLoaded", () => AnnouncementManager.init());
 
 </body>
 </html>
+
 
 
 
