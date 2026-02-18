@@ -1721,7 +1721,8 @@ if ('serviceWorker' in navigator) {
 document.addEventListener("DOMContentLoaded", () => {
 
   // ======= لوحة الأدمن =======
-  if (window.currentUser.role === "ADMIN") {
+  if (window.currentUser && window.currentUser.role === "ADMIN") {
+
     const adminPanel = document.getElementById("admin-panel");
     if (adminPanel) adminPanel.style.display = "block";
 
@@ -1729,62 +1730,83 @@ document.addEventListener("DOMContentLoaded", () => {
     const contentInput = document.getElementById("ad-content");
     const addBtn = document.getElementById("add-ad-btn");
 
-    if (addBtn && titleInput && contentInput) {
+    if (addBtn && titleInput && contentInput && window.firestoreTools) {
       addBtn.addEventListener("click", async () => {
+
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
-        if (!title || !content) return alert("الرجاء ملء العنوان والمحتوى!");
+
+        if (!title || !content) {
+          alert("الرجاء ملء العنوان والمحتوى!");
+          return;
+        }
 
         try {
           await firestoreTools.addDoc(
             firestoreTools.collection("ads"),
-            { title, content, date: new Date() }
+            {
+              title: title,
+              content: content,
+              date: new Date()
+            }
           );
+
           titleInput.value = "";
           contentInput.value = "";
-          alert("تم إضافة الإعلان بنجاح!");
+          alert("تم إضافة الإعلان بنجاح ✅");
+
         } catch (err) {
           console.error(err);
           alert("حدث خطأ أثناء إضافة الإعلان ❌\n" + err.message);
         }
+
       });
     }
   }
 
-<!-- ======= عرض الإعلانات ======= -->
-
-document.addEventListener("DOMContentLoaded", () => {
-
+  // ======= عرض الإعلانات =======
   const adsContainer = document.getElementById("ads-container");
+
   if (adsContainer && window.firestoreTools && firestoreTools.collection) {
+
     firestoreTools.collection("ads")
       .orderBy("date", "desc")
       .onSnapshot(snapshot => {
+
         adsContainer.innerHTML = "";
+
         snapshot.forEach(doc => {
           const ad = doc.data();
           const adElement = document.createElement("div");
+
           adElement.className = "ad";
           adElement.innerHTML = `
             <h3>${ad.title}</h3>
             <p>${ad.content}</p>
-            <small>${ad.date.toDate().toLocaleString()}</small>
+            <small>${ad.date?.toDate ? ad.date.toDate().toLocaleString() : ""}</small>
           `;
+
           adsContainer.appendChild(adElement);
         });
+
       });
   }
 
   // ======= شريط الإعلان المتحرك =======
   if (window.firestoreTools && window.firestoreTools.db) {
+
     const db = window.firestoreTools.db;
-    db.collection("announcements").doc("current")
+
+    db.collection("announcements")
+      .doc("current")
       .onSnapshot(doc => {
-        if (doc.exists && doc.data().text?.trim()) {
+
+        if (doc.exists && doc.data()?.text?.trim()) {
           startAnnouncementAnimation(doc.data().text, 12000);
         } else {
           hideAnnouncementBar();
         }
+
       });
   }
 
@@ -1800,6 +1822,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (installBtn) {
     installBtn.addEventListener("click", async () => {
+
       if (!deferredPrompt) {
         alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
         return;
@@ -1807,9 +1830,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+
       if (outcome === "accepted") {
         installBtn.hidden = true;
       }
+
       deferredPrompt = null;
     });
   }
@@ -2051,4 +2076,5 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
