@@ -1,185 +1,114 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<<<<<<< HEAD
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>تثبيت منصة التمساحية</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon-192.png">
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            background: #f3f6fb;
-            margin: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة التمساحية</title>
 
-        .card {
-            background: #fff;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 10px 28px rgba(0,0,0,.15);
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            font-size: 16px;
-            background: #1e40af;
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            margin-top: 16px;
-        }
-
-            .btn:hover {
-                background: #1d4ed8;
-            }
-
-        #installBtn {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="card">
-        <h1>أهلًا بك في منصة التمساحية</h1>
-        <p>اضغط على الزر أدناه لتثبيت التطبيق للوصول السريع للموقع من الشاشة الرئيسية.</p>
-        <button id="installBtn" class="btn">📲 تثبيت التطبيق</button>
-    </div>
-
-    <script>
-        let deferredPrompt;
-
-        // التقاط حدث قبل التثبيت (قبل ظهور مربع تثبيت PWA)
-        window.addEventListener("beforeinstallprompt", (e) => {
-            e.preventDefault();           // منع ظهور المربع التلقائي
-            deferredPrompt = e;           // حفظ الحدث لاستخدامه عند الضغط على الزر
-            document.getElementById("installBtn").style.display = "inline-block"; // إظهار الزر
-        });
-
-        // عند الضغط على زر التثبيت
-        document.getElementById("installBtn").addEventListener("click", async () => {
-            if (!deferredPrompt) return;
-
-            deferredPrompt.prompt();       // يظهر مربع تثبيت التطبيق الرسمي
-            const choice = await deferredPrompt.userChoice;
-            deferredPrompt = null;        // إعادة تعيين الحدث بعد استخدامه
-            document.getElementById("installBtn").style.display = "none";
-
-            if (choice.outcome === "accepted") {
-                alert("✅ تم تثبيت التطبيق، يمكنك الآن فتح الموقع من الشاشة الرئيسية");
-            }
-        });
-
-        // تسجيل الـ Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log("SW مسجل ✅"))
-                .catch(err => console.error("فشل تسجيل SW ❌", err));
-        }
-
-        // إعادة التوجيه تلقائيًا إلى index.html إذا تم فتح install.html من أيقونة PWA
-        window.addEventListener("load", () => {
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                window.location.href = "index.html";
-            }
-        });
-    </script>
-=======
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>تثبيت منصة التمساحية</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon-192.png">
-  <style>
-    body { 
-      font-family: 'Cairo', sans-serif; 
-      display:flex; 
-      justify-content:center; 
-      align-items:center; 
-      min-height:100vh; 
-      text-align:center; 
-      background:#f3f6fb; 
-      margin:0;
-    }
-    .card { 
-      background:#fff; 
-      padding:24px; 
-      border-radius:16px; 
-      box-shadow:0 10px 28px rgba(0,0,0,.15); 
-      max-width:400px; 
-      width:90%; 
-    }
-    .btn { 
-      padding:15px 30px; 
-      font-size:16px; 
-      background:#1e40af; 
-      color:#fff; 
-      border:none; 
-      border-radius:14px; 
-      cursor:pointer; 
-      margin-top:16px; 
-    }
-    .btn:hover { background:#1d4ed8; }
-    #installBtn { display:none; }
-  </style>
-</head>
-<body>
-
-<div class="card">
-  <h1>أهلًا بك في منصة التمساحية</h1>
-  <p>اضغط على الزر أدناه لتثبيت التطبيق للوصول السريع للموقع من الشاشة الرئيسية.</p>
-  <button id="installBtn" class="btn">📲 تثبيت التطبيق</button>
-</div>
-
-<script>
-let deferredPrompt;
-
-// التقاط حدث قبل التثبيت (قبل ظهور مربع تثبيت PWA)
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();           // منع ظهور المربع التلقائي
-  deferredPrompt = e;           // حفظ الحدث لاستخدامه عند الضغط على الزر
-  document.getElementById("installBtn").style.display = "inline-block"; // إظهار الزر
-});
-
-// عند الضغط على زر التثبيت
-document.getElementById("installBtn").addEventListener("click", async () => {
-  if (!deferredPrompt) return;
-
-  deferredPrompt.prompt();       // يظهر مربع تثبيت التطبيق الرسمي
-  const choice = await deferredPrompt.userChoice;
-  deferredPrompt = null;        // إعادة تعيين الحدث بعد استخدامه
-  document.getElementById("installBtn").style.display = "none";
-
-  if(choice.outcome === "accepted"){
-    alert("✅ تم تثبيت التطبيق، يمكنك الآن فتح الموقع من الشاشة الرئيسية");
-  }
-});
-
-// تسجيل الـ Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(reg => console.log("SW مسجل ✅"))
-    .catch(err => console.error("فشل تسجيل SW ❌", err));
+<style>
+body{
+  margin:0;
+  font-family: Cairo, sans-serif;
+  background:#f3f6fb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
 }
 
-// إعادة التوجيه تلقائيًا إلى index.html إذا تم فتح install.html من أيقونة PWA
-window.addEventListener("load", () => {
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    window.location.href = "index.html";
+.container{
+  width:100%;
+  padding:20px;
+}
+
+.card{
+  background:#ffffff;
+  max-width:460px;
+  margin:auto;
+  padding:32px 28px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+h2{
+  margin:0 0 14px;
+  color:#1e40af;
+  font-size:22px;
+}
+
+.desc{
+  font-size:16px;
+  color:#374151;
+  line-height:1.8;
+  margin-bottom:26px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  font-size:17px;
+  font-weight:600;
+  border:none;
+  border-radius:12px;
+  background:#1e40af;
+  color:#fff;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+.note{
+  margin-top:22px;
+  font-size:14px;
+  color:#6b7280;
+  line-height:1.7;
+}
+
+/* شاشات كبيرة (كمبيوتر) */
+@media (min-width: 768px){
+  .card{
+    max-width:520px;
+    padding:40px 36px;
   }
-});
-</script>
->>>>>>> 86b0063a6a7a65235492840f579e1aac1f4798d4
+
+  h2{
+    font-size:24px;
+  }
+
+  .desc{
+    font-size:17px;
+  }
+
+  button{
+    font-size:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+    <h2>أهلًا بك في منصة التمساحية</h2>
+
+    <p class="desc">
+      منصة تعليمية رقمية<br>
+      تجمع الطلاب والمعلمين وأولياء الأمور<br>
+      في بيئة تعليمية منظمة وآمنة
+    </p>
+
+    <button id="installBtn">تثبيت</button>
+
+    <p class="note">
+      يتيح التثبيت وصولًا أسرع للمنصة<br>
+      وتجربة استخدام أكثر سهولة واستقرارًا
+    </p>
+  </div>
+</div>
 
 </body>
 </html>
