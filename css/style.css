@@ -3,20 +3,20 @@
 ===================== */
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box - sizing: border - box;
+margin: 0;
+padding: 0;
 }
 
 body {
   /* font-family: "Cairo", sans-serif; */
-  background: linear-gradient(180deg, #f5f7fb, #ffffff);
+  background: linear - gradient(180deg, #f5f7fb, #ffffff);
   color: #1f2937;
-  overflow-x: hidden;
+  overflow - x: hidden;
 }
 
-body[dir="ltr"] { text-align: left; }
-body[dir="rtl"] { text-align: right; }
+body[dir = "ltr"] { text - align: left; }
+body[dir = "rtl"] { text - align: right; }
 
 /* =====================
    TYPOGRAPHY
@@ -24,70 +24,70 @@ body[dir="rtl"] { text-align: right; }
 
 h1, h2, h3, h4 {
   margin-bottom: 15px;
-  color: #2c3e50;
+color: #2c3e50;
 }
 
 p {
   line-height: 1.8;
-  color: #444;
+color: #444;
 }
 
 /* =====================
    LAYOUTS
 ===================== */
 
-.list-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 30px;
+.list - container {
+display: grid;
+    grid - template - columns: repeat(auto - fit, minmax(220px, 1fr));
+gap: 20px;
+padding: 30px;
 }
 
 /* =====================
    NAVBAR
 ===================== */
 
-.top-nav {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+.top - nav {
+background: linear - gradient(135deg, #2563eb, #1e40af);
   padding: 8px;
-  text-align: center;
+    text - align: center;
 }
 
-.nav-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #ffffff;
+.nav - title {
+    font - size: 22px;
+    font - weight: bold;
+color: #ffffff;
 }
 
 /* =====================
    BUTTONS
 ===================== */
 
-.custom-btn,
+.custom - btn,
 button {
   background: #2563eb;
   color: #ffffff;
   border: none;
-  border-radius: 14px;
-  padding: 14px 18px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s ease;
+border - radius: 14px;
+padding: 14px 18px;
+font - size: 16px;
+cursor: pointer;
+transition: 0.3s ease;
 }
 
-.custom-btn:hover,
+.custom - btn:hover,
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+box - shadow: 0 10px 22px rgba(0,0,0,0.12);
 }
 
-.custom-btn:active,
+.custom - btn:active,
 button:active {
   transform: scale(0.97);
 }
 
 button.danger {
-  background: #dc2626;
+background: #dc2626;
 }
 
 /* =====================
@@ -96,300 +96,269 @@ button.danger {
 
 #lessonTitle,
 #lessonPageContent,
-.grade-card,
-.subject-card,
-.unit-card,
-.lesson-card,
-.admin-section,
+.grade - card,
+.subject - card,
+.unit - card,
+.lesson - card,
+.login - container,
+.admin - section,
 .card,
 .table-container {
   background: #1eaf9b;
   padding: 16px;
-  border-radius: 18px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  margin-bottom: 15px;
+border - radius: 18px;
+box - shadow: 0 8px 20px rgba(0,0,0,0.08);
+margin - bottom: 15px;
 }
-
 /* =====================
-   LOGIN & REGISTER BOX
+   LOGIN BOX STYLING
 ===================== */
 
-#loginPage,
-#registerPage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-}
-
-.login-container {
-  width: 100%;
-  max-width: 420px;
-  background: #ffffff;
+.login - container {
+    max - width: 400px;
+margin: 80px auto;
+background: #ffffff !important;   /* نجعله أبيض بدل الأخضر */
   padding: 40px 30px;
-  border-radius: 24px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-  text-align: center;
-  transition: 0.3s ease;
+    border - radius: 16px;
+    box - shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text - align: center;
+transition: 0.3s ease;
 }
 
-.login-container:hover {
+.login - container:hover {
   transform: translateY(-5px);
 }
 
-.login-container h1,
-.login-container h2 {
-  font-size: 24px;
+/* عنوان تسجيل الدخول */
+.login - container h2 {
   margin-bottom: 25px;
-  color: #1e3a8a;
+color: #1877f2;
+  font - weight: 600;
 }
 
-.login-container input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 15px;
-  border-radius: 14px;
-  border: 1px solid #d1d5db;
-  font-size: 15px;
-  transition: 0.2s ease;
+/* الحقول */
+.login - container input {
+  width: 100 %;
+padding: 14px;
+margin - bottom: 15px;
+border: 1px solid #ddd;
+  border-radius: 8px;
+outline: none;
+font - size: 14px;
+transition: 0.3s;
 }
 
-.login-container input:focus {
-  border-color: #2563eb;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+/* تأثير عند الضغط */
+.login - container input: focus {
+    border - color: #1877f2;
+  box - shadow: 0 0 0 3px rgba(24, 119, 242, 0.15);
 }
 
-.login-container button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: bold;
-  margin-bottom: 12px;
+/* الأزرار */
+.login - container button {
+  width: 100 %;
+padding: 14px;
+border: none;
+border - radius: 8px;
+font - size: 15px;
+font - weight: 600;
+cursor: pointer;
+transition: 0.3s;
 }
 
 /* زر تسجيل الدخول */
-.login-container .login-btn,
-.login-container button:first-of-type {
-  background: #22c55e !important;   /* أخضر احترافي */
+.login - container button: first - of - type {
+background: #1877f2;
   color: white;
 }
 
-.login-container .login-btn:hover,
-.login-container button:first-of-type:hover {
-  background: #16a34a !important;
+.login - container button: first - of - type:hover {
+  background: #166fe5;
 }
 
-/* زر تسجيل حساب */
-.login-container .register-btn,
-.login-container button:last-of-type {
-  background: #42b72a;
+/* زر إنشاء حساب */
+.login - container button: last - of - type {
+background: #42b72a;
   color: white;
+    margin - top: 10px;
 }
 
-/* زر إرسال الطلب */
-.login-container .submit-btn {
-  background: #22c55e !important;
-  color: white;
+.login - container button: last - of - type:hover {
+  background: #36a420;
 }
 
-.login-container .submit-btn:hover {
-  background: #16a34a !important;
-}
-
-/* زر الرجوع */
-.login-container .back-btn {
-  background: #e5e7eb;
-  color: #1f2937;
+#lessonText {
+  margin - top: 15px;
 }
 
 /* =====================
    ADMIN
 ===================== */
 
-.admin-section {
-  margin: 40px;
+.admin - section {
+margin: 40px;
 }
 
-.admin-section h2 {
+.admin - section h2 {
   text-align: center;
-  color: #1e3a8a;
+color: #1e3a8a;
 }
 
-.admin-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
+.admin - buttons {
+display: grid;
+    grid - template - columns: repeat(auto - fit, minmax(200px, 1fr));
+gap: 18px;
 }
 
 /* =====================
    ANIMATION
 ===================== */
 
-.list-container,
+.list - container,
 #lessonPage {
   animation: fadeUp 0.4s ease;
 }
 
-@keyframes fadeUp {
-  from {
+@keyframes fadeUp
+{
+    from
+    {
     opacity: 0;
     transform: translateY(12px);
-  }
-  to {
+    }
+    to
+    {
     opacity: 1;
     transform: translateY(0);
-  }
+    }
 }
 
 /* =====================
-   GLOBAL NAV
+GLOBAL NAV
 ===================== */
 
-#globalNav {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 10px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  background: #ffffff;
+# globalNav {
+position: sticky;
+top: 0;
+z - index: 1000;
+padding: 10px;
+display: flex;
+gap: 10px;
+justify - content: center;
+background: #ffffff;
 }
 
 #globalNav button {
   background: #2563eb;
   color: #ffffff;
-  border-radius: 12px;
+  border - radius: 12px;
 }
 
 /* =====================
    TABLE (MOBILE)
 ===================== */
 
-@media (max-width: 768px) {
+@media(max - width: 768px) {
 
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+  .table - container {
+        overflow - x: auto;
+        -webkit - overflow - scrolling: touch;
+    }
 
-  table {
-    min-width: 600px;
-    border-collapse: collapse;
-  }
+    table {
+        min - width: 600px;
+        border - collapse: collapse;
+    }
 
-  th, td {
-    font-size: 14px;
+    th, td {
+        font - size: 14px;
     padding: 10px;
-    text-align: center;
-    white-space: nowrap;
-  }
+        text - align: center;
+        white - space: nowrap;
+    }
 
-  td:last-child {
+td: last - child {
     display: flex;
-    flex-direction: column;
+        flex - direction: column;
     gap: 6px;
-  }
+    }
 
-  td:last-child button {
-    width: 100%;
-    font-size: 14px;
+td: last - child button {
+    width: 100 %;
+        font - size: 14px;
     padding: 8px;
-  }
+    }
 
-  #studentSearch {
-    width: 100%;
-    font-size: 16px;
-  }
+# studentSearch {
+width: 100 %;
+    font - size: 16px;
+}
 
-  .logout-btn,
+  .logout - btn,
   #logoutBtn,
-  .logout-button {
-    display: block !important;
-    width: 100%;
-    margin: 10px 0;
-    font-size: 16px;
-  }
-
-  body {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-
-  .welcome-section,
-  #welcomeMessage {
-    padding: 20px !important;
-    margin: 0 auto !important;
-    text-align: center !important;
-  }
-
-  .welcome-section p,
-  #welcomeMessage p {
-    font-size: 16px;
-    line-height: 1.9;
-  }
+  .logout - button {
+display: block!important;
+width: 100 %;
+margin: 10px 0;
+    font - size: 16px;
+}
 }
 
 /* =====================
    INSTALL MODAL
 ===================== */
 
-.install-modal {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(180deg, #1e3a8a, #2563eb);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+.install - modal {
+position: fixed;
+    inset: 0;
+background: rgba(0, 0, 0, .6);
+display: flex;
+    align - items: center;
+    justify - content: center;
+    z - index: 9999;
 }
 
-.install-box {
-  background: #ffffff;
-  padding: 26px 22px;
-  border-radius: 22px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
-  text-align: center;
+.install - box {
+background: #fff;
+  padding: 20px;
+    border - radius: 16px;
+width: 90 %;
+    max - width: 360px;
+    text - align: center;
 }
 
-.install-box h3 {
-  color: #1e3a8a;
-  font-size: 20px;
-  margin-bottom: 14px;
+.install - box h3 {
+  margin-bottom: 10px;
+color: #1e40af;
 }
 
-.install-box p {
-  color: #475569;
-  font-size: 15px;
+.install - box p {
+  font-size: 14px;
+line - height: 1.7;
+margin - bottom: 15px;
 }
 
-.install-box button {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 14px;
-  width: 100%;
-  padding: 12px;
-  margin-top: 8px;
+.install - box button {
+  width: 100 %;
+padding: 12px;
+margin - top: 8px;
+border - radius: 10px;
 }
 
 .hidden {
   display: none;
 }
 
-/* =====================
-   DARK MODE
-===================== */
+/* =================================================
+   🌙 DARK MODE — فاتح + شامل + بدون بهتان
+================================================= */
 
-body.dark-mode {
-  background: #e9eef5;
+body.dark - mode {
+background: #e9eef5;
   color: #1f2937;
 }
 
-body.dark-mode header,
+body.dark - mode header,
 body.dark-mode main,
 body.dark-mode section,
 body.dark-mode footer,
@@ -397,91 +366,279 @@ body.dark-mode .container {
   background: #e9eef5;
 }
 
-body.dark-mode .top-nav,
-body.dark-mode #globalNav {
+/* Navbar */
+body.dark - mode.top - nav,
+body.dark - mode #globalNav {
   background: #dbe3f1;
 }
 
-body.dark-mode .card,
-body.dark-mode .table-container,
-body.dark-mode table {
+/* Cards & tables */
+body.dark - mode.card,
+body.dark - mode.table - container,
+body.dark - mode table {
   background: #f8fafc;
   color: #1f2937;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  box - shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
 
-body.dark-mode th {
+/* Table head */
+body.dark - mode th {
   background: #e2e8f0;
   color: #111827;
 }
 
-body.dark-mode button,
+/* Buttons */
+body.dark - mode button,
 body.dark-mode .custom-btn {
   background: #dde6f2;
   color: #111827;
 }
 
-body.dark-mode button:hover {
-  background: #cfd9ea;
+body.dark - mode button: hover {
+background: #cfd9ea;
 }
 
-body.dark-mode .danger {
-  background: #f2caca;
+body.dark - mode.danger {
+background: #f2caca;
   color: #7f1d1d;
 }
 
-body.dark-mode input,
+/* Inputs */
+body.dark - mode input,
 body.dark-mode select,
 body.dark-mode textarea {
   background: #eef2f7;
   color: #111827;
   border: 1px solid #cbd5e1;
 }
-
 /* =====================
-   MOBILE CLICK FIX
+   🔧 MOBILE CLICK FIX (IMPORTANT)
+   حل مشكلة عدم الضغط على زر تسجيل حساب جديد
 ===================== */
 
+/* منع أي عنصر شفاف من تعطيل اللمس */
 #welcomeMessage,
-.top-nav,
+.top - nav,
 #globalNav {
-  pointer-events: none;
+  pointer - events: none;
 }
 
+/* السماح فقط للأزرار باستقبال اللمس */
 #welcomeMessage button,
-.top-nav button,
+.top - nav button,
 #globalNav button,
 .auth-buttons button {
   pointer-events: auto;
 }
 
+/* تأكيد أن صفحة الدخول فوق الجميع */
 #loginPage {
   position: relative;
-  z-index: 10000;
+z - index: 10000;
 }
 
+/* تأكيد أن صفحة التسجيل تظهر فوق */
 #registerPage {
   position: relative;
-  z-index: 10001;
+z - index: 10001;
 }
 
+/* تحسين اللمس على الموبايل */
 button {
   touch-action: manipulation;
 }
 
-@media (hover: none) {
-  button:hover {
+/* منع hover الوهمي في الموبايل */
+@media(hover: none) {
+button: hover {
     transform: none;
-    box-shadow: none;
+        box - shadow: none;
+    }
+}
+.install - modal {
+background: linear - gradient(180deg, #1e3a8a, #2563eb);
+}
+
+.install - box {
+background: #ffffff;
+  padding: 26px 22px;
+    border - radius: 22px;
+    box - shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+}
+.install - box h3 {
+  color: #1e3a8a;
+  font - size: 20px;
+margin - bottom: 14px;
+}
+.install - box p {
+  color: #475569;
+  font - size: 15px;
+}
+.install - box button {
+  background: linear - gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  font - size: 16px;
+font - weight: bold;
+border - radius: 14px;
+}
+
+/* =================================================
+   ✅ FIX WELCOME TEXT ON MOBILE
+   حل مشكلة التصاق النص في الهاتف
+================================================= */
+
+@media(max - width: 768px) {
+
+    body {
+        padding - right: 15px;
+        padding - left: 15px;
+    }
+
+  .welcome - section,
+  #welcomeMessage {
+    padding: 20px!important;
+margin: 0 auto!important;
+    text - align: center!important;
+}
+
+  .welcome - section p,
+# welcomeMessage p {
+    font-size: 16px;
+line - height: 1.9;
   }
+
+}
+
+
+/* =================================================
+   ✅ FACEBOOK STYLE LOGIN BOX
+================================================= */
+
+.login - container {
+display: flex;
+    justify - content: center;
+    align - items: center;
+padding: 40px 15px;
+}
+
+.login - box {
+background: #ffffff;
+  width: 100 %;
+    max - width: 400px;
+padding: 30px 25px;
+    border - radius: 20px;
+    box - shadow: 0 15px 40px rgba(0,0,0,0.12);
+    text - align: center;
+transition: 0.3s ease;
+}
+
+.login - box h2 {
+  margin-bottom: 20px;
+font - size: 22px;
+color: #1e3a8a;
+}
+
+.login - box input {
+  width: 100 %;
+padding: 14px;
+margin - bottom: 15px;
+border - radius: 12px;
+border: 1px solid #d1d5db;
+  font-size: 15px;
+transition: 0.2s ease;
+}
+
+.login - box input: focus {
+    border - color: #2563eb;
+  outline: none;
+    box - shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.login - box.login - btn {
+width: 100 %;
+padding: 14px;
+background: #1877f2;
+  color: white;
+    border - radius: 12px;
+    font - size: 16px;
+    margin - bottom: 12px;
+}
+
+.login - box.register - btn {
+width: 100 %;
+padding: 14px;
+background: #42b72a;
+  color: white;
+    border - radius: 12px;
+    font - size: 16px;
+}
+
+
+/* =================================================
+   ✅ HIDE BACK & HOME BUTTONS ON FIRST PAGE
+================================================= */
+
+body.home - page #globalNav,
+body.home - page.back - btn,
+body.home - page.home - btn {
+display: none!important;
 }
 
 /* =====================
-   HOME PAGE FIX
+   BACKGROUND EFFECT
 ===================== */
+/* =================================================
+   ✅ CLEAN FACEBOOK STYLE LOGIN
+================================================= */
 
-body.home-page #globalNav,
-body.home-page .back-btn,
-body.home-page .home-btn {
-  display: none !important;
+.login - container {
+    max - width: 400px;
+margin: 60px auto;
+padding: 30px 25px;
+background: #ffffff;
+  border - radius: 20px;
+    box - shadow: 0 15px 40px rgba(0,0,0,0.12);
+    text - align: center;
+}
+
+.login - container h2 {
+  margin-bottom: 20px;
+font - size: 22px;
+color: #1e3a8a;
+}
+
+.login - container input {
+  width: 100 %;
+padding: 14px;
+margin - bottom: 15px;
+border - radius: 12px;
+border: 1px solid #d1d5db;
+  font-size: 15px;
+transition: 0.2s ease;
+}
+
+.login - container input: focus {
+    border - color: #2563eb;
+  outline: none;
+    box - shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.login - container button {
+  width: 100 %;
+padding: 14px;
+border - radius: 12px;
+font - size: 16px;
+margin - bottom: 12px;
+}
+
+/* زر الدخول */
+.login - container button: first - of - type {
+background: #1877f2;
+  color: white;
+}
+
+/* زر تسجيل جديد */
+.login - container button: last - of - type {
+background: #42b72a;
+  color: white;
 }
