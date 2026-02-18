@@ -3,33 +3,38 @@
 ===================== */
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  /* font-family: "Cairo", sans-serif; */
-  background: linear-gradient(180deg, #f5f7fb, #ffffff);
-  color: #1f2937;
-  overflow-x: hidden;
+    font-family: "Cairo", sans-serif;
+    background: linear-gradient(180deg, #f5f7fb, #ffffff);
+    color: #1f2937;
+    overflow-x: hidden;
 }
 
-body[dir="ltr"] { text-align: left; }
-body[dir="rtl"] { text-align: right; }
+    body[dir="ltr"] {
+        text-align: left;
+    }
+
+    body[dir="rtl"] {
+        text-align: right;
+    }
 
 /* =====================
    TYPOGRAPHY
 ===================== */
 
 h1, h2, h3, h4 {
-  margin-bottom: 15px;
-  color: #2c3e50;
+    margin-bottom: 15px;
+    color: #2c3e50;
 }
 
 p {
-  line-height: 1.8;
-  color: #444;
+    line-height: 1.8;
+    color: #444;
 }
 
 /* =====================
@@ -37,10 +42,10 @@ p {
 ===================== */
 
 .list-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 30px;
 }
 
 /* =====================
@@ -48,15 +53,15 @@ p {
 ===================== */
 
 .top-nav {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  padding: 8px;
-  text-align: center;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    padding: 8px;
+    text-align: center;
 }
 
 .nav-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #ffffff;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
 }
 
 /* =====================
@@ -65,30 +70,30 @@ p {
 
 .custom-btn,
 button {
-  background: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 14px;
-  padding: 14px 18px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s ease;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
 }
 
-.custom-btn:hover,
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
-}
+    .custom-btn:hover,
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+    }
 
-.custom-btn:active,
-button:active {
-  transform: scale(0.97);
-}
+    .custom-btn:active,
+    button:active {
+        transform: scale(0.97);
+    }
 
-button.danger {
-  background: #dc2626;
-}
+    button.danger {
+        background: #dc2626;
+    }
 
 /* =====================
    CONTENT CARDS
@@ -104,91 +109,15 @@ button.danger {
 .admin-section,
 .card,
 .table-container {
-  background: #1eaf9b;
-  padding: 16px;
-  border-radius: 18px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  margin-bottom: 15px;
-}
-/* =====================
-   LOGIN BOX STYLING
-===================== */
-
-.login-container {
-  max-width: 400px;
-  margin: 80px auto;
-  background: #ffffff !important;   /* نجعله أبيض بدل الأخضر */
-  padding: 40px 30px;
-  border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: 0.3s ease;
-}
-
-.login-container:hover {
-  transform: translateY(-5px);
-}
-
-/* عنوان تسجيل الدخول */
-.login-container h2 {
-  margin-bottom: 25px;
-  color: #1877f2;
-  font-weight: 600;
-}
-
-/* الحقول */
-.login-container input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  font-size: 14px;
-  transition: 0.3s;
-}
-
-/* تأثير عند الضغط */
-.login-container input:focus {
-  border-color: #1877f2;
-  box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15);
-}
-
-/* الأزرار */
-.login-container button {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-/* زر تسجيل الدخول */
-.login-container button:first-of-type {
-  background: #1877f2;
-  color: white;
-}
-
-.login-container button:first-of-type:hover {
-  background: #166fe5;
-}
-
-/* زر إنشاء حساب */
-.login-container button:last-of-type {
-  background: #42b72a;
-  color: white;
-  margin-top: 10px;
-}
-
-.login-container button:last-of-type:hover {
-  background: #36a420;
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    margin-bottom: 15px;
 }
 
 #lessonText {
-  margin-top: 15px;
+    margin-top: 15px;
 }
 
 /* =====================
@@ -196,18 +125,18 @@ button.danger {
 ===================== */
 
 .admin-section {
-  margin: 40px;
+    margin: 40px;
 }
 
-.admin-section h2 {
-  text-align: center;
-  color: #1e3a8a;
-}
+    .admin-section h2 {
+        text-align: center;
+        color: #1e3a8a;
+    }
 
 .admin-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
 }
 
 /* =====================
@@ -216,18 +145,19 @@ button.danger {
 
 .list-container,
 #lessonPage {
-  animation: fadeUp 0.4s ease;
+    animation: fadeUp 0.4s ease;
 }
 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* =====================
@@ -235,21 +165,21 @@ button.danger {
 ===================== */
 
 #globalNav {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 10px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    background: #ffffff;
 }
 
-#globalNav button {
-  background: #2563eb;
-  color: #ffffff;
-  border-radius: 12px;
-}
+    #globalNav button {
+        background: #2563eb;
+        color: #ffffff;
+        border-radius: 12px;
+    }
 
 /* =====================
    TABLE (MOBILE)
@@ -257,48 +187,48 @@ button.danger {
 
 @media (max-width: 768px) {
 
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
-  table {
-    min-width: 600px;
-    border-collapse: collapse;
-  }
+    table {
+        min-width: 600px;
+        border-collapse: collapse;
+    }
 
-  th, td {
-    font-size: 14px;
-    padding: 10px;
-    text-align: center;
-    white-space: nowrap;
-  }
+    th, td {
+        font-size: 14px;
+        padding: 10px;
+        text-align: center;
+        white-space: nowrap;
+    }
 
-  td:last-child {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+        td:last-child {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-  td:last-child button {
-    width: 100%;
-    font-size: 14px;
-    padding: 8px;
-  }
+            td:last-child button {
+                width: 100%;
+                font-size: 14px;
+                padding: 8px;
+            }
 
-  #studentSearch {
-    width: 100%;
-    font-size: 16px;
-  }
+    #studentSearch {
+        width: 100%;
+        font-size: 16px;
+    }
 
-  .logout-btn,
-  #logoutBtn,
-  .logout-button {
-    display: block !important;
-    width: 100%;
-    margin: 10px 0;
-    font-size: 16px;
-  }
+    .logout-btn,
+    #logoutBtn,
+    .logout-button {
+        display: block !important;
+        width: 100%;
+        margin: 10px 0;
+        font-size: 16px;
+    }
 }
 
 /* =====================
@@ -306,44 +236,44 @@ button.danger {
 ===================== */
 
 .install-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
 }
 
 .install-box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 360px;
-  text-align: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
 }
 
-.install-box h3 {
-  margin-bottom: 10px;
-  color: #1e40af;
-}
+    .install-box h3 {
+        margin-bottom: 10px;
+        color: #1e40af;
+    }
 
-.install-box p {
-  font-size: 14px;
-  line-height: 1.7;
-  margin-bottom: 15px;
-}
+    .install-box p {
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 15px;
+    }
 
-.install-box button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 8px;
-  border-radius: 10px;
-}
+    .install-box button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 8px;
+        border-radius: 10px;
+    }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 /* =================================================
@@ -351,63 +281,63 @@ button.danger {
 ================================================= */
 
 body.dark-mode {
-  background: #e9eef5;
-  color: #1f2937;
+    background: #e9eef5;
+    color: #1f2937;
 }
 
-body.dark-mode header,
-body.dark-mode main,
-body.dark-mode section,
-body.dark-mode footer,
-body.dark-mode .container {
-  background: #e9eef5;
-}
+    body.dark-mode header,
+    body.dark-mode main,
+    body.dark-mode section,
+    body.dark-mode footer,
+    body.dark-mode .container {
+        background: #e9eef5;
+    }
 
-/* Navbar */
-body.dark-mode .top-nav,
-body.dark-mode #globalNav {
-  background: #dbe3f1;
-}
+    /* Navbar */
+    body.dark-mode .top-nav,
+    body.dark-mode #globalNav {
+        background: #dbe3f1;
+    }
 
-/* Cards & tables */
-body.dark-mode .card,
-body.dark-mode .table-container,
-body.dark-mode table {
-  background: #f8fafc;
-  color: #1f2937;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
-}
+    /* Cards & tables */
+    body.dark-mode .card,
+    body.dark-mode .table-container,
+    body.dark-mode table {
+        background: #f8fafc;
+        color: #1f2937;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    }
 
-/* Table head */
-body.dark-mode th {
-  background: #e2e8f0;
-  color: #111827;
-}
+    /* Table head */
+    body.dark-mode th {
+        background: #e2e8f0;
+        color: #111827;
+    }
 
-/* Buttons */
-body.dark-mode button,
-body.dark-mode .custom-btn {
-  background: #dde6f2;
-  color: #111827;
-}
+    /* Buttons */
+    body.dark-mode button,
+    body.dark-mode .custom-btn {
+        background: #dde6f2;
+        color: #111827;
+    }
 
-body.dark-mode button:hover {
-  background: #cfd9ea;
-}
+        body.dark-mode button:hover {
+            background: #cfd9ea;
+        }
 
-body.dark-mode .danger {
-  background: #f2caca;
-  color: #7f1d1d;
-}
+    body.dark-mode .danger {
+        background: #f2caca;
+        color: #7f1d1d;
+    }
 
-/* Inputs */
-body.dark-mode input,
-body.dark-mode select,
-body.dark-mode textarea {
-  background: #eef2f7;
-  color: #111827;
-  border: 1px solid #cbd5e1;
-}
+    /* Inputs */
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea {
+        background: #eef2f7;
+        color: #111827;
+        border: 1px solid #cbd5e1;
+    }
 /* =====================
    🔧 MOBILE CLICK FIX (IMPORTANT)
    حل مشكلة عدم الضغط على زر تسجيل حساب جديد
@@ -417,225 +347,163 @@ body.dark-mode textarea {
 #welcomeMessage,
 .top-nav,
 #globalNav {
-  pointer-events: none;
+    pointer-events: none;
 }
 
-/* السماح فقط للأزرار باستقبال اللمس */
-#welcomeMessage button,
-.top-nav button,
-#globalNav button,
-.auth-buttons button {
-  pointer-events: auto;
-}
+    /* السماح فقط للأزرار باستقبال اللمس */
+    #welcomeMessage button,
+    .top-nav button,
+    #globalNav button,
+    .auth-buttons button {
+        pointer-events: auto;
+    }
 
 /* تأكيد أن صفحة الدخول فوق الجميع */
 #loginPage {
-  position: relative;
-  z-index: 10000;
+    position: relative;
+    z-index: 10000;
 }
 
 /* تأكيد أن صفحة التسجيل تظهر فوق */
 #registerPage {
-  position: relative;
-  z-index: 10001;
+    position: relative;
+    z-index: 10001;
 }
 
 /* تحسين اللمس على الموبايل */
 button {
-  touch-action: manipulation;
+    touch-action: manipulation;
 }
 
 /* منع hover الوهمي في الموبايل */
 @media (hover: none) {
-  button:hover {
-    transform: none;
-    box-shadow: none;
-  }
+    button:hover {
+        transform: none;
+        box-shadow: none;
+    }
 }
+
 .install-modal {
-  background: linear-gradient(180deg, #1e3a8a, #2563eb);
+    background: linear-gradient(180deg, #1e3a8a, #2563eb);
 }
 
 .install-box {
-  background: #ffffff;
-  padding: 26px 22px;
-  border-radius: 22px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
-}
-.install-box h3 {
-  color: #1e3a8a;
-  font-size: 20px;
-  margin-bottom: 14px;
-}
-.install-box p {
-  color: #475569;
-  font-size: 15px;
-}
-.install-box button {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 14px;
+    background: #ffffff;
+    padding: 26px 22px;
+    border-radius: 22px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
 }
 
-/* =================================================
-   ✅ FIX WELCOME TEXT ON MOBILE
-   حل مشكلة التصاق النص في الهاتف
-================================================= */
+    .install-box h3 {
+        color: #1e3a8a;
+        font-size: 20px;
+        margin-bottom: 14px;
+    }
 
-@media (max-width: 768px) {
+    .install-box p {
+        color: #475569;
+        font-size: 15px;
+    }
 
-  body {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-
-  .welcome-section,
-  #welcomeMessage {
-    padding: 20px !important;
-    margin: 0 auto !important;
-    text-align: center !important;
-  }
-
-  .welcome-section p,
-  #welcomeMessage p {
-    font-size: 16px;
-    line-height: 1.9;
-  }
-
-}
-
-
-/* =================================================
-   ✅ FACEBOOK STYLE LOGIN BOX
-================================================= */
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 15px;
-}
-
-.login-box {
-  background: #ffffff;
-  width: 100%;
-  max-width: 400px;
-  padding: 30px 25px;
-  border-radius: 20px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-  text-align: center;
-  transition: 0.3s ease;
-}
-
-.login-box h2 {
-  margin-bottom: 20px;
-  font-size: 22px;
-  color: #1e3a8a;
-}
-
-.login-box input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 15px;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  font-size: 15px;
-  transition: 0.2s ease;
-}
-
-.login-box input:focus {
-  border-color: #2563eb;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
-}
-
-.login-box .login-btn {
-  width: 100%;
-  padding: 14px;
-  background: #1877f2;
-  color: white;
-  border-radius: 12px;
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-.login-box .register-btn {
-  width: 100%;
-  padding: 14px;
-  background: #42b72a;
-  color: white;
-  border-radius: 12px;
-  font-size: 16px;
-}
-
-
-/* =================================================
-   ✅ HIDE BACK & HOME BUTTONS ON FIRST PAGE
-================================================= */
-
-body.home-page #globalNav,
-body.home-page .back-btn,
-body.home-page .home-btn {
-  display: none !important;
-}
-
+    .install-box button {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 14px;
+    }
 /* =====================
-   BACKGROUND EFFECT
+   🔔 PROMO AD (Animated)
 ===================== */
-/* =================================================
-   ✅ CLEAN FACEBOOK STYLE LOGIN
-================================================= */
 
-.login-container {
-  max-width: 400px;
-  margin: 60px auto;
-  padding: 30px 25px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-  text-align: center;
+.promo-ad {
+    position: fixed;
+    bottom: 20px;
+    left: 16px;
+    right: 16px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #ffffff;
+    padding: 16px;
+    border-radius: 18px;
+    z-index: 9999;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+    animation: promoSlideUp 0.6s ease;
 }
 
-.login-container h2 {
-  margin-bottom: 20px;
-  font-size: 22px;
-  color: #1e3a8a;
+    .promo-ad .promo-content {
+        text-align: center;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .promo-ad button {
+        margin-top: 12px;
+        background: #ffffff;
+        color: #1e40af;
+        font-weight: bold;
+        border-radius: 12px;
+        padding: 8px 14px;
+    }
+
+        .promo-ad button:hover {
+            background: #e5e7eb;
+        }
+
+    .promo-ad.hidden {
+        display: none;
+    }
+
+@keyframes promoSlideUp {
+    from {
+        transform: translateY(120%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
-.login-container input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 15px;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  font-size: 15px;
-  transition: 0.2s ease;
+@keyframes slide-right {
+    from {
+        left: -100%;
+    }
+    /* البداية خارج الشاشة على اليسار */
+    to {
+        left: 100%;
+    }
+    /* تصل إلى خارج الشاشة على اليمين */
 }
 
-.login-container input:focus {
-  border-color: #2563eb;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+.announcement-bar {
+    background: orange;
+    overflow: hidden;
+    padding: 8px 0;
 }
 
-.login-container button {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 16px;
-  margin-bottom: 12px;
+.announcement-wrapper {
+    display: flex;
+    flex-direction: column; /* يجعلهم سطرين */
+    gap: 5px;
 }
 
-/* زر الدخول */
-.login-container button:first-of-type {
-  background: #1877f2;
-  color: white;
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
+    animation: slide-right 15s linear infinite;
 }
 
-/* زر تسجيل جديد */
-.login-container button:last-of-type {
-  background: #42b72a;
-  color: white;
+@keyframes slide-right {
+    from {
+        left: -100%;
+    }
+
+    to {
+        left: 100%;
+    }
 }
