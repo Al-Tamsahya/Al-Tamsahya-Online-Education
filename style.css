@@ -1,346 +1,404 @@
 /* =====================
-   Global Reset
+   RESET & BASE
 ===================== */
+
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
-    background: linear-gradient(180deg, #f5f7fb, #ffffff);
-    color: #1e293b;
-    overflow-x: hidden;
-
-    /* Fade effect for full page transitions */
-    transition: background-color 0.5s ease, color 0.5s ease;
+  font-family: "Cairo", sans-serif;
+  background: linear-gradient(180deg, #f5f7fb, #ffffff);
+  color: #1f2937;
+  overflow-x: hidden;
 }
 
-.hidden {
-    display: none !important;
+body[dir="ltr"] { text-align: left; }
+body[dir="rtl"] { text-align: right; }
+
+/* =====================
+   TYPOGRAPHY
+===================== */
+
+h1, h2, h3, h4 {
+  margin-bottom: 15px;
+  color: #2c3e50;
 }
 
-img, video {
-    max-width: 100%;
-    height: auto;
-    transition: all 0.5s ease;
+p {
+  line-height: 1.8;
+  color: #444;
 }
 
 /* =====================
-   Navigation
+   LAYOUTS
 ===================== */
+
+.list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
+
+/* =====================
+   NAVBAR
+===================== */
+
 .top-nav {
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    padding: 10px;
-    text-align: center;
-    transition: background 0.5s ease, color 0.5s ease;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  padding: 8px;
+  text-align: center;
 }
 
 .nav-title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #fff;
-    transition: color 0.5s ease;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffffff;
 }
 
 /* =====================
-   Footer
+   BUTTONS
 ===================== */
-footer {
+
+.custom-btn,
+button {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.custom-btn:hover,
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.custom-btn:active,
+button:active {
+  transform: scale(0.97);
+}
+
+button.danger {
+  background: #dc2626;
+}
+
+/* =====================
+   CONTENT CARDS
+===================== */
+
+#lessonTitle,
+#lessonPageContent,
+.grade-card,
+.subject-card,
+.unit-card,
+.lesson-card,
+.login-container,
+.admin-section,
+.card,
+.table-container {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  margin-bottom: 15px;
+}
+
+#lessonText {
+  margin-top: 15px;
+}
+
+/* =====================
+   ADMIN
+===================== */
+
+.admin-section {
+  margin: 40px;
+}
+
+.admin-section h2 {
+  text-align: center;
+  color: #1e3a8a;
+}
+
+.admin-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+/* =====================
+   ANIMATION
+===================== */
+
+.list-container,
+#lessonPage {
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================
+   GLOBAL NAV
+===================== */
+
+#globalNav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  background: #ffffff;
+}
+
+#globalNav button {
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 12px;
+}
+
+/* =====================
+   TABLE (MOBILE)
+===================== */
+
+@media (max-width: 768px) {
+
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    font-size: 14px;
+    padding: 10px;
     text-align: center;
-    padding: 12px;
-    color: #666;
-    margin-top: 50px;
-    transition: color 0.5s ease;
-}
+    white-space: nowrap;
+  }
 
-/* =====================
-   Login Page (Centered Modern)
-===================== */
-#loginPage {
-    min-height: 100vh;
+  td:last-child {
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    flex-direction: column;
+    gap: 6px;
+  }
 
-.login-container {
+  td:last-child button {
     width: 100%;
-    max-width: 380px;
-    padding: 35px;
-    border-radius: 20px;
-    background: #ffffff;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-    text-align: center;
-    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  #studentSearch {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .logout-btn,
+  #logoutBtn,
+  .logout-button {
+    display: block !important;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 16px;
+  }
 }
 
-.login-container h1 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    font-weight: 800;
-    color: #2563eb;
-    transition: color 0.5s ease;
+/* =====================
+   INSTALL MODAL
+===================== */
+
+.install-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
-.login-container p {
-    font-size: 0.9rem;
-    margin-bottom: 25px;
-    color: #555;
-    transition: color 0.5s ease;
+.install-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.install-box h3 {
+  margin-bottom: 10px;
+  color: #1e40af;
+}
+
+.install-box p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+.install-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* =================================================
+   🌙 DARK MODE — فاتح + شامل + بدون بهتان
+================================================= */
+
+body.dark-mode {
+  background: #e9eef5;
+  color: #1f2937;
+}
+
+body.dark-mode header,
+body.dark-mode main,
+body.dark-mode section,
+body.dark-mode footer,
+body.dark-mode .container {
+  background: #e9eef5;
+}
+
+/* Navbar */
+body.dark-mode .top-nav,
+body.dark-mode #globalNav {
+  background: #dbe3f1;
+}
+
+/* Cards & tables */
+body.dark-mode .card,
+body.dark-mode .table-container,
+body.dark-mode table {
+  background: #f8fafc;
+  color: #1f2937;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+/* Table head */
+body.dark-mode th {
+  background: #e2e8f0;
+  color: #111827;
+}
+
+/* Buttons */
+body.dark-mode button,
+body.dark-mode .custom-btn {
+  background: #dde6f2;
+  color: #111827;
+}
+
+body.dark-mode button:hover {
+  background: #cfd9ea;
+}
+
+body.dark-mode .danger {
+  background: #f2caca;
+  color: #7f1d1d;
 }
 
 /* Inputs */
-.login-container input {
-    width: 100%;
-    padding: 14px;
-    margin: 10px 0;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    font-size: 0.95rem;
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: #eef2f7;
+  color: #111827;
+  border: 1px solid #cbd5e1;
 }
-
-.login-container input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37,99,235,0.15);
-    outline: none;
-}
-
 /* =====================
-   Buttons
+   🔧 MOBILE CLICK FIX (IMPORTANT)
+   حل مشكلة عدم الضغط على زر تسجيل حساب جديد
 ===================== */
+
+/* منع أي عنصر شفاف من تعطيل اللمس */
+#welcomeMessage,
+.top-nav,
+#globalNav {
+  pointer-events: none;
+}
+
+/* السماح فقط للأزرار باستقبال اللمس */
+#welcomeMessage button,
+.top-nav button,
+#globalNav button,
+.auth-buttons button {
+  pointer-events: auto;
+}
+
+/* تأكيد أن صفحة الدخول فوق الجميع */
+#loginPage {
+  position: relative;
+  z-index: 10000;
+}
+
+/* تأكيد أن صفحة التسجيل تظهر فوق */
+#registerPage {
+  position: relative;
+  z-index: 10001;
+}
+
+/* تحسين اللمس على الموبايل */
 button {
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.5s ease, color 0.5s ease, transform 0.1s ease, box-shadow 0.5s ease;
+  touch-action: manipulation;
 }
 
-button:active {
-    transform: scale(0.97);
+/* منع hover الوهمي في الموبايل */
+@media (hover: none) {
+  button:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+.install-modal {
+  background: linear-gradient(180deg, #1e3a8a, #2563eb);
 }
 
-.auth-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 18px;
+.install-box {
+  background: #ffffff;
+  padding: 26px 22px;
+  border-radius: 22px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
 }
-
-/* Login Button */
-#loginBtn {
-    padding: 14px;
-    font-size: 1rem;
-    font-weight: 700;
-    background: #2563eb;
-    color: white;
-    border-radius: 12px;
+.install-box h3 {
+  color: #1e3a8a;
+  font-size: 20px;
+  margin-bottom: 14px;
 }
-
-#loginBtn:hover {
-    background: #1e40af;
+.install-box p {
+  color: #475569;
+  font-size: 15px;
 }
-
-/* Register Button */
-.register-btn {
-    padding: 13px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    background: #22c55e;
-    color: white;
-    border-radius: 12px;
-}
-
-.register-btn:hover {
-    background: #16a34a;
-}
-
-/* =====================
-   Cards & Lists
-===================== */
-.list-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    padding: 30px;
-    transition: all 0.5s ease;
-}
-
-.custom-btn {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 18px;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: right;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease, transform 0.1s ease;
-}
-
-.custom-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 14px 30px rgba(0,0,0,0.12);
-}
-
-/* =====================
-   Admin Box
-===================== */
-.admin-box {
-    background: #f1f5f9;
-    padding: 20px;
-    border-radius: 16px;
-    margin: 30px;
-    text-align: center;
-    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
-}
-
-/* =====================
-   Logout Button
-===================== */
-.logout-btn {
-    position: fixed;
-    bottom: 15px;
-    left: 15px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: #ef4444;
-    color: white;
-    font-weight: bold;
-    z-index: 100;
-    transition: background-color 0.5s ease, color 0.5s ease;
-}
-
-.logout-btn:hover {
-    background: #dc2626;
-}
-
-/* =====================
-   Modal
-===================== */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    transition: background-color 0.5s ease;
-}
-
-.modal-content {
-    background: white;
-    padding: 25px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 420px;
-    text-align: center;
-    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
-}
-
-/* =====================
-   Dark Mode (Clean & Fixed)
-===================== */
-.dark-mode {
-    background: #0f172a;
-    color: #e5e7eb;
-    transition: background-color 0.5s ease, color 0.5s ease;
-}
-
-/* نصوص */
-.dark-mode p,
-.dark-mode h1,
-.dark-mode h2,
-.dark-mode h3,
-.dark-mode span,
-.dark-mode label,
-.dark-mode .nav-title,
-.dark-mode .lesson-path,
-.dark-mode .section-subtitle {
-    color: #e5e7eb;
-    transition: color 0.5s ease;
-}
-
-/* شريط التنقل */
-.dark-mode .top-nav {
-    background: #1e293b;
-}
-
-/* الحاويات والكروت */
-.dark-mode .login-container,
-.dark-mode .custom-btn,
-.dark-mode .admin-box,
-.dark-mode .modal-content,
-.dark-mode .lesson-card,
-.dark-mode .subject-card,
-.dark-mode .unit-card,
-.dark-mode .grade-card {
-    background: #1e293b;
-    color: #e5e7eb;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-}
-
-/* الحقول */
-.dark-mode input {
-    background: #334155;
-    color: #ffffff;
-    border: 1px solid #475569;
-}
-
-/* الأزرار */
-.dark-mode button {
-    color: #ffffff;
-}
-
-.dark-mode #loginBtn {
-    background: #2563eb;
-}
-
-.dark-mode .register-btn {
-    background: #22c55e;
-}
-
-.dark-mode .logout-btn {
-    background: #dc2626;
-}
-
-/* الفوتر */
-.dark-mode footer {
-    color: #cbd5e1;
-}
-
-/* =====================
-   Responsive
-===================== */
-@media (max-width: 768px) {
-    .nav-title {
-        font-size: 18px;
-    }
-
-    .login-container {
-        margin: 20px;
-        padding: 25px;
-    }
-
-    .list-container {
-        padding: 15px;
-    }
-
-    .auth-buttons {
-        flex-direction: column;
-    }
-
-    #loginBtn,
-    .register-btn {
-        width: 100%;
-    }
-}
-
-
-/* =====================
-   Fade effect overlay for full-page smoothness
-===================== */
-body.fade-transition * {
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease !important;
+.install-box button {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 14px;
 }
