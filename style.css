@@ -402,3 +402,105 @@ button {
   font-weight: bold;
   border-radius: 14px;
 }
+
+/* =================================================
+   ✅ FIX WELCOME TEXT ON MOBILE
+   حل مشكلة التصاق النص في الهاتف
+================================================= */
+
+@media (max-width: 768px) {
+
+  body {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .welcome-section,
+  #welcomeMessage {
+    padding: 20px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+
+  .welcome-section p,
+  #welcomeMessage p {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+}
+
+
+/* =================================================
+   ✅ FACEBOOK STYLE LOGIN BOX
+================================================= */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 15px;
+}
+
+.login-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 400px;
+  padding: 30px 25px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #1e3a8a;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.login-box input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.login-box .login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #1877f2;
+  color: white;
+  border-radius: 12px;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.login-box .register-btn {
+  width: 100%;
+  padding: 14px;
+  background: #42b72a;
+  color: white;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+
+/* =================================================
+   ✅ HIDE BACK & HOME BUTTONS ON FIRST PAGE
+================================================= */
+
+body.home-page #globalNav,
+body.home-page .back-btn,
+body.home-page .home-btn {
+  display: none !important;
+}
