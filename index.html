@@ -55,9 +55,10 @@
 </div>
   <div id="navUser" class="nav-user"></div>
             
-<button onclick="toggleDarkMode()" class="dark-btn">
+<button id="darkModeBtn" onclick="toggleDarkMode()" class="dark-btn">
   🌙 الوضع الليلي
 </button>
+
           
         </nav>
         
@@ -1629,20 +1630,33 @@ async function editStudent(studentEmail) {
             list.style.display = list.style.display === "none" ? "block" : "none";
         }
 
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
+       function toggleDarkMode() {
+    const body = document.body;
+    const btn = document.getElementById('darkModeBtn');
+    
+    body.classList.toggle("dark-mode");
 
-            // حفظ الاختيار
-            localStorage.setItem(
-                "darkMode",
-                document.body.classList.contains("dark-mode")
-            );
-        }
+    // تحديث نص الزر بناءً على الوضع
+    if (body.classList.contains("dark-mode")) {
+        btn.textContent = "☀️ الوضع النهاري";
+    } else {
+        btn.textContent = "🌙 الوضع الليلي";
+    }
 
-        // تحميل الوضع المحفوظ
-        if (localStorage.getItem("darkMode") === "true") {
-            document.body.classList.add("dark-mode");
-        }
+    // حفظ الاختيار في التخزين المحلي
+    localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
+}
+
+// تحميل الوضع المحفوظ وتحديث نص الزر عند تحميل الصفحة
+window.onload = function() {
+    const btn = document.getElementById('darkModeBtn');
+    if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        btn.textContent = "☀️ الوضع النهاري";
+    } else {
+        btn.textContent = "🌙 الوضع الليلي";
+    }
+};
 
 
     </script>
@@ -2070,6 +2084,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
