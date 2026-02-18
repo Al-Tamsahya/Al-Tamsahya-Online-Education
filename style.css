@@ -507,4 +507,23 @@ button {
         left: 100%;
     }
 }
-
+/* إضافة تأثير انتقال سلس لتغيير الألوان والخلفيات عند التبديل بين الوضع النهاري والليلي */
+body,
+body.dark-mode,
+body.dark-mode header,
+body.dark-mode main,
+body.dark-mode section,
+body.dark-mode footer,
+body.dark-mode .container,
+.top-nav,
+#globalNav,
+.card,
+.table-container,
+table,
+button,
+.custom-btn,
+input,
+select,
+textarea {
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
