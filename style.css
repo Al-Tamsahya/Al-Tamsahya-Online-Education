@@ -9,7 +9,7 @@
 }
 
 body {
-  font-family: "Cairo", sans-serif;
+  /* font-family: "Cairo", sans-serif; */
   background: linear-gradient(180deg, #f5f7fb, #ffffff);
   color: #1f2937;
   overflow-x: hidden;
@@ -104,11 +104,87 @@ button.danger {
 .admin-section,
 .card,
 .table-container {
-  background: #ffffff;
+  background: #1eaf9b;
   padding: 16px;
   border-radius: 18px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   margin-bottom: 15px;
+}
+/* =====================
+   LOGIN BOX STYLING
+===================== */
+
+.login-container {
+  max-width: 400px;
+  margin: 80px auto;
+  background: #ffffff !important;   /* نجعله أبيض بدل الأخضر */
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.login-container:hover {
+  transform: translateY(-5px);
+}
+
+/* عنوان تسجيل الدخول */
+.login-container h2 {
+  margin-bottom: 25px;
+  color: #1877f2;
+  font-weight: 600;
+}
+
+/* الحقول */
+.login-container input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+/* تأثير عند الضغط */
+.login-container input:focus {
+  border-color: #1877f2;
+  box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.15);
+}
+
+/* الأزرار */
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* زر تسجيل الدخول */
+.login-container button:first-of-type {
+  background: #1877f2;
+  color: white;
+}
+
+.login-container button:first-of-type:hover {
+  background: #166fe5;
+}
+
+/* زر إنشاء حساب */
+.login-container button:last-of-type {
+  background: #42b72a;
+  color: white;
+  margin-top: 10px;
+}
+
+.login-container button:last-of-type:hover {
+  background: #36a420;
 }
 
 #lessonText {
@@ -503,4 +579,63 @@ body.home-page #globalNav,
 body.home-page .back-btn,
 body.home-page .home-btn {
   display: none !important;
+}
+
+/* =====================
+   BACKGROUND EFFECT
+===================== */
+/* =================================================
+   ✅ CLEAN FACEBOOK STYLE LOGIN
+================================================= */
+
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px 25px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+.login-container h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #1e3a8a;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.login-container input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.login-container button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+/* زر الدخول */
+.login-container button:first-of-type {
+  background: #1877f2;
+  color: white;
+}
+
+/* زر تسجيل جديد */
+.login-container button:last-of-type {
+  background: #42b72a;
+  color: white;
 }
