@@ -1,97 +1,76 @@
-const CACHE_NAME = "edu-platform-v8";
+const CACHE_NAME = "edu-platform-v4";
 
-const BASE_PATH = "/Al-Tamsahya-Online-Education/";
-
+// نكاش الملفات الثابتة فقط
 const FILES_TO_CACHE = [
-  BASE_PATH,
-  BASE_PATH + "index.html",
-  BASE_PATH + "manifest.json",
-  BASE_PATH + "css/style.css",
-  BASE_PATH + "icon-192.png",
-  BASE_PATH + "icon-512.png"
+  "./",
+  "./css/style.css",
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
-
-// =========================
-// تثبيت الـ Service Worker
-// =========================
+// Install
 self.addEventListener("install", (event) => {
-  self.skipWaiting(); // تفعيل مباشر بدون انتظار
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
   );
 });
 
-
-// =========================
-// تفعيل وحذف الكاش القديم
-// =========================
+// Activate
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
+      Promise.all(keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null)))
     )
   );
   self.clients.claim();
 });
 
-
-// =========================
-// استقبال أمر التحديث اليدوي
-// =========================
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
-
-
-// =========================
-// التعامل مع الطلبات
-// =========================
+// Fetch
 self.addEventListener("fetch", (event) => {
-
-  if (event.request.method !== "GET") return;
+  if (event.request.method !== "GET") {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
   const url = new URL(event.request.url);
 
-  // تجاهل Firebase و Google
   if (
     url.hostname.includes("googleapis.com") ||
-    url.hostname.includes("gstatic.com")
+    url.hostname.includes("gstatic.com") ||
+    url.pathname.includes("register") ||
+    url.pathname.includes("login") ||
+    url.pathname.includes("api")
   ) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
   event.respondWith(
     fetch(event.request)
-      .then((response) => {
-
-        // حفظ نسخة في الكاش
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, copy);
-        });
-
-        return response;
+      .then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then((cache) =>
+          cache.put(event.request, copy)
+        );
+        return res;
       })
-      .catch(() => {
+      .catch(async () => {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
 
-        return caches.match(event.request).then((cached) => {
-          if (cached) return cached;
-
-          // fallback للصفحة الرئيسية عند عدم الاتصال
-          return caches.match(BASE_PATH + "index.html");
-        });
-
+        return new Response(
+          `
+          <html>
+            <body style="text-align:center;margin-top:100px;font-family:Arial">
+              <h1 style="color:red">🚫 لا يوجد اتصال بالإنترنت</h1>
+              <p>حاول مرة أخرى عند توفر الشبكة</p>
+            </body>
+          </html>
+          `,
+          { headers: { "Content-Type": "text/html" }, status: 503 }
+        );
       })
   );
-
 });
