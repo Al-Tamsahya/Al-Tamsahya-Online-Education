@@ -1,4 +1,4 @@
-﻿namespace EducationalPlatform.API
+namespace EducationalPlatform.API
 {
     public static class SystemState
     {
