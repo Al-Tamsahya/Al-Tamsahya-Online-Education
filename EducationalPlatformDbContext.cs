@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using EducationalPlatform.API.Models;
 
 namespace EducationalPlatform.API.Data
@@ -15,8 +15,10 @@ namespace EducationalPlatform.API.Data
         public DbSet<Stage> Stages { get; set; } = null!;
         public DbSet<Subject> Subjects { get; set; } = null!;
         public DbSet<Lesson> Lessons { get; set; } = null!;
-        public DbSet<Enrollment> Enrollments { get; set; } = null!;
-        public DbSet<LessonProgress> LessonProgresses { get; set; } = null!;
-        public DbSet<EducationalPlatform.API.Models.Section> Sections { get; set; } = null!;
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<LessonProgress> LessonProgresses { get; set; }
+
+
+
     }
 }
