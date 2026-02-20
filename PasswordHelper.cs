@@ -1,4 +1,4 @@
-﻿using BCrypt.Net;
+using BCrypt.Net;
 
 namespace EducationalPlatform.API.Helpers
 {
