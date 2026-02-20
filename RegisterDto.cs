@@ -1,4 +1,4 @@
-﻿namespace EducationalPlatform.API.Models
+namespace EducationalPlatform.API.Models
 {
     public class RegisterDto
     {
