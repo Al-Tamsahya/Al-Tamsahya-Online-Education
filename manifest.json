@@ -1,7 +1,6 @@
 {
-  "name": "منصة التمساحية التعليمية",
-  "short_name": "التمساحية",
-  "description": "منصة تعليمية للمرحلة الإعدادية",
+  "name": "منصة تعليمية متقدمة - المرحلة الإعدادية",
+  "short_name": "منصة تعليمية",
   "start_url": "/Al-Tamsahya-Online-Education/",
   "scope": "/Al-Tamsahya-Online-Education/",
   "display": "standalone",
