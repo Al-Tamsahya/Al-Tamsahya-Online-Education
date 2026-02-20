@@ -1,4 +1,4 @@
-﻿using EducationalPlatform.API.Models;
+using EducationalPlatform.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EducationalPlatform.API.Controllers
