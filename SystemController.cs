@@ -1,4 +1,4 @@
-﻿namespace EducationalPlatform.API.Controllers
+namespace EducationalPlatform.API.Controllers
 {
     public class SystemController
     {
