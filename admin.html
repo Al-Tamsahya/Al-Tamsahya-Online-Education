@@ -1,34 +1,75 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <script>
-    if (localStorage.getItem("isAdmin") !== "true") {
-      location.href = "./index.html";
-    }
-  </script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel</title>
+  <title>لوحة تحكم الأدمن</title>
+
+  <script>
+    // ✅ التحقق بعد تحميل الصفحة بالكامل
+    document.addEventListener("DOMContentLoaded", function () {
+      const isAdmin = localStorage.getItem("isAdmin");
+
+      if (isAdmin !== "true") {
+        alert("غير مصرح لك بالدخول ❌");
+        window.location.replace("index.html"); 
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f9;
+    }
+
+    .container {
+      margin-top: 100px;
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #e74c3c;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c0392b;
+    }
+  </style>
 </head>
 
-<body style="font-family: Arial; direction: rtl; text-align: center; margin-top: 50px;">
+<body>
 
-  <h1>مرحباً بك في لوحة الأدمن ✅</h1>
-  <p>تم تسجيل الدخول بنجاح.</p>
+  <div class="container">
+    <h1>مرحباً بك في لوحة الأدمن ✅</h1>
+    <p>تم تسجيل الدخول بنجاح.</p>
 
- <button onclick="logoutAdmin()">تسجيل خروج</button>
+    <button onclick="logoutAdmin()">تسجيل خروج</button>
+  </div>
 
-<script>
-  function logoutAdmin() {
-    // ✅ حذف صلاحية الأدمن حتى لا يظل يفتح admin.html تلقائياً
-    localStorage.removeItem("isAdmin");
+  <script>
+    function logoutAdmin() {
+      // ✅ حذف صلاحية الأدمن
+      localStorage.removeItem("isAdmin");
 
-    // رجوع لصفحة تسجيل الدخول
-    window.location.href = "./index.html";
-  }
-</script>
-
+      // ✅ منع الرجوع بزر المتصفح
+      window.location.replace("index.html");
+    }
+  </script>
 
 </body>
 </html>
