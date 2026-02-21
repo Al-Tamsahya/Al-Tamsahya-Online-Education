@@ -2224,14 +2224,28 @@ document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("loginPage");
 
   if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
-      e.preventDefault(); // يمنع ظهور البيانات في الرابط وإعادة تحميل الصفحة
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault(); // منع إعادة تحميل الصفحة
 
       const email = loginForm.querySelector("input[type='email']").value.trim();
       const password = loginForm.querySelector("input[type='password']").value.trim();
 
       if (email === "admin@gmail.com" && password === "123456") {
-        window.location.href = "dashboard.html";
+        const dashboardUrl = "https://al-tamsahya.github.io/Al-Tamsahya-Online-Education/dashboard.html";
+
+        try {
+          // التحقق من وجود الملف قبل التحويل
+          const response = await fetch(dashboardUrl, { method: "HEAD" });
+          if (response.ok) {
+            window.location.href = dashboardUrl; // الملف موجود
+          } else {
+            alert("صفحة لوحة التحكم غير موجودة على الخادم ❌");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("حدث خطأ أثناء محاولة الوصول إلى لوحة التحكم ❌");
+        }
+
       } else {
         alert("البريد أو كلمة المرور غير صحيحة");
       }
@@ -2241,3 +2255,4 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
