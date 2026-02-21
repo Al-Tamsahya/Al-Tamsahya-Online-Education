@@ -435,7 +435,7 @@ body {
 
 h2, h3 {
     margin-bottom: 15px;
-    color: #ccc;
+    color: #fff;
 }
 
 #lessonTitle {
@@ -864,4 +864,5 @@ img, video {
 body {
     background: #f3f4f6;
 }
+
 
