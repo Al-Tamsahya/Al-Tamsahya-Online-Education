@@ -115,17 +115,20 @@
         <input id="password" type="password" placeholder="كلمة المرور">
 
         <!-- الأزرار داخل صفحة الدخول -->
-        <div class="auth-buttons">
-            <button id="loginBtn" onclick="login()">تسجيل الدخول</button>
-
-           <button
-  type="button"
-  class="register-btn secondary"
-  onclick="registerStudentPage(); return false;">
-  تسجيل حساب جديد
-</button>
-
-        </div>
+       <div class="login-container">
+    <div class="login-box">
+        <h2>تسجيل الدخول</h2>
+        
+        <input type="email" placeholder="البريد الإلكتروني">
+        <input type="password" placeholder="كلمة المرور">
+        
+        <button class="login-btn">تسجيل الدخول</button>
+        
+        <hr>
+        
+        <button class="register-btn">إنشاء حساب جديد</button>
+    </div>
+</div>
 
 
     </div>
@@ -2084,6 +2087,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
