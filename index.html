@@ -39,7 +39,7 @@
             position: absolute;
             left: 10px;
             top: 10px;
-            padding: 5px 10px;
+            padding: 4px 6px;
             cursor: pointer;
         }
 
@@ -60,7 +60,7 @@
 
         /* صندوق تسجيل الدخول */
         .login-box {
-            max-width: 400px;
+            max-width: 300px;
             margin: 30px auto;
             background-color: white;
             padding: 25px;
@@ -102,7 +102,7 @@
             color: #333;
         }
 
-        /* الوضع الليلي */
+        /* الوضع النهاري */
         body.dark-mode {
             background-color: #222;
             color: #ddd;
@@ -1736,13 +1736,14 @@ async function editStudent(studentEmail) {
             list.style.display = list.style.display === "none" ? "block" : "none";
         }
 
-       function toggleDarkMode() {
+  function toggleDarkMode() {
     const body = document.body;
     const btn = document.getElementById('darkModeBtn');
     
+    // تبديل الوضع الليلي / النهاري
     body.classList.toggle("dark-mode");
 
-    // تحديث نص الزر بناءً على الوضع
+    // تحديث نص الزر بناءً على الوضع الحالي
     if (body.classList.contains("dark-mode")) {
         btn.textContent = "☀️ الوضع النهاري";
     } else {
@@ -1757,10 +1758,12 @@ async function editStudent(studentEmail) {
 window.onload = function() {
     const btn = document.getElementById('darkModeBtn');
 
+    // تفعيل الوضع الليلي إذا تم حفظه مسبقًا
     if (localStorage.getItem("darkMode") === "true") {
         document.body.classList.add("dark-mode");
     }
 
+    // تحديث نص الزر حسب الوضع المحفوظ
     if (btn) {
         if (localStorage.getItem("darkMode") === "true") {
             btn.textContent = "☀️ الوضع النهاري";
@@ -1769,7 +1772,6 @@ window.onload = function() {
         }
     }
 };
-
 
     </script>
     <!--<div>
@@ -2255,4 +2257,5 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
