@@ -1754,11 +1754,17 @@ async function editStudent(studentEmail) {
 // تحميل الوضع المحفوظ وتحديث نص الزر عند تحميل الصفحة
 window.onload = function() {
     const btn = document.getElementById('darkModeBtn');
+
     if (localStorage.getItem("darkMode") === "true") {
         document.body.classList.add("dark-mode");
-        btn.textContent = "☀️ الوضع النهاري";
-    } else {
-        btn.textContent = "🌙 الوضع الليلي";
+    }
+
+    if (btn) {
+        if (localStorage.getItem("darkMode") === "true") {
+            btn.textContent = "☀️ الوضع النهاري";
+        } else {
+            btn.textContent = "🌙 الوضع الليلي";
+        }
     }
 };
 
@@ -2214,6 +2220,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
