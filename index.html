@@ -196,9 +196,8 @@
   gtag('config', 'G-E4BFPGRT2R');
 </script>
 
-</head>
 
-<body>
+
     <div class="app-container">
 
         <nav class="top-nav">
@@ -265,8 +264,8 @@
     <p style="color:white">المرحلة الإعدادية – المنهج المصري</p>
 
     <!-- الحقول القديمة (يمكن الاحتفاظ بها للنسخ الاحتياطي) -->
-    <input id="email" type="text" placeholder="البريد الإلكتروني">
-    <input id="password" type="password" placeholder="كلمة المرور">
+    <input id="loginEmail" type="text" placeholder="البريد الإلكتروني">
+<input id="loginPassword" type="password" placeholder="كلمة المرور">
 
     <!-- الأزرار داخل صفحة الدخول -->
     <div class="login-container">
@@ -277,13 +276,13 @@
             <form>
                 <input type="email" placeholder="البريد الإلكتروني">
                 <input type="password" placeholder="كلمة المرور">
-               <button type="button" onclick="login()">تسجيل الدخول</button>
+               <button class="register-btn" onclick="registerStudentPage()">إنشاء حساب جديد</button>
             </form>
 
             <hr>
 
             <!-- زر إنشاء حساب جديد -->
-            <button class="register-btn">إنشاء حساب جديد</button>
+           <button class="register-btn" onclick="registerStudentPage()">إنشاء حساب جديد</button>
         </div>
     </div>
 
@@ -2269,6 +2268,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
