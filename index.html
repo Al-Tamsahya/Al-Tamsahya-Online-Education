@@ -157,13 +157,14 @@
     </section>    
 
         <!-- صندوق تسجيل الدخول -->
-        <div class="login-box" id="loginPage">
-            <h2>تسجيل الدخول</h2>
-            <input type="email" placeholder="البريد الإلكتروني" id="email">
-            <input type="password" placeholder="كلمة المرور" id="password">
-            <button class="login-btn">تسجيل الدخول</button>
-            <hr>
-            <button class="register-btn" onclick="registerStudentPage()">
+        <form class="login-box" id="loginPage" action="login.php" method="POST">
+    <h2>تسجيل الدخول</h2>
+
+    <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+    <input type="password" name="password" placeholder="كلمة المرور" required>
+
+    <button type="submit" class="login-btn">تسجيل الدخول</button>
+</form>
     إنشاء حساب جديد
 </button>
         </div>
@@ -2220,6 +2221,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
