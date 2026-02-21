@@ -106,32 +106,36 @@
 </div>
 
 
-        <!-- صفحة تسجيل الدخول -->
-    <div id="loginPage" class="login-container">
+   <!-- صفحة تسجيل الدخول -->
+<div id="loginPage" class="login-container">
 
-        <h1>منصة التمساحية التعليمية</h1>
-<p style="color:white">المرحلة الإعدادية – المنهج المصري</p>
-   <input id="email" type="text" placeholder="البريد الإلكتروني">
-        <input id="password" type="password" placeholder="كلمة المرور">
+    <h1>منصة التمساحية التعليمية</h1>
+    <p style="color:white">المرحلة الإعدادية – المنهج المصري</p>
 
-        <!-- الأزرار داخل صفحة الدخول -->
-       <div class="login-container">
-    <div class="login-box">
-        <h2>تسجيل الدخول</h2>
-        
-        <input type="email" placeholder="البريد الإلكتروني">
-        <input type="password" placeholder="كلمة المرور">
-        
-        <button class="login-btn">تسجيل الدخول</button>
-        
-        <hr>
-        
-        <button class="register-btn">إنشاء حساب جديد</button>
+    <!-- الحقول القديمة (يمكن الاحتفاظ بها للنسخ الاحتياطي) -->
+    <input id="email" type="text" placeholder="البريد الإلكتروني">
+    <input id="password" type="password" placeholder="كلمة المرور">
+
+    <!-- الأزرار داخل صفحة الدخول -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2>تسجيل الدخول</h2>
+
+            <!-- الحقول الجديدة داخل الفورم -->
+            <form>
+                <input type="email" placeholder="البريد الإلكتروني">
+                <input type="password" placeholder="كلمة المرور">
+                <button type="submit">تسجيل الدخول</button>
+            </form>
+
+            <hr>
+
+            <!-- زر إنشاء حساب جديد -->
+            <button class="register-btn">إنشاء حساب جديد</button>
+        </div>
     </div>
+
 </div>
-
-
-    </div>
 
     <!-- صفحة الأدمن -->
     <div id="adminPage" style="display:none; padding:20px; text-align:center;">
@@ -2087,6 +2091,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
