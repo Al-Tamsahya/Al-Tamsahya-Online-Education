@@ -28,7 +28,7 @@
 
         /* شريط المنصة */
         .header {
-            background-color: #777;
+            background-color: #009688;
             color: white;
             padding: 15px;
             text-align: right;
@@ -104,7 +104,7 @@
 
         /* الوضع النهاري */
         body.dark-mode {
-            background-color: #222;
+            background-color: #1e293b;
             color: #ddd;
         }
 
@@ -129,13 +129,13 @@
    
     <!-- شريط المنصة -->
     <div class="header">
-        منصة التمساحية التعليمية
-        <button class="dark-mode-btn" onclick="toggleDarkMode()">🌙 الوضع الليلي</button>
-    </div>
-
+    منصة التمساحية التعليمية
+    <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
+        🌙 الوضع الليلي
+    </button>
+</div>
     <!-- محتوى الصفحة -->
     <div class="content">
-        <h1>مرحباً بكم في منصة التمساحية التعليمية 🎓</h1>
         <p class="description">
  <!-- 🧑‍🎓 رسالة ترحيب رسمية -->
     <section class="welcome-message" id="welcomeMessage">
@@ -1735,8 +1735,7 @@ async function editStudent(studentEmail) {
             const list = document.getElementById("lessonList");
             list.style.display = list.style.display === "none" ? "block" : "none";
         }
-
-  function toggleDarkMode() {
+function toggleDarkMode() {
     const body = document.body;
     const btn = document.getElementById('darkModeBtn');
     
@@ -1763,9 +1762,9 @@ window.onload = function() {
         document.body.classList.add("dark-mode");
     }
 
-    // تحديث نص الزر حسب الوضع المحفوظ
+    // تحديث نص الزر حسب الوضع الفعلي بعد التحميل
     if (btn) {
-        if (localStorage.getItem("darkMode") === "true") {
+        if (document.body.classList.contains("dark-mode")) {
             btn.textContent = "☀️ الوضع النهاري";
         } else {
             btn.textContent = "🌙 الوضع الليلي";
@@ -2257,5 +2256,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
