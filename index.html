@@ -151,7 +151,9 @@
             <input type="password" placeholder="كلمة المرور" id="password">
             <button class="login-btn">تسجيل الدخول</button>
             <hr>
-            <button class="register-btn">إنشاء حساب جديد</button>
+            <button class="register-btn" onclick="registerStudentPage()">
+    إنشاء حساب جديد
+</button>
         </div>
     </div>
 
@@ -275,7 +277,7 @@
             <form>
                 <input type="email" placeholder="البريد الإلكتروني">
                 <input type="password" placeholder="كلمة المرور">
-                <button type="submit">تسجيل الدخول</button>
+               <button type="button" onclick="login()">تسجيل الدخول</button>
             </form>
 
             <hr>
@@ -2136,9 +2138,27 @@ body { padding-top: 45px; }
 </style>
 
 <script>
-  // 🔹 تهيئة Firebase مرة واحدة فقط
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
+  if (typeof firebase !== "undefined") {
+    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+      firebase.initializeApp(firebaseConfig);
+    }
+  }
+
+  // حماية في حالة عدم وجود firestoreTools
+  if (typeof window.firestoreTools === "undefined") {
+    if (typeof firebase !== "undefined" && firebase.firestore) {
+      const db = firebase.firestore();
+      window.firestoreTools = {
+        db: db,
+        collection: db.collection.bind(db)
+      };
+    }
+  }
+
+  const db = (window.firestoreTools && window.firestoreTools.db) 
+    ? window.firestoreTools.db 
+    : (typeof firebase !== "undefined" ? firebase.firestore() : null);
 
   // دوال مساعدة لإظهار وإخفاء شريط الإعلان
   function showAnnouncementBar() {
@@ -2153,34 +2173,38 @@ body { padding-top: 45px; }
 
   // 🔹 إعادة تشغيل حركة الإعلان مع سرعة مناسبة
   function restartAnimation() {
-  const announcementText = document.getElementById("announcementText");
+    const announcementText = document.getElementById("announcementText");
+    if (!announcementText) return;
 
-  // أوقف الحركة مؤقتًا
-  announcementText.style.animation = "none";
+    // أوقف الحركة مؤقتًا
+    announcementText.style.animation = "none";
 
-  // ضع النص مباشرة على الشمال (خارج الشاشة) حتى يظهر فورًا
-  announcementText.style.left = "-100%";
+    // ضع النص مباشرة على الشمال (خارج الشاشة) حتى يظهر فورًا
+    announcementText.style.left = "-100%";
 
-  // إعادة حساب CSS
-  announcementText.offsetHeight;
+    // إعادة حساب CSS
+    announcementText.offsetHeight;
 
-  // حساب مدة الحركة بناءً على طول النص
-  const textLength = announcementText.offsetWidth;
-  const duration = Math.max(15, textLength / 50); // الحد الأدنى 15 ثانية
+    // حساب مدة الحركة بناءً على طول النص
+    const textLength = announcementText.offsetWidth;
+    const duration = Math.max(15, textLength / 50); // الحد الأدنى 15 ثانية
 
-  // أعد تشغيل الحركة من الشمال إلى اليمين
-  announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-}
-
+    // أعد تشغيل الحركة من الشمال إلى اليمين
+    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+  }
 
   // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
   async function loadAnnouncement() {
     try {
-      const doc = await firestoreTools.collection("announcements").doc("current").get();
+      if (!window.firestoreTools) return;
+
+      const doc = await window.firestoreTools.collection("announcements").doc("current").get();
       if (doc.exists) {
         const text = doc.data().text || "";
         if (text) {
           const announcementText = document.getElementById("announcementText");
+          if (!announcementText) return;
+
           announcementText.innerText = text;
 
           // إعادة تشغيل الحركة بسرعة مناسبة
@@ -2198,19 +2222,23 @@ body { padding-top: 45px; }
 
   // 🔹 دوال الأدمن
   async function saveAnnouncement() {
-    const text = document.getElementById("adminAdText").value.trim();
+    const input = document.getElementById("adminAdText");
+    if (!input) return;
+
+    const text = input.value.trim();
     if (!text) {
       alert("يرجى كتابة نص الإعلان أولاً!");
       return;
     }
+
     try {
-      await firestoreTools.collection("announcements").doc("current").set({ text });
+      await window.firestoreTools.collection("announcements").doc("current").set({ text });
 
       const announcementText = document.getElementById("announcementText");
-      announcementText.innerText = text;
-
-      // إعادة تشغيل الحركة بسرعة مناسبة
-      restartAnimation();
+      if (announcementText) {
+        announcementText.innerText = text;
+        restartAnimation();
+      }
 
       showAnnouncementBar();
       alert("تم حفظ الإعلان ✅");
@@ -2222,7 +2250,7 @@ body { padding-top: 45px; }
 
   async function deleteAnnouncement() {
     try {
-      await firestoreTools.collection("announcements").doc("current").set({ text: "" });
+      await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
       hideAnnouncementBar();
       alert("تم إيقاف الإعلان ✅");
     } catch (err) {
@@ -2241,6 +2269,7 @@ body { padding-top: 45px; }
 
 </body>
 </html>
+
 
 
 
