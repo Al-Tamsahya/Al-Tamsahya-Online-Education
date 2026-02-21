@@ -2219,25 +2219,25 @@ body { padding-top: 45px; }
   const stopAdBtn = document.getElementById("stopAdBtn");
   if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const loginForm = document.getElementById("loginPage");
 
+  if (loginForm) {
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault(); // يمنع ظهور البيانات في الرابط وإعادة تحميل الصفحة
+
+      const email = loginForm.querySelector("input[type='email']").value.trim();
+      const password = loginForm.querySelector("input[type='password']").value.trim();
+
+      if (email === "admin@gmail.com" && password === "123456") {
+        window.location.href = "dashboard.html";
+      } else {
+        alert("البريد أو كلمة المرور غير صحيحة");
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
