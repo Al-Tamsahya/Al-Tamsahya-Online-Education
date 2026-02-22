@@ -1286,26 +1286,37 @@
 </table>`;
                     }
 
-                    async function addSupervisor() {
-                        const email = document.getElementById("newSupervisorEmail").value.trim();
-                        const password = document.getElementById("newSupervisorPassword").value.trim();
-                        if (!email || !password) return alert("يرجى إدخال البريد وكلمة المرور!");
+                   async function addSupervisor() {
+    const email = document.getElementById("newSupervisorEmail").value.trim().toLowerCase();
+    const password = document.getElementById("newSupervisorPassword").value.trim();
 
-                        try {
-                            const userCred = await firebase.auth().createUserWithEmailAndPassword(email, password);
-                            await firebase.firestore().collection("users").doc(userCred.user.uid).set({
-                                email,
-                                role: "SUPERVISOR",
-                                createdAt: new Date().toISOString()
-                            });
+    if (!email || !password) {
+        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+        return;
+    }
 
-                            alert("تمت إضافة المشرف ✅");
-                            renderSupervisors();
-                            closeModal("supervisorModal");
-                        } catch (err) {
-                            alert("حدث خطأ ❌\n" + err.message);
-                        }
-                    }
+    try {
+        // إنشاء الحساب في Firebase Auth
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // إنشاء بياناته في Firestore بنفس UID
+        await firebase.firestore().collection("users").doc(user.uid).set({
+            email: email,
+            role: "SUPERVISOR",
+            createdAt: new Date().toISOString()
+        });
+
+        alert("تمت إضافة المشرف بنجاح ✅");
+
+        closeModal("supervisorModal");
+        renderSupervisors();
+
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء إضافة المشرف ❌\n" + err.message);
+    }
+}
 
 
                     // عرض نموذج إضافة طالب
@@ -1937,7 +1948,7 @@ window.addEventListener("DOMContentLoaded", () => {
             try {
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
-                const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+                firebase.firestore().collection("admins").doc("admin").get();
                 const role = userDoc.exists ? userDoc.data().role : "STUDENT";
                 localStorage.setItem("loggedEmail", email);
                 localStorage.setItem("userRole", role);
@@ -2272,10 +2283,17 @@ function startAnnouncementAnimation(text, duration = 12000) {
                 return;
             }
 
-            // الحصول على الدور من Firestore
-            const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
-            const role = userDoc.exists ? userDoc.data().role : "STUDENT";
+          // البحث عن المستخدم في collection "admins" بواسطة البريد
+const userQuery = await firebase.firestore()
+    .collection("admins")
+    .where("email", "==", email)
+    .get();
 
+let role = "STUDENT"; // القيمة الافتراضية
+
+if (!userQuery.empty) {
+    role = userQuery.docs[0].data().role;
+}
             // تخزين البيانات محليًا
             localStorage.setItem("loggedEmail", email);
             localStorage.setItem("userRole", role);
@@ -2294,6 +2312,7 @@ function startAnnouncementAnimation(text, duration = 12000) {
 </script>
 </body>
 </html>
+
 
 
 
