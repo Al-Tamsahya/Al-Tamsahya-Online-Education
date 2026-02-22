@@ -2293,7 +2293,7 @@ function startAnnouncementAnimation(text, duration = 12000) {
 
     if (loginForm) {
       loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault(); // منع إرسال الفورم بالطريقة التقليدية
+        e.preventDefault(); // منع الفورم من إعادة التحميل
 
         const email = e.target.email.value.trim();
         const password = e.target.password.value.trim();
@@ -2304,26 +2304,23 @@ function startAnnouncementAnimation(text, duration = 12000) {
         }
 
         try {
-          // تحقق من الأدمن أولاً
-          const adminRef = doc(db, "admins", email);
+          // تحقق من الأدمن
+          const adminRef = doc(db, "admins", "admin"); // الـ document الخاص بك كأدمن
           const adminDoc = await getDoc(adminRef);
 
           if (adminDoc.exists()) {
-            const data = adminDoc.data();
-            if (data.password !== password) { // التحقق من كلمة المرور
-              alert("كلمة المرور خاطئة ❌");
+            const adminData = adminDoc.data();
+            if (adminData.email === email && adminData.password === password) {
+              localStorage.setItem("loggedEmail", email);
+              localStorage.setItem("userRole", "ADMIN");
+              window.location.href = "admin.html";
               return;
             }
-
-            const role = data.role || "ADMIN";
-            localStorage.setItem("loggedEmail", email);
-            localStorage.setItem("userRole", role);
-            window.location.href = "admin.html";
-            return;
           }
 
           // تحقق من الطلاب
-          const q = query(collection(db, "students"), where("email", "==", email));
+          const studentsRef = collection(db, "students");
+          const q = query(studentsRef, where("email", "==", email));
           const querySnapshot = await getDocs(q);
 
           if (querySnapshot.empty) {
@@ -2332,7 +2329,8 @@ function startAnnouncementAnimation(text, duration = 12000) {
           }
 
           const studentData = querySnapshot.docs[0].data();
-          if (studentData.password !== password) { // التحقق من كلمة المرور
+
+          if (studentData.password !== password) {
             alert("كلمة المرور خاطئة ❌");
             return;
           }
@@ -2356,8 +2354,3 @@ function startAnnouncementAnimation(text, duration = 12000) {
 </script>
 </body>
 </html>
-
-
-
-
-
