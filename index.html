@@ -1715,64 +1715,292 @@ if ('serviceWorker' in navigator) {
 
 <!-- جميع وظائف الأدمن والإعلانات -->
 <script>
-  // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
-  const adminEmail = "admin@gmail.com"; 
-  const loggedEmail = localStorage.getItem("loggedEmail") || "";
-const userRole = localStorage.getItem("userRole") || "STUDENT"; // افتراضياً طالب
+// 🔹 تهيئة المستخدم والمتغيرات المهمة
+const adminEmail = "admin@gmail.com";
+const loggedEmail = localStorage.getItem("loggedEmail") || "";
+const userRole = localStorage.getItem("userRole") || "STUDENT";
 
-window.currentUser = {
-  email: loggedEmail,
-  role: userRole
-};
+window.currentUser = { email: loggedEmail, role: userRole };
 
-  // متغير لتثبيت التطبيق PWA
-  let deferredPrompt = null;
+// 🔹 متغير لتثبيت التطبيق PWA
+let deferredPrompt = null;
 
-  // 🔹 إعلان متغير واحد فقط لجميع التحركات
-  let animationTimeout = null;
-</script>
+// 🔹 متغير الإعلان المتحرك
+let animationTimeout = null;
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+// 🔹 تهيئة Firebase
+if (typeof firebase !== "undefined") {
+    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+        firebase.initializeApp(firebaseConfig);
+    }
+    if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
+        const db = firebase.firestore();
+        window.firestoreTools = {
+            db: db,
+            collection: db.collection.bind(db)
+        };
+    }
+}
+const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
 
-  // ======= لوحة الأدمن =======
- if (window.currentUser && window.currentUser.role === "ADMIN") {
-  const adminPanel = document.getElementById("admin-panel");
-  if (adminPanel) adminPanel.style.display = "block";
+// 🔹 دوال شريط الإعلان
+function showAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "flex";
+}
 
-  const adminAdBox = document.getElementById("adminAdBox");
-  if (adminAdBox) adminAdBox.style.display = "block";
+function hideAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
+    }
+}
 
-  const saveAdBtn = document.getElementById("saveAdBtn");
-  const stopAdBtn = document.getElementById("stopAdBtn");
+function restartAnimation() {
+    const announcementText = document.getElementById("announcementText");
+    if (!announcementText) return;
 
-  if (saveAdBtn) saveAdBtn.addEventListener("click", async () => {
+    announcementText.style.animation = "none";
+    announcementText.style.left = "-100%";
+    announcementText.offsetHeight;
+
+    const textLength = announcementText.offsetWidth;
+    const duration = Math.max(15, textLength / 50);
+    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+}
+
+async function loadAnnouncement() {
+    try {
+        if (!window.firestoreTools) return;
+        const doc = await window.firestoreTools.collection("announcements").doc("current").get();
+        if (doc.exists) {
+            const text = doc.data().text || "";
+            if (!text) return;
+            const announcementText = document.getElementById("announcementText");
+            if (!announcementText) return;
+            announcementText.innerText = text;
+            restartAnimation();
+            showAnnouncementBar();
+        }
+    } catch (err) {
+        console.error("خطأ أثناء تحميل الإعلان:", err);
+    }
+}
+
+// 🔹 دوال الأدمن
+async function saveAnnouncement() {
     const input = document.getElementById("adminAdText");
     if (!input) return;
-
     const text = input.value.trim();
-    if (!text) { alert("اكتب نص الإعلان أولاً!"); return; }
+    if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
 
     try {
-      // ✅ التعديل هنا: حفظ الإعلان مباشرة في doc 'current'
-      await window.firestoreTools.collection("announcements").doc("current").set({ text });
-      alert("تم حفظ الإعلان ✅");
+        await window.firestoreTools.collection("announcements").doc("current").set({ text });
+        const announcementText = document.getElementById("announcementText");
+        if (announcementText) { announcementText.innerText = text; restartAnimation(); }
+        showAnnouncementBar();
+        alert("تم حفظ الإعلان ✅");
     } catch (err) {
-      console.error(err);
-      alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+        console.error(err);
+        alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
     }
-  });
+}
 
-  if (stopAdBtn) stopAdBtn.addEventListener("click", async () => {
+async function deleteAnnouncement() {
     try {
+        await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+        hideAnnouncementBar();
+        alert("تم إيقاف الإعلان ✅");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
+    }
+}
+
+// 🔹 وظائف الطلاب والمشرفين
+async function deleteUser(docId, collectionName) {
+    if (!confirm("هل أنت متأكد من الحذف؟")) return;
+    try {
+        await db.collection(collectionName).doc(docId).delete();
+        alert("تم الحذف بنجاح ✅");
+        if (collectionName === "students") renderStudents();
+        if (collectionName === "users") renderSupervisors();
+    } catch (err) {
+        console.error(err);
+        alert("فشل الحذف ❌\n" + err.message);
+    }
+}
+
+async function setApprove(studentDocId, approvedValue) {
+    try {
+        const ref = db.collection("students").doc(studentDocId);
+        const snap = await ref.get();
+        if (!snap.exists) return;
+        if (snap.data().approved === true) { alert("هذا الطالب مفعل بالفعل ✅"); return; }
+        await ref.update({ approved: approvedValue });
+        alert("تمت الموافقة ✅");
+        renderStudents();
+    } catch (err) {
+        console.error(err);
+        alert("فشل التحديث ❌");
+    }
+}
+
+async function rejectStudent(studentDocId) {
+    if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
+    try {
+        await db.collection("students").doc(studentDocId).delete();
+        alert("تم رفض الطلب وحذفه ❌");
+        renderStudents();
+    } catch (err) {
+        console.error(err);
+        alert("فشل الرفض ❌\n" + err.message);
+    }
+}
+
+// 🔹 إدارة النماذج والتنقل
+function closeModal(id) { document.getElementById(id)?.style.display = "none"; }
+
+function renderTests() {
+    const container = document.getElementById("testsList");
+    container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
+    container.classList.remove("hidden");
+    ["studentsList","supervisorsList","resultsList"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
+}
+
+function renderResults() {
+    const container = document.getElementById("resultsList");
+    container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
+    container.classList.remove("hidden");
+    ["studentsList","supervisorsList","testsList"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
+}
+
+function resetNavigation() {
+    ["gradePage","subjectPage","unitPage","lessonPage"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
+    document.getElementById("lessonPath")?.style.display = "none";
+}
+
+function stopVideo() {
+    const video = document.getElementById("lessonPlayer");
+    if (video) { video.pause(); video.currentTime=0; video.src=""; }
+}
+
+function updateLessonNav(showBackUnit=true) {
+    const btnBackUnit = document.getElementById("btnBackUnit");
+    const btnHome = document.getElementById("btnHome");
+    if (btnBackUnit) btnBackUnit.style.display = showBackUnit ? "inline-block" : "none";
+    if (btnHome) btnHome.style.display = "inline-block";
+}
+
+function updateGlobalNav(show) {
+    const nav = document.getElementById("globalNav");
+    if (!nav) return;
+    nav.classList.toggle("hidden", !show);
+}
+
+function toggleLessons() {
+    const list = document.getElementById("lessonList");
+    if (list) list.style.display = list.style.display === "none" ? "block" : "none";
+}
+
+// 🔹 الوضع الليلي
+function toggleDarkMode() {
+    const body = document.body;
+    const btn = document.getElementById('darkModeBtn');
+    body.classList.toggle("dark-mode");
+    if (btn) btn.textContent = body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+    localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById('darkModeBtn');
+    if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
+    if (btn) btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+
+    loadAnnouncement();
+
+    document.getElementById("saveAdBtn")?.addEventListener("click", saveAnnouncement);
+    document.getElementById("stopAdBtn")?.addEventListener("click", deleteAnnouncement);
+    document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value.trim();
+        const password = e.target.password.value.trim();
+        try {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+            const role = userDoc.exists ? userDoc.data().role : "STUDENT";
+            localStorage.setItem("loggedEmail", email);
+            localStorage.setItem("userRole", role);
+            window.currentUser = { email, role };
+            window.location.href = role==="ADMIN" ? "admin.html" : "index.html";
+        } catch(err) { alert("خطأ في تسجيل الدخول ❌\n" + err.message); }
+    });
+
+</script>
+
+  async function deleteAnnouncement() {
+    try {
+      if (!window.firestoreTools || !window.firestoreTools.collection) {
+        alert("Firestore لم يتم تحميله بعد ❌");
+        return;
+      }
+
       await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+
+      if (typeof hideAnnouncementBar === "function") hideAnnouncementBar();
       alert("تم إيقاف الإعلان ✅");
     } catch (err) {
       console.error(err);
       alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
     }
-  });
-}
+  }
+
+  // 🔹 ربط الأزرار بالأحداث بعد التأكد من وجودها
+  const saveAdBtn = document.getElementById("saveAdBtn");
+  if (saveAdBtn) saveAdBtn.addEventListener("click", saveAnnouncement);
+
+  const stopAdBtn = document.getElementById("stopAdBtn");
+  if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
+
+  // 🔹 auth.js
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = e.target.email.value.trim();
+      const password = e.target.password.value.trim();
+
+      try {
+        // تسجيل الدخول باستخدام Firebase Auth
+        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // الحصول على الدور من Firestore
+        const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+        const role = userDoc.exists ? userDoc.data().role : "STUDENT";
+
+        // تخزين البيانات
+        localStorage.setItem("loggedEmail", email);
+        localStorage.setItem("userRole", role);
+
+        window.currentUser = { email, role };
+
+        // التحويل حسب الدور
+        if (role === "ADMIN") window.location.href = "admin.html";
+        else window.location.href = "index.html";
+
+      } catch (err) {
+        alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+      }
+    });
+  }
+
+});
+</script>
 
   // ======= عرض الإعلانات =======
   const adsContainer = document.getElementById("ads-container");
@@ -2150,6 +2378,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 </script>
 </body>
 </html>
+
 
 
 
