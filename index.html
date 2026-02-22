@@ -1939,24 +1939,34 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("saveAdBtn")?.addEventListener("click", saveAnnouncement);
     document.getElementById("stopAdBtn")?.addEventListener("click", deleteAnnouncement);
 
-    const loginForm = document.getElementById("loginForm");
-    if (loginForm) {
-        loginForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = e.target.email.value.trim();
-            const password = e.target.password.value.trim();
-            try {
-                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                firebase.firestore().collection("admins").doc("admin").get();
-                const role = userDoc.exists ? userDoc.data().role : "STUDENT";
-                localStorage.setItem("loggedEmail", email);
-                localStorage.setItem("userRole", role);
-                window.currentUser = { email, role };
-                window.location.href = role === "ADMIN" ? "admin.html" : "index.html";
-            } catch (err) { alert("خطأ في تسجيل الدخول ❌\n" + err.message); }
-        });
-    }
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value.trim();
+        const password = e.target.password.value.trim();
+
+        try {
+            // تسجيل الدخول عبر Firebase Auth
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+
+            // 🔹 تحقق من Firestore إذا كان أدمن
+            const userDoc = await firebase.firestore().collection("admins").doc(email).get();
+            const role = userDoc.exists ? userDoc.data().role || "ADMIN" : "STUDENT";
+
+            localStorage.setItem("loggedEmail", email);
+            localStorage.setItem("userRole", role);
+            window.currentUser = { email, role };
+
+            // 🔹 توجيه المستخدم حسب الدور
+            window.location.href = role === "ADMIN" ? "admin.html" : "index.html";
+
+        } catch (err) {
+            alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+        }
+    });
+}
 
     // PWA Install Button
     const installBtn = document.getElementById("installBtn");
@@ -2264,75 +2274,60 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
     <script>
-window.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
 
-    let errorMsg = document.getElementById("loginError");
-    if(!errorMsg){
-        errorMsg = document.createElement("p");
-        errorMsg.id = "loginError";
-        errorMsg.style.color = "red";
-        errorMsg.style.marginTop = "10px";
-        loginForm.appendChild(errorMsg);
-    }
-    const showError = (msg) => { errorMsg.textContent = msg; };
-
-    if(loginForm){
-        loginForm.addEventListener("submit", async (e)=>{
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const email = e.target.email.value.trim();
             const password = e.target.password.value.trim();
-            if(!email || !password){
-                showError("يرجى إدخال البريد وكلمة المرور!");
+
+            if (!email || !password) {
+                alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
                 return;
             }
 
-            try{
-                // 🔹 تحقق من الأدمن أولًا
-                let query = await firestoreTools.collection("admins")
-                    .where("email","==",email)
-                    .where("password","==",password)
-                    .get();
+            try {
+                // 1️⃣ تسجيل الدخول عبر Firebase Auth
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
 
-                if(!query.empty){
-                    const userData = query.docs[0].data();
-                    const role = userData.role || "ADMIN";
-
+                // 2️⃣ تحقق إذا هو أدمن
+                const adminDoc = await firebase.firestore().collection("admins").doc(email).get();
+                if (adminDoc.exists) {
+                    const role = adminDoc.data().role || "ADMIN";
                     localStorage.setItem("loggedEmail", email);
                     localStorage.setItem("userRole", role);
                     window.currentUser = { email, role };
-
-                    // توجيه مباشرة للأدمن
                     window.location.href = "admin.html";
                     return;
                 }
 
-                // 🔹 تحقق من الطلاب بعد ذلك
-                query = await firestoreTools.collection("students")
-                    .where("email","==",email)
-                    .where("password","==",password)
-                    .get();
+                // 3️⃣ تحقق إذا هو طالب
+                const studentQuery = await firebase.firestore().collection("students")
+                    .where("email", "==", email).get();
 
-                if(query.empty){
-                    showError("خطأ في البريد أو كلمة المرور ❌");
+                if (studentQuery.empty) {
+                    alert("هذا الحساب غير مسجل كطالب ❌");
                     return;
                 }
 
-                const studentData = query.docs[0].data();
-                if(!studentData.approved){
-                    showError("بانتظار الموافقة على حسابك من قبل المشرف ✅");
+                const studentData = studentQuery.docs[0].data();
+                if (!studentData.approved) {
+                    alert("لم يتم الموافقة على حسابك بعد. يرجى الانتظار ✅");
                     return;
                 }
 
-                // الطالب مفعل
+                // 4️⃣ تسجيل دخول الطالب
                 localStorage.setItem("loggedEmail", email);
                 localStorage.setItem("userRole", "STUDENT");
-                window.currentUser = { email, role:"STUDENT" };
+                window.currentUser = { email, role: "STUDENT" };
                 window.location.href = "index.html";
 
-            } catch(err){
+            } catch (err) {
                 console.error(err);
-                showError("حدث خطأ أثناء تسجيل الدخول ❌");
+                alert("خطأ في تسجيل الدخول ❌\n" + err.message);
             }
         });
     }
@@ -2340,20 +2335,3 @@ window.addEventListener("DOMContentLoaded", async () => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
