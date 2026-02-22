@@ -666,7 +666,10 @@ async function login() {
 const adBox = document.getElementById("adminAdBox");
 if (adBox) adBox.style.display = "block";
 
-db.collection("announcements").doc("current").get()
+window.firestoreTools.db
+  .collection("announcements")
+  .doc("current")
+  .get()
   .then(doc => {
     if (doc.exists && document.getElementById("adminAdText")) {
       document.getElementById("adminAdText").value = doc.data().text || "";
@@ -2246,8 +2249,7 @@ body { padding-top: 45px; }
   }
 
   // 🔹 تعريف db مرة واحدة فقط (بدون تعارض)
-  const db = window.firestoreTools?.db || null;
-
+ 
   // 🔹 دوال مساعدة لإظهار وإخفاء شريط الإعلان
   function showAnnouncementBar() {
     const bar = document.getElementById("announcementBar");
@@ -2286,7 +2288,10 @@ body { padding-top: 45px; }
     try {
       if (!window.firestoreTools) return;
 
-      const doc = await window.firestoreTools.collection("announcements").doc("current").get();
+      const doc = await window.firestoreTools.db
+  .collection("announcements")
+  .doc("current")
+  .get();
       if (doc.exists) {
         const text = doc.data().text || "";
         if (text) {
@@ -2320,7 +2325,10 @@ body { padding-top: 45px; }
     }
 
     try {
-      await window.firestoreTools.collection("announcements").doc("current").set({ text });
+      await window.firestoreTools.db
+  .collection("announcements")
+  .doc("current")
+  .set({ text });
 
       const announcementText = document.getElementById("announcementText");
       if (announcementText) {
@@ -2391,6 +2399,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
