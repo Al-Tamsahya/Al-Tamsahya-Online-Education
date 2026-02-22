@@ -1731,8 +1731,7 @@ if (typeof firebase !== "undefined") {
 const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
 
 // ===================== دوال شريط الإعلان =====================
-let animationTimeout = null;
-
+window.animationTimeout = window.animationTimeout || null;
 function showAnnouncementBar() {
     const bar = document.getElementById("announcementBar");
     if (bar) bar.style.display = "flex";
@@ -2253,39 +2252,56 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
                 <script>
-                    // auth.js
-                    // تسجيل الدخول والتحقق من الدور
-                    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-                        e.preventDefault();
+  // auth.js
+  // تسجيل الدخول والتحقق من الدور
+  window.addEventListener("DOMContentLoaded", () => {
+      const loginForm = document.getElementById("loginForm");
+      if (!loginForm) return; // إذا لم يكن النموذج موجود، لا نفعل شيء
 
-                        const email = e.target.email.value.trim();
-                        const password = e.target.password.value.trim();
+      loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault(); // منع إعادة تحميل الصفحة
 
-                        try {
-                            // تسجيل الدخول باستخدام Firebase Auth
-                            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-                            const user = userCredential.user;
+          const email = e.target.email.value.trim();
+          const password = e.target.password.value.trim();
 
-                            // الحصول على الدور من Firestore
-                            const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
-                            const role = userDoc.exists ? userDoc.data().role : "STUDENT";
+          if (!email || !password) {
+              alert("يرجى إدخال البريد الإلكتروني وكلمة المرور ❌");
+              return;
+          }
 
-                            // تخزين البيانات
-                            localStorage.setItem("loggedEmail", email);
-                            localStorage.setItem("userRole", role);
-                            window.currentUser = { email, role };
+          try {
+              // تسجيل الدخول باستخدام Firebase Auth
+              const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+              const user = userCredential.user;
 
-                            // التحويل حسب الدور
-                            if (role === "ADMIN") window.location.href = "admin.html";
-                            else window.location.href = "index.html";
+              if (!user) {
+                  alert("حدث خطأ: لم يتم التعرف على المستخدم ❌");
+                  return;
+              }
 
-                        } catch (err) {
-                            alert("خطأ في تسجيل الدخول ❌\n" + err.message);
-                        }
-                    });
-                </script>
+              // الحصول على الدور من Firestore
+              const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+              const role = userDoc.exists ? userDoc.data().role : "STUDENT";
+
+              // تخزين البيانات محليًا
+              localStorage.setItem("loggedEmail", email);
+              localStorage.setItem("userRole", role);
+              window.currentUser = { email, role };
+
+              // التحويل حسب الدور
+              if (role === "ADMIN") window.location.href = "admin.html";
+              else window.location.href = "index.html";
+
+          } catch (err) {
+              console.error("Login Error:", err);
+              alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+          }
+      });
+  });
+</script>
 </body>
 </html>
+
 
 
 
