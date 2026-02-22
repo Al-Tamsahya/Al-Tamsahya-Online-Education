@@ -2254,53 +2254,46 @@ function startAnnouncementAnimation(text, duration = 12000) {
                 <script>
   // auth.js
   // تسجيل الدخول والتحقق من الدور
-  window.addEventListener("DOMContentLoaded", () => {
-      const loginForm = document.getElementById("loginForm");
-      if (!loginForm) return; // إذا لم يكن النموذج موجود، لا نفعل شيء
+ window.addEventListener("DOMContentLoaded", async () => {
+    // قراءة البيانات من الرابط
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+    const password = params.get("password");
 
-      loginForm.addEventListener("submit", async (e) => {
-          e.preventDefault(); // منع إعادة تحميل الصفحة
+    if (email && password) {
+        try {
+            // تسجيل الدخول مباشرة باستخدام Firebase Auth
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
 
-          const email = e.target.email.value.trim();
-          const password = e.target.password.value.trim();
+            if (!user) {
+                alert("خطأ: لم يتم التعرف على المستخدم ❌");
+                return;
+            }
 
-          if (!email || !password) {
-              alert("يرجى إدخال البريد الإلكتروني وكلمة المرور ❌");
-              return;
-          }
+            // الحصول على الدور من Firestore
+            const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+            const role = userDoc.exists ? userDoc.data().role : "STUDENT";
 
-          try {
-              // تسجيل الدخول باستخدام Firebase Auth
-              const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-              const user = userCredential.user;
+            // تخزين البيانات محليًا
+            localStorage.setItem("loggedEmail", email);
+            localStorage.setItem("userRole", role);
+            window.currentUser = { email, role };
 
-              if (!user) {
-                  alert("حدث خطأ: لم يتم التعرف على المستخدم ❌");
-                  return;
-              }
+            // التحويل حسب الدور
+            if (role === "ADMIN") window.location.href = "admin.html";
+            else window.location.href = "index.html";
 
-              // الحصول على الدور من Firestore
-              const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
-              const role = userDoc.exists ? userDoc.data().role : "STUDENT";
-
-              // تخزين البيانات محليًا
-              localStorage.setItem("loggedEmail", email);
-              localStorage.setItem("userRole", role);
-              window.currentUser = { email, role };
-
-              // التحويل حسب الدور
-              if (role === "ADMIN") window.location.href = "admin.html";
-              else window.location.href = "index.html";
-
-          } catch (err) {
-              console.error("Login Error:", err);
-              alert("خطأ في تسجيل الدخول ❌\n" + err.message);
-          }
-      });
-  });
+        } catch (err) {
+            console.error("Login Error:", err);
+            alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+        }
+    }
+});
 </script>
 </body>
 </html>
+
 
 
 
