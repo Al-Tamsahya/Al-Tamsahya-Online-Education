@@ -1263,155 +1263,49 @@ async function registerStudent() {
         // 👨‍💼 إدارة الطلاب والمشرفين (Firestore)
         // ==============================
 // عرض قائمة الطلاب
-async function renderStudents() {
-  const container = document.getElementById("studentsList");
-
+// supervisors.js
+async function renderSupervisors() {
+  hideAllAdminSections();
+  const container = document.getElementById("supervisorsList");
   container.classList.remove("hidden");
-  ["supervisorsList", "testsList", "resultsList"].forEach(id =>
-    document.getElementById(id)?.classList.add("hidden")
-  );
 
-  try {
-    const db = window.firestoreTools.db;
-    const snapshot = await db.collection("students").get();
-    savedStudents = [];
+  const snapshot = await firebase.firestore().collection("users")
+    .where("role","==","SUPERVISOR").get();
 
-    let totalStudents = snapshot.size;
-    let approvedStudents = 0;
-    let pendingStudents = 0;
-    let rows = "";
+  let rows = snapshot.docs.map(doc => {
+    const s = doc.data();
+    return `<tr><td>${s.email}</td><td>
+      <button onclick="deleteUser('${doc.id}','users')" class="danger">حذف</button>
+    </td></tr>`;
+  }).join("");
 
-    snapshot.forEach(doc => {
-      const student = doc.data();
-
-      savedStudents.push({
-        id: doc.id,
-        email: student.email || "",
-        approved: student.approved === true,
-        grade: student.grade || "-"
-      });
-
-      if (student.approved) approvedStudents++;
-      else pendingStudents++;
-
-      rows += `
-<tr data-email="${(student.email || "").toLowerCase()}">
-  <td>${student.email || "-"}</td>
-  <td>${student.approved ? "🟢 مفعل" : "🟡 قيد المراجعة"}</td>
-  <td>${student.grade || "-"}</td>
-
-  <td class="actions-cell">
-    <div class="actions-wrapper">
-
-      ${
-        currentUser?.role === "ADMIN"
-          ? `
-            <button class="custom-btn" onclick="editStudent('${student.email}')">✏️ تعديل</button>
-            <button class="custom-btn danger" onclick="deleteUser('${doc.id}', 'students')">🗑 حذف</button>
-            ${
-              !student.approved
-                ? `
-                  <button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>
-                  <button class="custom-btn danger" onclick="rejectStudent('${doc.id}')">❌ رفض</button>
-                `
-                : ""
-            }
-          `
-          : ""
-      }
-
-      ${
-        currentUser?.role === "SUPERVISOR" && !student.approved
-          ? `<button class="custom-btn" onclick="setApprove('${doc.id}', true)">✅ موافقة</button>`
-          : ""
-      }
-
-    </div>
-  </td>
-</tr>`;
-    });
-
-    // ✅ رسم الصفحة مرة واحدة فقط
-    container.innerHTML = `
-      <h4>قائمة الطلاب</h4>
-
-      <input id="studentSearch"
-        onkeyup="filterStudents()"
-        placeholder="🔍 ابحث بالبريد">
-
-      <div style="margin:10px 0;">
-        📚 عدد الطلاب: <strong>${totalStudents}</strong>
-      </div>
-
-      <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
-        <div class="stat-box approved">🟢 مفعلين: ${approvedStudents}</div>
-        <div class="stat-box pending">🟡 قيد المراجعة: ${pendingStudents}</div>
-      </div>
-
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>البريد الإلكتروني</th>
-              <th>الحالة</th>
-              <th>الدرجة</th>
-              <th>خيارات</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows || `<tr><td colspan="4">لا يوجد طلاب</td></tr>`}
-          </tbody>
-        </table>
-      </div>
-    `;
-
-  } catch (err) {
-    console.error(err);
-    container.innerHTML = `<p>حدث خطأ ❌<br>${err.message}</p>`;
-  }
+  container.innerHTML = `
+<h4>المشرفون</h4>
+<button onclick="showAddSupervisorModal()">إضافة مشرف</button>
+<table>
+<thead><tr><th>البريد الإلكتروني</th><th>خيارات</th></tr></thead>
+<tbody>${rows || `<tr><td colspan="2">لا يوجد مشرفين</td></tr>`}</tbody>
+</table>`;
 }
 
+async function addSupervisor() {
+  const email = document.getElementById("newSupervisorEmail").value.trim();
+  const password = document.getElementById("newSupervisorPassword").value.trim();
+  if (!email || !password) return alert("يرجى إدخال البريد وكلمة المرور!");
 
-
-        // ✏️ تعديل بيانات الطالب (email + password)
-async function editStudent(studentEmail) {
   try {
-    const db = window.firestoreTools.db;
-
-    // 1) نبحث عن الطالب بالبريد
-    const snap = await db.collection("students")
-      .where("email", "==", (studentEmail || "").toLowerCase())
-      .get();
-
-    if (snap.empty) {
-      alert("لم يتم العثور على الطالب ❌");
-      return;
-    }
-
-    const docSnap = snap.docs[0];
-    const student = docSnap.data();
-    const docId = docSnap.id;
-
-    // 2) نطلب بيانات جديدة
-    const newEmail = prompt("تعديل البريد الإلكتروني:", student.email || "");
-    if (!newEmail) return;
-
-    const newPassword = prompt("تعديل كلمة المرور:", student.password || "");
-    if (!newPassword) return;
-
-    // 3) تحديث Firestore
-    await db.collection("students").doc(docId).update({
-      email: newEmail.trim().toLowerCase(),
-      password: newPassword.trim(),
-      name: newEmail.trim().toLowerCase().split("@")[0]
+    const userCred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    await firebase.firestore().collection("users").doc(userCred.user.uid).set({
+      email,
+      role: "SUPERVISOR",
+      createdAt: new Date().toISOString()
     });
 
-    alert("تم تعديل بيانات الطالب ✅");
-    renderStudents();
-
+    alert("تمت إضافة المشرف ✅");
+    renderSupervisors();
+    closeModal("supervisorModal");
   } catch (err) {
-    console.error(err);
-    alert("فشل التعديل ❌\n" + err.message);
+    alert("حدث خطأ ❌\n" + err.message);
   }
 }
 
@@ -1926,40 +1820,46 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // ======= تثبيت التطبيق PWA =======
-  const installBtn = document.getElementById("installBtn");
-  let deferredPrompt;
+ // ======= تثبيت التطبيق PWA =======
+const installBtn = document.getElementById("installBtn");
+let deferredPrompt; // متغير لتخزين حدث beforeinstallprompt
 
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installBtn) installBtn.hidden = false;
-  });
+// الاستماع لحدث قبل تثبيت التطبيق
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault(); // منع ظهور نافذة التثبيت التلقائي
+    deferredPrompt = e;  // تخزين الحدث لاستخدامه لاحقًا
+    if (installBtn) installBtn.hidden = false; // إظهار زر التثبيت
+});
 
-  if (installBtn) {
+// التعامل مع زر التثبيت
+if (installBtn) {
     installBtn.addEventListener("click", async () => {
 
-      if (!deferredPrompt) {
-        alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
-        return;
-      }
+        if (!deferredPrompt) {
+            alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
+            return;
+        }
 
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+        // عرض نافذة تثبيت التطبيق
+        deferredPrompt.prompt();
 
-      if (outcome === "accepted") {
-        installBtn.hidden = true;
-      }
+        // انتظار نتيجة اختيار المستخدم
+        const { outcome } = await deferredPrompt.userChoice;
 
-      deferredPrompt = null;
+        // إخفاء الزر إذا تم قبول التثبيت
+        if (outcome === "accepted") {
+            installBtn.hidden = true;
+        }
+
+        // إعادة تعيين المتغير بعد استخدامه
+        deferredPrompt = null;
     });
-  }
+}
 
-  window.addEventListener("appinstalled", () => {
-    if (installBtn) installBtn.hidden = true;
-    alert("تم تثبيت التطبيق بنجاح ✅");
-  });
-
+// الاستماع لحدث تثبيت التطبيق بعد اكتمال التثبيت
+window.addEventListener("appinstalled", () => {
+    if (installBtn) installBtn.hidden = true; // إخفاء الزر بعد التثبيت
+    alert("تم تثبيت التطبيق بنجاح ✅");       // إشعار المستخدم
 });
 </script>
 
@@ -2216,39 +2116,41 @@ body { padding-top: 45px; }
   if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const loginForm = document.getElementById("loginPage");
+// auth.js
+// تسجيل الدخول والتحقق من الدور
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  if (loginForm) {
-    loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault(); // منع إعادة تحميل الصفحة
+  const email = e.target.email.value.trim();
+  const password = e.target.password.value.trim();
 
-      const email = loginForm.querySelector("input[type='email']").value.trim();
-      const password = loginForm.querySelector("input[type='password']").value.trim();
+  try {
+    // تسجيل الدخول باستخدام Firebase Auth
+    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
 
-      if (email === "admin@gmail.com" && password === "123456") {
-        // تسجيل الأدمن
-        localStorage.setItem("loggedEmail", email);
-        localStorage.setItem("userRole", "ADMIN");
-        window.location.href = "admin.html"; // انتقال للأدمن
-        return;
-      }
+    // الحصول على الدور من Firestore
+    const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+    const role = userDoc.exists ? userDoc.data().role : "STUDENT";
 
-      // أي بريد آخر للطلاب (مثال)
-      if (email && password) {
-        localStorage.setItem("loggedEmail", email);
-        localStorage.setItem("userRole", "STUDENT");
-        window.location.href = "index.html"; // صفحة الطالب الرئيسية
-        return;
-      }
+    // تخزين البيانات
+    localStorage.setItem("loggedEmail", email);
+    localStorage.setItem("userRole", role);
 
-      alert("البريد أو كلمة المرور غير صحيحة");
-    });
+    window.currentUser = { email, role };
+
+    // التحويل حسب الدور
+    if (role === "ADMIN") window.location.href = "admin.html";
+    else window.location.href = "index.html";
+
+  } catch (err) {
+    alert("خطأ في تسجيل الدخول ❌\n" + err.message);
   }
 });
 </script>
 </body>
 </html>
+
 
 
 
