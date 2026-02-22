@@ -2250,220 +2250,223 @@ body { padding-top: 45px; }
       return window.firestoreTools?.db;
     })();
   }
-  const db = window.db;
+  // استخدام var بدل const لتجنب إعادة التعريف في أي سكربت آخر
+  var db = window.db;
 
-async function getDocsWhere(collectionName, field, op, value) {
-  const snap = await db.collection(collectionName).where(field, op, value).get();
-  return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
-
-async function addDocSafe(collectionName, data, uniqueField = null) {
-  if (uniqueField) {
-    const existing = await getDocsWhere(collectionName, uniqueField, '==', data[uniqueField]);
-    if (existing.length) throw new Error(`هذا ${uniqueField} مستخدم بالفعل!`);
+  // ===================== بقية الكود كما هو =====================
+  async function getDocsWhere(collectionName, field, op, value) {
+    const snap = await db.collection(collectionName).where(field, op, value).get();
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
-  const docRef = await db.collection(collectionName).add(data);
-  return docRef.id;
-}
 
-async function deleteDoc(collectionName, docId) {
-  await db.collection(collectionName).doc(docId).delete();
-}
-
-async function updateDocField(collectionName, docId, field, value) {
-  await db.collection(collectionName).doc(docId).update({ [field]: value });
-}
-
-// ===================== Admin Sections =====================
-function hideAllAdminSections() {
-  ['studentsList', 'supervisorsList', 'testsList', 'resultsList'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('hidden');
-  });
-}
-
-function renderSection(section, htmlContent) {
-  hideAllAdminSections();
-  const container = document.getElementById(section);
-  if (!container) return;
-  container.innerHTML = htmlContent;
-  container.classList.remove('hidden');
-}
-
-// ===================== Students =====================
-async function renderStudents() {
-  renderSection('studentsList', `<p>جاري تحميل الطلاب...</p>`);
-  try {
-    const students = await getDocsWhere('students', 'role', '==', 'STUDENT');
-    const rows = students.map(s => `
-      <tr>
-        <td>${s.email}</td>
-        <td>${s.approved ? '🟢 مفعل' : '🟡 قيد المراجعة'}</td>
-        <td>
-          ${s.approved ? '' : `<button onclick="approveStudent('${s.id}')">موافقة</button>`}
-          <button onclick="rejectStudent('${s.id}')">رفض</button>
-          <button onclick="deleteUser('${s.id}','students')">حذف</button>
-        </td>
-      </tr>
-    `).join('');
-
-    renderSection('studentsList', `
-      <h4>الطلاب</h4>
-      <button onclick="showAddStudentModal()">إضافة طالب</button>
-      <div class="table-container">
-        <table>
-          <thead><tr><th>البريد الإلكتروني</th><th>الحالة</th><th>خيارات</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="3">لا يوجد طلاب حاليا</td></tr>'}</tbody>
-        </table>
-      </div>
-    `);
-  } catch (err) {
-    console.error(err);
-    renderSection('studentsList', `<p>فشل تحميل الطلاب ❌<br>${err.message}</p>`);
-  }
-}
-
-async function approveStudent(id) { await updateDocField('students', id, 'approved', true); alert('تمت الموافقة ✅'); renderStudents(); }
-async function rejectStudent(id) { if(confirm('هل تريد رفض الطالب وحذف طلبه نهائياً؟')) { await deleteDoc('students', id); alert('تم رفض الطالب ❌'); renderStudents(); } }
-
-function showAddStudentModal() {
-  document.getElementById('newStudentEmail').value = '';
-  document.getElementById('newStudentPassword').value = '';
-  document.getElementById('studentModal').style.display = 'flex';
-}
-
-async function addStudent() {
-  const email = document.getElementById('newStudentEmail').value.trim().toLowerCase();
-  const password = document.getElementById('newStudentPassword').value.trim();
-  if(!email || !password) return alert('يرجى إدخال البريد وكلمة المرور!');
-
-  try {
-    await addDocSafe('students', {
-      email, password, name: email.split('@')[0], role: 'STUDENT', approved: true, createdAt: new Date().toISOString()
-    }, 'email');
-
-    alert('تمت إضافة الطالب ✅');
-    document.getElementById('studentModal').style.display = 'none';
-    renderStudents();
-  } catch(err) { alert(err.message); }
-}
-
-// ===================== Supervisors =====================
-async function renderSupervisors() {
-  renderSection('supervisorsList', `<p>جاري تحميل المشرفين...</p>`);
-  try {
-    const supervisors = await getDocsWhere('users', 'role', '==', 'SUPERVISOR');
-    const rows = supervisors.map(s => `
-      <tr>
-        <td>${s.email}</td>
-        <td>
-          <button onclick="deleteUser('${s.id}','users')">حذف</button>
-        </td>
-      </tr>
-    `).join('');
-
-    renderSection('supervisorsList', `
-      <h4>المشرفون</h4>
-      <button onclick="showAddSupervisorModal()">إضافة مشرف</button>
-      <div class="table-container">
-        <table>
-          <thead><tr><th>البريد الإلكتروني</th><th>خيارات</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>'}</tbody>
-        </table>
-      </div>
-    `);
-  } catch(err) { renderSection('supervisorsList', `<p>فشل تحميل المشرفين ❌<br>${err.message}</p>`); }
-}
-
-function showAddSupervisorModal() {
-  document.getElementById('newSupervisorEmail').value = '';
-  document.getElementById('newSupervisorPassword').value = '';
-  document.getElementById('supervisorModal').style.display = 'flex';
-}
-
-async function addSupervisor() {
-  const email = document.getElementById('newSupervisorEmail').value.trim().toLowerCase();
-  const password = document.getElementById('newSupervisorPassword').value.trim();
-  if(!email || !password) return alert('يرجى إدخال البريد وكلمة المرور!');
-
-  try {
-    await addDocSafe('users', { email, password, name: email.split('@')[0], role: 'SUPERVISOR', createdAt: new Date().toISOString() }, 'email');
-    alert('تمت إضافة المشرف ✅');
-    document.getElementById('supervisorModal').style.display = 'none';
-    renderSupervisors();
-  } catch(err) { alert(err.message); }
-}
-
-// ===================== Generic Delete =====================
-async function deleteUser(docId, collectionName) {
-  if(!confirm('هل أنت متأكد من الحذف؟')) return;
-  try {
-    await deleteDoc(collectionName, docId);
-    alert('تم الحذف ✅');
-    if(collectionName==='students') renderStudents();
-    if(collectionName==='users') renderSupervisors();
-  } catch(err){ alert('فشل الحذف ❌\n'+err.message); }
-}
-
-// ===================== Tests & Results =====================
-function renderTests() { renderSection('testsList', '<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>'); }
-function renderResults() { renderSection('resultsList', '<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>'); }
-
-// ===================== Announcements =====================
-async function loadAnnouncement() {
-  try {
-    const doc = await db.collection('announcements').doc('current').get();
-    if(doc.exists && doc.data().text?.trim()) {
-      const announcementText = document.getElementById('announcementText');
-      if(announcementText){
-        announcementText.innerText = doc.data().text;
-        restartAnnouncementAnimation();
-        showAnnouncementBar();
-      }
+  async function addDocSafe(collectionName, data, uniqueField = null) {
+    if (uniqueField) {
+      const existing = await getDocsWhere(collectionName, uniqueField, '==', data[uniqueField]);
+      if (existing.length) throw new Error(`هذا ${uniqueField} مستخدم بالفعل!`);
     }
-  } catch(err){ console.error(err); }
-}
+    const docRef = await db.collection(collectionName).add(data);
+    return docRef.id;
+  }
 
-async function saveAnnouncement() {
-  const text = document.getElementById('adminAdText')?.value.trim();
-  if(!text) return alert('يرجى كتابة نص الإعلان!');
-  await db.collection('announcements').doc('current').set({ text });
-  const announcementText = document.getElementById('announcementText');
-  if(announcementText){ announcementText.innerText=text; restartAnnouncementAnimation(); }
-  showAnnouncementBar();
-  alert('تم حفظ الإعلان ✅');
-}
+  async function deleteDoc(collectionName, docId) {
+    await db.collection(collectionName).doc(docId).delete();
+  }
 
-async function deleteAnnouncement() {
-  await db.collection('announcements').doc('current').set({ text: '' });
-  hideAnnouncementBar();
-  alert('تم إيقاف الإعلان ✅');
-}
+  async function updateDocField(collectionName, docId, field, value) {
+    await db.collection(collectionName).doc(docId).update({ [field]: value });
+  }
 
-function showAnnouncementBar(){ document.getElementById('announcementBar')?.style.setProperty('display','flex'); }
-function hideAnnouncementBar(){ document.getElementById('announcementBar')?.style.setProperty('display','none'); }
-function restartAnnouncementAnimation(){
-  const el=document.getElementById('announcementText');
-  if(!el) return;
-  el.style.animation='none';
-  el.offsetHeight;
-  const duration = Math.max(15, el.offsetWidth/50);
-  el.style.animation=`slide-right ${duration}s linear infinite`;
-}
+  // ===================== Admin Sections =====================
+  function hideAllAdminSections() {
+    ['studentsList', 'supervisorsList', 'testsList', 'resultsList'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+  }
 
-// ===================== Dark Mode =====================
-function toggleDarkMode(){
-  const body=document.body;
-  body.classList.toggle('dark-mode');
-  localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
-  document.getElementById('darkModeBtn').textContent=body.classList.contains('dark-mode') ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
-}
-window.addEventListener('DOMContentLoaded',()=>{
-  if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark-mode');
-  document.getElementById('darkModeBtn')?.addEventListener('click',toggleDarkMode);
-  loadAnnouncement();
-});
+  function renderSection(section, htmlContent) {
+    hideAllAdminSections();
+    const container = document.getElementById(section);
+    if (!container) return;
+    container.innerHTML = htmlContent;
+    container.classList.remove('hidden');
+  }
+
+  // ===================== Students =====================
+  async function renderStudents() {
+    renderSection('studentsList', `<p>جاري تحميل الطلاب...</p>`);
+    try {
+      const students = await getDocsWhere('students', 'role', '==', 'STUDENT');
+      const rows = students.map(s => `
+        <tr>
+          <td>${s.email}</td>
+          <td>${s.approved ? '🟢 مفعل' : '🟡 قيد المراجعة'}</td>
+          <td>
+            ${s.approved ? '' : `<button onclick="approveStudent('${s.id}')">موافقة</button>`}
+            <button onclick="rejectStudent('${s.id}')">رفض</button>
+            <button onclick="deleteUser('${s.id}','students')">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+
+      renderSection('studentsList', `
+        <h4>الطلاب</h4>
+        <button onclick="showAddStudentModal()">إضافة طالب</button>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>البريد الإلكتروني</th><th>الحالة</th><th>خيارات</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="3">لا يوجد طلاب حاليا</td></tr>'}</tbody>
+          </table>
+        </div>
+      `);
+    } catch (err) {
+      console.error(err);
+      renderSection('studentsList', `<p>فشل تحميل الطلاب ❌<br>${err.message}</p>`);
+    }
+  }
+
+  async function approveStudent(id) { await updateDocField('students', id, 'approved', true); alert('تمت الموافقة ✅'); renderStudents(); }
+  async function rejectStudent(id) { if(confirm('هل تريد رفض الطالب وحذف طلبه نهائياً؟')) { await deleteDoc('students', id); alert('تم رفض الطالب ❌'); renderStudents(); } }
+
+  function showAddStudentModal() {
+    document.getElementById('newStudentEmail').value = '';
+    document.getElementById('newStudentPassword').value = '';
+    document.getElementById('studentModal').style.display = 'flex';
+  }
+
+  async function addStudent() {
+    const email = document.getElementById('newStudentEmail').value.trim().toLowerCase();
+    const password = document.getElementById('newStudentPassword').value.trim();
+    if(!email || !password) return alert('يرجى إدخال البريد وكلمة المرور!');
+
+    try {
+      await addDocSafe('students', {
+        email, password, name: email.split('@')[0], role: 'STUDENT', approved: true, createdAt: new Date().toISOString()
+      }, 'email');
+
+      alert('تمت إضافة الطالب ✅');
+      document.getElementById('studentModal').style.display = 'none';
+      renderStudents();
+    } catch(err) { alert(err.message); }
+  }
+
+  // ===================== Supervisors =====================
+  async function renderSupervisors() {
+    renderSection('supervisorsList', `<p>جاري تحميل المشرفين...</p>`);
+    try {
+      const supervisors = await getDocsWhere('users', 'role', '==', 'SUPERVISOR');
+      const rows = supervisors.map(s => `
+        <tr>
+          <td>${s.email}</td>
+          <td>
+            <button onclick="deleteUser('${s.id}','users')">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+
+      renderSection('supervisorsList', `
+        <h4>المشرفون</h4>
+        <button onclick="showAddSupervisorModal()">إضافة مشرف</button>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>البريد الإلكتروني</th><th>خيارات</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>'}</tbody>
+          </table>
+        </div>
+      `);
+    } catch(err) { renderSection('supervisorsList', `<p>فشل تحميل المشرفين ❌<br>${err.message}</p>`); }
+  }
+
+  function showAddSupervisorModal() {
+    document.getElementById('newSupervisorEmail').value = '';
+    document.getElementById('newSupervisorPassword').value = '';
+    document.getElementById('supervisorModal').style.display = 'flex';
+  }
+
+  async function addSupervisor() {
+    const email = document.getElementById('newSupervisorEmail').value.trim().toLowerCase();
+    const password = document.getElementById('newSupervisorPassword').value.trim();
+    if(!email || !password) return alert('يرجى إدخال البريد وكلمة المرور!');
+
+    try {
+      await addDocSafe('users', { email, password, name: email.split('@')[0], role: 'SUPERVISOR', createdAt: new Date().toISOString() }, 'email');
+      alert('تمت إضافة المشرف ✅');
+      document.getElementById('supervisorModal').style.display = 'none';
+      renderSupervisors();
+    } catch(err) { alert(err.message); }
+  }
+
+  // ===================== Generic Delete =====================
+  async function deleteUser(docId, collectionName) {
+    if(!confirm('هل أنت متأكد من الحذف؟')) return;
+    try {
+      await deleteDoc(collectionName, docId);
+      alert('تم الحذف ✅');
+      if(collectionName==='students') renderStudents();
+      if(collectionName==='users') renderSupervisors();
+    } catch(err){ alert('فشل الحذف ❌\n'+err.message); }
+  }
+
+  // ===================== Tests & Results =====================
+  function renderTests() { renderSection('testsList', '<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>'); }
+  function renderResults() { renderSection('resultsList', '<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>'); }
+
+  // ===================== Announcements =====================
+  async function loadAnnouncement() {
+    try {
+      const doc = await db.collection('announcements').doc('current').get();
+      if(doc.exists && doc.data().text?.trim()) {
+        const announcementText = document.getElementById('announcementText');
+        if(announcementText){
+          announcementText.innerText = doc.data().text;
+          restartAnnouncementAnimation();
+          showAnnouncementBar();
+        }
+      }
+    } catch(err){ console.error(err); }
+  }
+
+  async function saveAnnouncement() {
+    const text = document.getElementById('adminAdText')?.value.trim();
+    if(!text) return alert('يرجى كتابة نص الإعلان!');
+    await db.collection('announcements').doc('current').set({ text });
+    const announcementText = document.getElementById('announcementText');
+    if(announcementText){ announcementText.innerText=text; restartAnnouncementAnimation(); }
+    showAnnouncementBar();
+    alert('تم حفظ الإعلان ✅');
+  }
+
+  async function deleteAnnouncement() {
+    await db.collection('announcements').doc('current').set({ text: '' });
+    hideAnnouncementBar();
+    alert('تم إيقاف الإعلان ✅');
+  }
+
+  function showAnnouncementBar(){ document.getElementById('announcementBar')?.style.setProperty('display','flex'); }
+  function hideAnnouncementBar(){ document.getElementById('announcementBar')?.style.setProperty('display','none'); }
+  function restartAnnouncementAnimation(){
+    const el=document.getElementById('announcementText');
+    if(!el) return;
+    el.style.animation='none';
+    el.offsetHeight;
+    const duration = Math.max(15, el.offsetWidth/50);
+    el.style.animation=`slide-right ${duration}s linear infinite`;
+  }
+
+  // ===================== Dark Mode =====================
+  function toggleDarkMode(){
+    const body=document.body;
+    body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+    document.getElementById('darkModeBtn').textContent=body.classList.contains('dark-mode') ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
+  }
+  window.addEventListener('DOMContentLoaded',()=>{
+    if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark-mode');
+    document.getElementById('darkModeBtn')?.addEventListener('click',toggleDarkMode);
+    loadAnnouncement();
+  });
 </script>
 </body>
 </html>
+
 
