@@ -1718,418 +1718,315 @@
                     // ===================== متغيرات عامة =====================
                     let deferredPrompt = null;
                     let animationTimeout = null;
+// ===================== تهيئة Firebase =====================
+if (typeof firebase !== "undefined") {
+    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+        firebase.initializeApp(firebaseConfig);
+    }
+    if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
+        const fbDb = firebase.firestore();
+        window.firestoreTools = { db: fbDb, collection: fbDb.collection.bind(fbDb) };
+    }
+}
+const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
 
-                    // ===================== تهيئة Firebase =====================
-                    if (typeof firebase !== "undefined") {
-                        if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
-                            firebase.initializeApp(firebaseConfig);
-                        }
-                        if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
-                            const db = firebase.firestore();
-                            window.firestoreTools = { db, collection: db.collection.bind(db) };
-                        }
-                    }
-                    const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
+// ===================== دوال شريط الإعلان =====================
+let animationTimeout = null;
 
-                    // 🔹 دوال شريط الإعلان
-                    function showAnnouncementBar() {
-                        const bar = document.getElementById("announcementBar");
-                        if (bar) bar.style.display = "flex";
-                    }
+function showAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "flex";
+}
 
-                    function hideAnnouncementBar() {
-                        const bar = document.getElementById("announcementBar");
-                        if (bar) bar.style.display = "none";
-                        if (animationTimeout) {
-                            clearTimeout(animationTimeout);
-                            animationTimeout = null;
-                        }
-                    }
+function hideAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
+    }
+}
 
-                    function restartAnimation() {
-                        const announcementText = document.getElementById("announcementText");
-                        if (!announcementText) return;
+function restartAnimation() {
+    const announcementText = document.getElementById("announcementText");
+    if (!announcementText) return;
 
-                        announcementText.style.animation = "none";
-                        announcementText.style.left = "-100%";
-                        announcementText.offsetHeight;
+    announcementText.style.animation = "none";
+    announcementText.style.left = "-100%";
+    announcementText.offsetHeight;
 
-                        const textLength = announcementText.offsetWidth;
-                        const duration = Math.max(15, textLength / 50);
-                        announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-                    }
+    const textLength = announcementText.offsetWidth;
+    const duration = Math.max(15, textLength / 50);
+    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+}
 
-                    async function loadAnnouncement() {
-                        try {
-                            if (!window.firestoreTools) return;
-                            const doc = await window.firestoreTools.collection("announcements").doc("current").get();
-                            if (doc.exists) {
-                                const text = doc.data().text || "";
-                                if (!text) return;
-                                const announcementText = document.getElementById("announcementText");
-                                if (!announcementText) return;
-                                announcementText.innerText = text;
-                                restartAnimation();
-                                showAnnouncementBar();
-                            }
-                        } catch (err) {
-                            console.error("خطأ أثناء تحميل الإعلان:", err);
-                        }
-                    }
+async function loadAnnouncement() {
+    try {
+        if (!window.firestoreTools) return;
+        const doc = await window.firestoreTools.collection("announcements").doc("current").get();
+        if (doc.exists) {
+            const text = doc.data().text || "";
+            if (!text) return;
+            const announcementText = document.getElementById("announcementText");
+            if (!announcementText) return;
+            announcementText.innerText = text;
+            restartAnimation();
+            showAnnouncementBar();
+        }
+    } catch (err) {
+        console.error("خطأ أثناء تحميل الإعلان:", err);
+    }
+}
 
-                    // 🔹 دوال الأدمن
-                    async function saveAnnouncement() {
-                        const input = document.getElementById("adminAdText");
-                        if (!input) return;
-                        const text = input.value.trim();
-                        if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
+// ===================== دوال الأدمن =====================
+async function saveAnnouncement() {
+    const input = document.getElementById("adminAdText");
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
 
-                        try {
-                            await window.firestoreTools.collection("announcements").doc("current").set({ text });
-                            const announcementText = document.getElementById("announcementText");
-                            if (announcementText) { announcementText.innerText = text; restartAnimation(); }
-                            showAnnouncementBar();
-                            alert("تم حفظ الإعلان ✅");
-                        } catch (err) {
-                            console.error(err);
-                            alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
-                        }
-                    }
+    try {
+        await window.firestoreTools.collection("announcements").doc("current").set({ text });
+        const announcementText = document.getElementById("announcementText");
+        if (announcementText) { announcementText.innerText = text; restartAnimation(); }
+        showAnnouncementBar();
+        alert("تم حفظ الإعلان ✅");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+    }
+}
 
-                    async function deleteAnnouncement() {
-                        try {
-                            await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
-                            hideAnnouncementBar();
-                            alert("تم إيقاف الإعلان ✅");
-                        } catch (err) {
-                            console.error(err);
-                            alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
-                        }
-                    }
+async function deleteAnnouncement() {
+    try {
+        if (!window.firestoreTools || !window.firestoreTools.collection) {
+            alert("Firestore لم يتم تحميله بعد ❌");
+            return;
+        }
+        await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+        if (typeof hideAnnouncementBar === "function") hideAnnouncementBar();
+        alert("تم إيقاف الإعلان ✅");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
+    }
+}
 
-                    // ===================== وظائف الطلاب والمشرفين =====================
-                    async function deleteUser(docId, collectionName) {
-                        if (!confirm("هل أنت متأكد من الحذف؟")) return;
-                        try {
-                            await db.collection(collectionName).doc(docId).delete();
-                            alert("تم الحذف بنجاح ✅");
-                            if (collectionName === "students") renderStudents();
-                            if (collectionName === "users") renderSupervisors();
-                        } catch (err) { console.error(err); alert("فشل الحذف ❌\n" + err.message); }
-                    }
+// ===================== وظائف الطلاب والمشرفين =====================
+async function deleteUser(docId, collectionName) {
+    if (!confirm("هل أنت متأكد من الحذف؟")) return;
+    try {
+        await db.collection(collectionName).doc(docId).delete();
+        alert("تم الحذف بنجاح ✅");
+        if (collectionName === "students") renderStudents();
+        if (collectionName === "users") renderSupervisors();
+    } catch (err) { console.error(err); alert("فشل الحذف ❌\n" + err.message); }
+}
 
-                    async function setApprove(studentDocId, approvedValue) {
-                        try {
-                            const ref = db.collection("students").doc(studentDocId);
-                            const snap = await ref.get();
-                            if (!snap.exists) return;
-                            if (snap.data().approved === true) { alert("هذا الطالب مفعل بالفعل ✅"); return; }
-                            await ref.update({ approved: approvedValue });
-                            alert("تمت الموافقة ✅");
-                            renderStudents();
-                        } catch (err) { console.error(err); alert("فشل التحديث ❌"); }
-                    }
-                    async function rejectStudent(studentDocId) {
-                        if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
-                        try {
-                            await db.collection("students").doc(studentDocId).delete();
-                            alert("تم رفض الطلب وحذفه ❌");
-                            renderStudents();
-                        } catch (err) { console.error(err); alert("فشل الرفض ❌\n" + err.message); }
-                    }
-                    // ===================== إدارة النماذج والتنقل =====================
+async function setApprove(studentDocId, approvedValue) {
+    try {
+        const ref = db.collection("students").doc(studentDocId);
+        const snap = await ref.get();
+        if (!snap.exists) return;
+        if (snap.data().approved === true) { alert("هذا الطالب مفعل بالفعل ✅"); return; }
+        await ref.update({ approved: approvedValue });
+        alert("تمت الموافقة ✅");
+        renderStudents();
+    } catch (err) { console.error(err); alert("فشل التحديث ❌"); }
+}
 
-                    // إغلاق أي نافذة/نموذج
-                    function closeModal(id) {
-                        const el = document.getElementById(id);
-                        if (el) el.style.display = "none";
-                    }
+async function rejectStudent(studentDocId) {
+    if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
+    try {
+        await db.collection("students").doc(studentDocId).delete();
+        alert("تم رفض الطلب وحذفه ❌");
+        renderStudents();
+    } catch (err) { console.error(err); alert("فشل الرفض ❌\n" + err.message); }
+}
 
-                    // عرض قائمة الاختبارات
-                    function renderTests() {
-                        const container = document.getElementById("testsList");
-                        if (!container) return;
-                        container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
-                        container.classList.remove("hidden");
+// ===================== إدارة النماذج والتنقل =====================
+function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+}
 
-                        ["studentsList", "supervisorsList", "resultsList"].forEach(id => {
-                            const el = document.getElementById(id);
-                            if (el) el.classList.add("hidden");
-                        });
-                    }
+function renderTests() {
+    const container = document.getElementById("testsList");
+    if (!container) return;
+    container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
+    container.classList.remove("hidden");
+    ["studentsList", "supervisorsList", "resultsList"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
+}
 
-                    // عرض قائمة النتائج الأسبوعية
-                    function renderResults() {
-                        const container = document.getElementById("resultsList");
-                        if (!container) return;
-                        container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
-                        container.classList.remove("hidden");
+function renderResults() {
+    const container = document.getElementById("resultsList");
+    if (!container) return;
+    container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
+    container.classList.remove("hidden");
+    ["studentsList", "supervisorsList", "testsList"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
+}
 
-                        ["studentsList", "supervisorsList", "testsList"].forEach(id => {
-                            const el = document.getElementById(id);
-                            if (el) el.classList.add("hidden");
-                        });
-                    }
+function resetNavigation() {
+    ["gradePage", "subjectPage", "unitPage", "lessonPage"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
+    const lessonPath = document.getElementById("lessonPath");
+    if (lessonPath) lessonPath.style.display = "none";
+}
 
-                    // إعادة تعيين التنقل (إخفاء كل الصفحات عدا الرئيسية)
-                    function resetNavigation() {
-                        ["gradePage", "subjectPage", "unitPage", "lessonPage"].forEach(id => {
-                            const el = document.getElementById(id);
-                            if (el) el.classList.add("hidden");
-                        });
+function stopVideo() {
+    const video = document.getElementById("lessonPlayer");
+    if (video) {
+        video.pause();
+        video.currentTime = 0;
+        video.src = "";
+    }
+}
 
-                        const lessonPath = document.getElementById("lessonPath");
-                        if (lessonPath) lessonPath.style.display = "none";
-                    }
+function updateLessonNav(showBackUnit = true) {
+    const btnBackUnit = document.getElementById("btnBackUnit");
+    if (btnBackUnit) btnBackUnit.style.display = showBackUnit ? "inline-block" : "none";
+    const btnHome = document.getElementById("btnHome");
+    if (btnHome) btnHome.style.display = "inline-block";
+}
 
-                    // 🔴 إيقاف الفيديو عند مغادرة صفحة الدرس
-                    function stopVideo() {
-                        const video = document.getElementById("lessonPlayer");
-                        if (video) {
-                            video.pause();
-                            video.currentTime = 0;
-                            video.src = "";
-                        }
-                    }
+function updateGlobalNav(show) {
+    const nav = document.getElementById("globalNav");
+    if (!nav) return;
+    if (show) nav.classList.remove("hidden");
+    else nav.classList.add("hidden");
+}
 
-                    // تحديث أزرار التنقل في صفحة الدرس
-                    function updateLessonNav(showBackUnit = true) {
-                        const btnBackUnit = document.getElementById("btnBackUnit");
-                        if (btnBackUnit) btnBackUnit.style.display = showBackUnit ? "inline-block" : "none";
+function toggleLessons() {
+    const list = document.getElementById("lessonList");
+    if (list) list.style.display = list.style.display === "none" ? "block" : "none";
+}
 
-                        const btnHome = document.getElementById("btnHome");
-                        if (btnHome) btnHome.style.display = "inline-block";
-                    }
+function toggleDarkMode() {
+    const body = document.body;
+    const btn = document.getElementById('darkModeBtn');
+    body.classList.toggle("dark-mode");
+    if (btn) btn.textContent = body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+    localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
+}
 
-                    // إظهار أو إخفاء التنقل العام
-                    function updateGlobalNav(show) {
-                        const nav = document.getElementById("globalNav");
-                        if (!nav) return;
-                        if (show) nav.classList.remove("hidden");
-                        else nav.classList.add("hidden");
-                    }
+// ===================== DOMContentLoaded =====================
+window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById('darkModeBtn');
+    if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
+    if (btn) btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
 
-                    // تبديل قائمة الدروس
-                    function toggleLessons() {
-                        const list = document.getElementById("lessonList");
-                        if (list) list.style.display = list.style.display === "none" ? "block" : "none";
-                    }
-                    // 🔹 الوضع الليلي
-                    function toggleDarkMode() {
-                        const body = document.body;
-                        const btn = document.getElementById('darkModeBtn');
-                        body.classList.toggle("dark-mode");
-                        if (btn) btn.textContent = body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
-                        localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
-                    }
+    loadAnnouncement();
 
-                    window.addEventListener("DOMContentLoaded", () => {
-                        const btn = document.getElementById('darkModeBtn');
-                        if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
-                        if (btn) btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+    document.getElementById("saveAdBtn")?.addEventListener("click", saveAnnouncement);
+    document.getElementById("stopAdBtn")?.addEventListener("click", deleteAnnouncement);
 
-                        loadAnnouncement();
-
-                        document.getElementById("saveAdBtn")?.addEventListener("click", saveAnnouncement);
-                        document.getElementById("stopAdBtn")?.addEventListener("click", deleteAnnouncement);
-                        document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
-                            e.preventDefault();
-                            const email = e.target.email.value.trim();
-                            const password = e.target.password.value.trim();
-                            try {
-                                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-                                const user = userCredential.user;
-                                const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
-                                const role = userDoc.exists ? userDoc.data().role : "STUDENT";
-                                localStorage.setItem("loggedEmail", email);
-                                localStorage.setItem("userRole", role);
-                                window.currentUser = { email, role };
-                                window.location.href = role === "ADMIN" ? "admin.html" : "index.html";
-                            } catch (err) { alert("خطأ في تسجيل الدخول ❌\n" + err.message); }
-                        });
-                     });
-                </script>
-
-                async function deleteAnnouncement() {
-                try {
-                if (!window.firestoreTools || !window.firestoreTools.collection) {
-                alert("Firestore لم يتم تحميله بعد ❌");
-                return;
-                }
-
-                await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
-
-                if (typeof hideAnnouncementBar === "function") hideAnnouncementBar();
-                alert("تم إيقاف الإعلان ✅");
-                } catch (err) {
-                console.error(err);
-                alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
-                }
-                }
-
-                // 🔹 ربط الأزرار بالأحداث بعد التأكد من وجودها
-                const saveAdBtn = document.getElementById("saveAdBtn");
-                if (saveAdBtn) saveAdBtn.addEventListener("click", saveAnnouncement);
-
-                const stopAdBtn = document.getElementById("stopAdBtn");
-                if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
-
-                // 🔹 auth.js
-                const loginForm = document.getElementById("loginForm");
-                if (loginForm) {
-                loginForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const email = e.target.email.value.trim();
-                const password = e.target.password.value.trim();
-
-                try {
-                // تسجيل الدخول باستخدام Firebase Auth
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = e.target.email.value.trim();
+            const password = e.target.password.value.trim();
+            try {
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
-
-                // الحصول على الدور من Firestore
                 const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
                 const role = userDoc.exists ? userDoc.data().role : "STUDENT";
-
-                // تخزين البيانات
                 localStorage.setItem("loggedEmail", email);
                 localStorage.setItem("userRole", role);
-
                 window.currentUser = { email, role };
+                window.location.href = role === "ADMIN" ? "admin.html" : "index.html";
+            } catch (err) { alert("خطأ في تسجيل الدخول ❌\n" + err.message); }
+        });
+    }
 
-                // التحويل حسب الدور
-                if (role === "ADMIN") window.location.href = "admin.html";
-                else window.location.href = "index.html";
+    // PWA Install Button
+    const installBtn = document.getElementById("installBtn");
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) installBtn.hidden = false;
+    });
+    if (installBtn) {
+        installBtn.addEventListener("click", async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            installBtn.hidden = true;
+            deferredPrompt = null;
+        });
+    }
+    window.addEventListener("appinstalled", () => {
+        if (installBtn) installBtn.hidden = true;
+        console.log("تم تثبيت التطبيق بنجاح ✅");
+    });
+});
 
-                } catch (err) {
-                alert("خطأ في تسجيل الدخول ❌\n" + err.message);
-                }
-                });
-                }
-
-                });
-                </script>
-
-                // ======= عرض الإعلانات =======
-                const adsContainer = document.getElementById("ads-container");
-
-                if (adsContainer && window.firestoreTools && firestoreTools.collection) {
-
-                firestoreTools.collection("ads")
-                .orderBy("date", "desc")
-                .onSnapshot(snapshot => {
-
-                adsContainer.innerHTML = "";
-
-                snapshot.forEach(doc => {
+// ===================== عرض الإعلانات =====================
+const adsContainer = document.getElementById("ads-container");
+if (adsContainer && window.firestoreTools?.collection) {
+    window.firestoreTools.collection("ads")
+        .orderBy("date", "desc")
+        .onSnapshot(snapshot => {
+            adsContainer.innerHTML = "";
+            snapshot.forEach(doc => {
                 const ad = doc.data();
                 const adElement = document.createElement("div");
-
                 adElement.className = "ad";
                 adElement.innerHTML = `
-                <h3>${ad.title}</h3>
-                <p>${ad.content}</p>
-                <small>${ad.date?.toDate ? ad.date.toDate().toLocaleString() : ""}</small>
+                    <h3>${ad.title}</h3>
+                    <p>${ad.content}</p>
+                    <small>${ad.date?.toDate ? ad.date.toDate().toLocaleString() : ""}</small>
                 `;
-
                 adsContainer.appendChild(adElement);
-                });
+            });
+        });
+}
 
-                });
-                }
+// ===================== شريط الإعلان المتحرك =====================
+if (window.firestoreTools?.db) {
+    const db = window.firestoreTools.db;
+    db.collection("announcements").doc("current").onSnapshot(doc => {
+        if (doc.exists && doc.data()?.text?.trim()) {
+            startAnnouncementAnimation(doc.data().text, 12000);
+        } else {
+            hideAnnouncementBar();
+        }
+    });
+}
 
-                // ======= شريط الإعلان المتحرك =======
-                if (window.firestoreTools && window.firestoreTools.db) {
+function startAnnouncementAnimation(text, duration = 12000) {
+    const bar = document.getElementById("announcementBar");
+    const textBox = document.getElementById("announcementText");
+    if (!bar || !textBox || !text?.trim()) { hideAnnouncementBar(); return; }
 
-                const db = window.firestoreTools.db;
+    textBox.innerText = "📢 " + text + " 📢";
+    bar.style.display = "flex";
 
-                db.collection("announcements")
-                .doc("current")
-                .onSnapshot(doc => {
+    const screenWidth = bar.offsetWidth;
+    const textWidth = textBox.offsetWidth;
 
-                if (doc.exists && doc.data()?.text?.trim()) {
-                startAnnouncementAnimation(doc.data().text, 12000);
-                } else {
-                hideAnnouncementBar();
-                }
+    function move() {
+        textBox.style.transition = "none";
+        textBox.style.left = -textWidth + "px";
+        setTimeout(() => {
+            textBox.style.transition = `left ${duration}ms linear`;
+            textBox.style.left = screenWidth + "px";
+        }, 50);
+        animationTimeout = setTimeout(move, duration + 2000);
+    }
 
-                });
-                }
-
-                // ======= تثبيت التطبيق PWA =======
-                document.addEventListener("DOMContentLoaded", () => {
-                const installBtn = document.getElementById("installBtn");
-                let deferredPrompt = null; // متغير لتخزين حدث beforeinstallprompt
-
-                // الاستماع لحدث قبل تثبيت التطبيق
-                window.addEventListener("beforeinstallprompt", (e) => {
-                e.preventDefault(); // منع ظهور نافذة التثبيت التلقائي
-                deferredPrompt = e;  // تخزين الحدث لاستخدامه لاحقًا
-                if (installBtn) installBtn.hidden = false; // إظهار زر التثبيت
-                });
-
-                // التعامل مع زر التثبيت
-                if (installBtn) {
-                installBtn.addEventListener("click", async () => {
-                if (!deferredPrompt) return; // إذا المتصفح لا يدعم PWA لا نفعل شيء
-
-                // عرض مربع تثبيت التطبيق الرسمي
-                deferredPrompt.prompt();
-
-                // انتظار نتيجة اختيار المستخدم
-                await deferredPrompt.userChoice;
-
-                // إخفاء الزر بعد التثبيت أو الإلغاء
-                installBtn.hidden = true;
-
-                deferredPrompt = null; // إعادة تعيين الحدث
-                });
-                }
-
-                // الاستماع لحدث تثبيت التطبيق بعد اكتمال التثبيت
-                window.addEventListener("appinstalled", () => {
-                if (installBtn) installBtn.hidden = true; // إخفاء الزر بعد التثبيت
-                console.log("تم تثبيت التطبيق بنجاح ✅");
-                });
-                });
-                </script>
-
-
-
-                <!-- ======= وظائف الشريط المتحرك ======= -->
-                <script>
-                    function startAnnouncementAnimation(text, duration = 12000) {
-                        const bar = document.getElementById("announcementBar");
-                        const textBox = document.getElementById("announcementText");
-
-                        if (!bar || !textBox || !text?.trim()) {
-                            hideAnnouncementBar();
-                            return;
-                        }
-
-                        textBox.innerText = "📢 " + text + " 📢";
-                        bar.style.display = "flex";
-
-                        const screenWidth = bar.offsetWidth;
-                        const textWidth = textBox.offsetWidth;
-
-                        function move() {
-                            textBox.style.transition = "none";
-                            textBox.style.left = -textWidth + "px";
-
-                            setTimeout(() => {
-                                textBox.style.transition = `left ${duration}ms linear`;
-                                textBox.style.left = screenWidth + "px";
-                            }, 50);
-
-                            animationTimeout = setTimeout(move, duration + 2000);
-                        }
-
-                        if (animationTimeout) clearTimeout(animationTimeout);
-                        move();
-                    }
-
+    if (animationTimeout) clearTimeout(animationTimeout);
+    move();
+}
                     function hideAnnouncementBar() {
                         const bar = document.getElementById("announcementBar");
                         if (bar) bar.style.display = "none";
@@ -2227,27 +2124,27 @@
                 </style>
 
                 <script>
-                    // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
-                    if (typeof firebase !== "undefined") {
-                        if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
-                            firebase.initializeApp(firebaseConfig);
-                        }
-                    }
+               
+  // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
+  if (typeof firebase !== "undefined") {
+    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+      firebase.initializeApp(firebaseConfig);
+    }
+  }
 
-                    // حماية في حالة عدم وجود firestoreTools
-                    if (typeof window.firestoreTools === "undefined") {
-                        if (typeof firebase !== "undefined" && firebase.firestore) {
-                            const db = firebase.firestore();
-                            window.firestoreTools = {
-                                db: db,
-                                collection: db.collection.bind(db)
-                            };
-                        }
-                    }
+  // 🔹 حماية في حالة عدم وجود firestoreTools
+  if (typeof window.firestoreTools === "undefined") {
+    if (typeof firebase !== "undefined" && firebase.firestore) {
+      const fbDb = firebase.firestore();
+      window.firestoreTools = {
+        db: fbDb,
+        collection: fbDb.collection.bind(fbDb)
+      };
+    }
+  }
 
-                    const db = (window.firestoreTools && window.firestoreTools.db)
-                        ? window.firestoreTools.db
-                        : (typeof firebase !== "undefined" ? firebase.firestore() : null);
+  // ✅ استخدام متغير db عالمي واحد بدون إعادة تعريفه
+  window.db = window.db || window.firestoreTools?.db;
 
                     // دوال مساعدة لإظهار وإخفاء شريط الإعلان
                     function showAnnouncementBar() {
@@ -2389,5 +2286,6 @@
                 </script>
 </body>
 </html>
+
 
 
