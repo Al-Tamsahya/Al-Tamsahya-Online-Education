@@ -62,7 +62,6 @@ namespace EducationalPlatform.API.Controllers
             if (!PasswordHelper.VerifyPassword(model.Password, user.PasswordHash))
                 return Unauthorized("بيانات الدخول غير صحيحة");
 
-
             // 3️⃣ Claims
             var claims = new[]
             {
@@ -90,3 +89,4 @@ namespace EducationalPlatform.API.Controllers
         }
     }
 }
+
