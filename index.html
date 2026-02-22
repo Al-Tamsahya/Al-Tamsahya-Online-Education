@@ -2249,7 +2249,7 @@ body { padding-top: 45px; }
     window.db = window.firestoreTools?.db;
   }
   // ✅ استخدم db العالمي فقط، لا تعيد تعريفه
-  var db = window.db;
+const db = window.db; // تم تعريفه مرة واحدة فقط
 
   // ===================== Helpers =====================
   async function getDocsWhere(collectionName, field, op, value) {
@@ -2467,6 +2467,7 @@ body { padding-top: 45px; }
 </script>
 </body>
 </html>
+
 
 
 
