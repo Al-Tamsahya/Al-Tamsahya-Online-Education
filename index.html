@@ -156,24 +156,19 @@
                 </p>
             </section>
 
-            <!-- صندوق تسجيل الدخول -->
-             <div id="loginPage" class="login-container">
+           <form class="login-box" id="loginPage">
+    <h2>تسجيل الدخول</h2>
 
-            <h1>AI-Tamsahya-Online-Education</h1>
+    <input type="email" name="email" placeholder="البريد الإلكتروني" required>
 
-            <input id="email" type="text" placeholder="البريد الإلكتروني">
-            <input id="password" type="password" placeholder="كلمة المرور">
+    <input type="password" name="password" placeholder="كلمة المرور" required>
 
-            <!-- الأزرار داخل صفحة الدخول -->
-            <div class="auth-buttons">
-                <button class="login-btn" onclick="login()">
-                    دخول
-                </button>
+    <button type="submit" class="login-btn">تسجيل الدخول</button>
 
-                <button class="register-btn secondary" onclick="registerStudentPage()">
-                    تسجيل حساب جديد
-                </button>
-            </div>
+    <p style="margin-top:15px;">
+        <a href="#" onclick="registerStudentPage()">إنشاء حساب جديد</a>
+    </p>
+</form>
 
 
             <script>
@@ -2312,6 +2307,7 @@ if (!userQuery.empty) {
 </script>
 </body>
 </html>
+
 
 
 
