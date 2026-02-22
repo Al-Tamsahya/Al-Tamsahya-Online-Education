@@ -1689,6 +1689,7 @@ async function login() {
                 </div>-->
                 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <!-- Firebase init -->
@@ -2298,7 +2299,7 @@ if (!userQuery.empty) {
             if (role === "ADMIN") window.location.href = "admin.html";
             else window.location.href = "index.html";
 
-        } catch (err) {
+       catch (err) {
             console.error("Login Error:", err);
             alert("خطأ في تسجيل الدخول ❌\n" + err.message);
         }
@@ -2307,6 +2308,7 @@ if (!userQuery.empty) {
 </script>
 </body>
 </html>
+
 
 
 
