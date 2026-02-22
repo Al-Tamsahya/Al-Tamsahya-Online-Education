@@ -167,7 +167,7 @@
     <button type="submit" class="login-btn">تسجيل الدخول</button>
 
     <p style="margin-top:15px;">
-        <a href="register.html">إنشاء حساب جديد</a>
+        <a href="#" onclick="registerStudentPage()">إنشاء حساب جديد</a>
     </p>
 </form>
 
@@ -2226,29 +2226,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (loginForm) {
     loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault(); // منع إعادة تحميل الصفحة
+      e.preventDefault();
 
       const email = loginForm.querySelector("input[type='email']").value.trim();
       const password = loginForm.querySelector("input[type='password']").value.trim();
 
+      // تسجيل دخول الأدمن
       if (email === "admin@gmail.com" && password === "123456") {
-        const dashboardUrl = "https://al-tamsahya.github.io/Al-Tamsahya-Online-Education/admin.html";
 
-        try {
-          // التحقق من وجود الملف قبل التحويل
-          const response = await fetch(dashboardUrl, { method: "HEAD" });
-          if (response.ok) {
-            window.location.href = dashboardUrl; // الملف موجود
-          } else {
-            alert("صفحة لوحة التحكم غير موجودة على الخادم ❌");
-          }
-        } catch (err) {
-          console.error(err);
-          alert("حدث خطأ أثناء محاولة الوصول إلى لوحة التحكم ❌");
-        }
+        // ✅ تخزين بيانات الدخول
+        localStorage.setItem("loggedEmail", email);
 
-      } else {
-        alert("البريد أو كلمة المرور غير صحيحة");
+        window.location.href = "admin.html";
+        return;
+      }
+
+      // تسجيل دخول مستخدم عادي من Firestore
+      try {
+        const snapshot = await window.firestoreTools
+  .collection("students")
+  .where("email", "==", email)
+  .where("password", "==", password)
+  .get();
+
+if (!snapshot.empty) {
+  localStorage.setItem("loggedEmail", email);
+  alert("تم تسجيل الدخول بنجاح ✅");
+  location.reload();
+} else {
+  alert("البريد أو كلمة المرور غير صحيحة ❌");
+}
+
+      } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء تسجيل الدخول ❌");
       }
     });
   }
@@ -2256,6 +2267,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
