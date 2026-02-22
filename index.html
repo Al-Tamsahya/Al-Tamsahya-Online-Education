@@ -2234,21 +2234,21 @@ body { padding-top: 45px; }
   }
 
   // حماية في حالة عدم وجود firestoreTools
-  if (typeof window.firestoreTools === "undefined") {
+ if (typeof window.firestoreTools === "undefined") {
     if (typeof firebase !== "undefined" && firebase.firestore) {
-      const db = firebase.firestore();
+      const firestoreInstance = firebase.firestore();
+
       window.firestoreTools = {
-        db: db,
-        collection: db.collection.bind(db)
+        db: firestoreInstance,
+        collection: firestoreInstance.collection.bind(firestoreInstance)
       };
     }
   }
 
-  const db = (window.firestoreTools && window.firestoreTools.db) 
-    ? window.firestoreTools.db 
-    : (typeof firebase !== "undefined" ? firebase.firestore() : null);
+  // 🔹 تعريف db مرة واحدة فقط (بدون تعارض)
+  const db = window.firestoreTools?.db || null;
 
-  // دوال مساعدة لإظهار وإخفاء شريط الإعلان
+  // 🔹 دوال مساعدة لإظهار وإخفاء شريط الإعلان
   function showAnnouncementBar() {
     const bar = document.getElementById("announcementBar");
     if (bar) bar.style.display = "flex";
@@ -2354,6 +2354,7 @@ body { padding-top: 45px; }
   const stopAdBtn = document.getElementById("stopAdBtn");
   if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
 </script>
+        
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -2390,6 +2391,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
 
 
 
