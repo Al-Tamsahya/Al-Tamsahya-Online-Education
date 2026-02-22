@@ -1824,12 +1824,12 @@ if ('serviceWorker' in navigator) {
   // 🔹 تهيئة المستخدم والمتغيرات المهمة لمرة واحدة
   const adminEmail = "admin@gmail.com"; 
   const loggedEmail = localStorage.getItem("loggedEmail") || "";
+const userRole = localStorage.getItem("userRole") || "STUDENT"; // افتراضياً طالب
 
-  // إنشاء كائن المستخدم الحالي إذا لم يكن موجود
-  window.currentUser = window.currentUser || { 
-    email: loggedEmail, 
-    role: loggedEmail === adminEmail ? "ADMIN" : "STUDENT" 
-  };
+window.currentUser = {
+  email: loggedEmail,
+  role: userRole
+};
 
   // متغير لتثبيت التطبيق PWA
   let deferredPrompt = null;
@@ -1842,48 +1842,43 @@ if ('serviceWorker' in navigator) {
 document.addEventListener("DOMContentLoaded", () => {
 
   // ======= لوحة الأدمن =======
-  if (window.currentUser && window.currentUser.role === "ADMIN") {
+ if (window.currentUser && window.currentUser.role === "ADMIN") {
+  const adminPanel = document.getElementById("admin-panel");
+  if (adminPanel) adminPanel.style.display = "block";
 
-    const adminPanel = document.getElementById("admin-panel");
-    if (adminPanel) adminPanel.style.display = "block";
+  const adminAdBox = document.getElementById("adminAdBox");
+  if (adminAdBox) adminAdBox.style.display = "block";
 
-    const titleInput = document.getElementById("ad-title");
-    const contentInput = document.getElementById("ad-content");
-    const addBtn = document.getElementById("add-ad-btn");
+  const saveAdBtn = document.getElementById("saveAdBtn");
+  const stopAdBtn = document.getElementById("stopAdBtn");
 
-    if (addBtn && titleInput && contentInput && window.firestoreTools) {
-      addBtn.addEventListener("click", async () => {
+  if (saveAdBtn) saveAdBtn.addEventListener("click", async () => {
+    const input = document.getElementById("adminAdText");
+    if (!input) return;
 
-        const title = titleInput.value.trim();
-        const content = contentInput.value.trim();
+    const text = input.value.trim();
+    if (!text) { alert("اكتب نص الإعلان أولاً!"); return; }
 
-        if (!title || !content) {
-          alert("الرجاء ملء العنوان والمحتوى!");
-          return;
-        }
-
-        try {
-          await firestoreTools.addDoc(
-            firestoreTools.collection("ads"),
-            {
-              title: title,
-              content: content,
-              date: new Date()
-            }
-          );
-
-          titleInput.value = "";
-          contentInput.value = "";
-          alert("تم إضافة الإعلان بنجاح ✅");
-
-        } catch (err) {
-          console.error(err);
-          alert("حدث خطأ أثناء إضافة الإعلان ❌\n" + err.message);
-        }
-
-      });
+    try {
+      // ✅ التعديل هنا: حفظ الإعلان مباشرة في doc 'current'
+      await window.firestoreTools.collection("announcements").doc("current").set({ text });
+      alert("تم حفظ الإعلان ✅");
+    } catch (err) {
+      console.error(err);
+      alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
     }
-  }
+  });
+
+  if (stopAdBtn) stopAdBtn.addEventListener("click", async () => {
+    try {
+      await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+      alert("تم إيقاف الإعلان ✅");
+    } catch (err) {
+      console.error(err);
+      alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
+    }
+  });
+}
 
   // ======= عرض الإعلانات =======
   const adsContainer = document.getElementById("ads-container");
@@ -2226,47 +2221,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (loginForm) {
     loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
+      e.preventDefault(); // منع إعادة تحميل الصفحة
 
       const email = loginForm.querySelector("input[type='email']").value.trim();
       const password = loginForm.querySelector("input[type='password']").value.trim();
 
-      // تسجيل دخول الأدمن
       if (email === "admin@gmail.com" && password === "123456") {
-
-        // ✅ تخزين بيانات الدخول
+        // تسجيل الأدمن
         localStorage.setItem("loggedEmail", email);
-
-        window.location.href = "admin.html";
+        localStorage.setItem("userRole", "ADMIN");
+        window.location.href = "admin.html"; // انتقال للأدمن
         return;
       }
 
-      // تسجيل دخول مستخدم عادي من Firestore
-      try {
-        const snapshot = await window.firestoreTools
-  .collection("students")
-  .where("email", "==", email)
-  .where("password", "==", password)
-  .get();
-
-if (!snapshot.empty) {
-  localStorage.setItem("loggedEmail", email);
-  alert("تم تسجيل الدخول بنجاح ✅");
-  location.reload();
-} else {
-  alert("البريد أو كلمة المرور غير صحيحة ❌");
-}
-
-      } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء تسجيل الدخول ❌");
+      // أي بريد آخر للطلاب (مثال)
+      if (email && password) {
+        localStorage.setItem("loggedEmail", email);
+        localStorage.setItem("userRole", "STUDENT");
+        window.location.href = "index.html"; // صفحة الطالب الرئيسية
+        return;
       }
+
+      alert("البريد أو كلمة المرور غير صحيحة");
     });
   }
 });
 </script>
 </body>
 </html>
+
 
 
 
