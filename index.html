@@ -2228,7 +2228,7 @@ body { padding-top: 45px; }
 </style>
 
 <script>
-  // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
+ // 🔹 تهيئة Firebase مرة واحدة فقط
   if (typeof firebase !== "undefined") {
     if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
       firebase.initializeApp(firebaseConfig);
@@ -2236,7 +2236,7 @@ body { padding-top: 45px; }
   }
 
   // ===================== Firebase Helpers =====================
-  // حماية تعريف db و firestoreTools لمنع إعادة التعريف
+  // حماية تعريف firestoreTools و db
   if (!window.firestoreTools && typeof firebase !== "undefined" && firebase.firestore) {
     const firestoreInstance = firebase.firestore();
     window.firestoreTools = {
@@ -2245,10 +2245,10 @@ body { padding-top: 45px; }
     };
   }
 
-  // استخدام db عالمي مرة واحدة فقط
   if (!window.db) {
     window.db = window.firestoreTools?.db;
   }
+  // ✅ استخدم db العالمي فقط، لا تعيد تعريفه
   var db = window.db;
 
   // ===================== Helpers =====================
@@ -2467,6 +2467,7 @@ body { padding-top: 45px; }
 </script>
 </body>
 </html>
+
 
 
 
