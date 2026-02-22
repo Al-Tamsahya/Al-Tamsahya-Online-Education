@@ -2263,70 +2263,84 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     const stopAdBtn = document.getElementById("stopAdBtn");
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
-         <script>
+    <script>
 window.addEventListener("DOMContentLoaded", async () => {
-    const params = new URLSearchParams(window.location.search);
-    const emailParam = params.get("email");
-    const passwordParam = params.get("password");
-
     const loginForm = document.getElementById("loginForm");
 
-    // إذا كان هناك رابط تسجيل دخول مباشر
-    if (emailParam && passwordParam) {
-        try {
-            const query = await firestoreTools.collection("admins")
-                .where("email","==",emailParam)
-                .where("password","==",passwordParam)
-                .get();
-
-            if(query.empty){ alert("خطأ في البريد أو كلمة المرور ❌"); return; }
-
-            const userData = query.docs[0].data();
-            const role = userData.role || "STUDENT";
-
-            localStorage.setItem("loggedEmail", emailParam);
-            localStorage.setItem("userRole", role);
-            window.currentUser = { email: emailParam, role };
-
-            if(role==="ADMIN"){ window.location.href="admin.html"; }
-            else { window.location.href="index.html"; }
-
-        } catch(err){ console.error(err); alert("حدث خطأ أثناء تسجيل الدخول ❌\n"+err.message); }
+    let errorMsg = document.getElementById("loginError");
+    if(!errorMsg){
+        errorMsg = document.createElement("p");
+        errorMsg.id = "loginError";
+        errorMsg.style.color = "red";
+        errorMsg.style.marginTop = "10px";
+        loginForm.appendChild(errorMsg);
     }
+    const showError = (msg) => { errorMsg.textContent = msg; };
 
-    // التعامل مع الفورم
     if(loginForm){
         loginForm.addEventListener("submit", async (e)=>{
             e.preventDefault();
             const email = e.target.email.value.trim();
             const password = e.target.password.value.trim();
-            if(!email || !password){ alert("يرجى إدخال البريد وكلمة المرور!"); return; }
+            if(!email || !password){
+                showError("يرجى إدخال البريد وكلمة المرور!");
+                return;
+            }
 
-            try {
-                const query = await firestoreTools.collection("admins")
+            try{
+                // 🔹 تحقق من الأدمن أولًا
+                let query = await firestoreTools.collection("admins")
                     .where("email","==",email)
                     .where("password","==",password)
                     .get();
 
-                if(query.empty){ alert("خطأ في البريد أو كلمة المرور ❌"); return; }
+                if(!query.empty){
+                    const userData = query.docs[0].data();
+                    const role = userData.role || "ADMIN";
 
-                const userData = query.docs[0].data();
-                const role = userData.role || "STUDENT";
+                    localStorage.setItem("loggedEmail", email);
+                    localStorage.setItem("userRole", role);
+                    window.currentUser = { email, role };
 
+                    // توجيه مباشرة للأدمن
+                    window.location.href = "admin.html";
+                    return;
+                }
+
+                // 🔹 تحقق من الطلاب بعد ذلك
+                query = await firestoreTools.collection("students")
+                    .where("email","==",email)
+                    .where("password","==",password)
+                    .get();
+
+                if(query.empty){
+                    showError("خطأ في البريد أو كلمة المرور ❌");
+                    return;
+                }
+
+                const studentData = query.docs[0].data();
+                if(!studentData.approved){
+                    showError("بانتظار الموافقة على حسابك من قبل المشرف ✅");
+                    return;
+                }
+
+                // الطالب مفعل
                 localStorage.setItem("loggedEmail", email);
-                localStorage.setItem("userRole", role);
-                window.currentUser = { email, role };
+                localStorage.setItem("userRole", "STUDENT");
+                window.currentUser = { email, role:"STUDENT" };
+                window.location.href = "index.html";
 
-                if(role==="ADMIN"){ document.getElementById("adminPanel").classList.remove("hidden"); }
-                else { alert("غير مصرح لك بالدخول"); }
-
-            } catch(err){ console.error(err); alert("خطأ أثناء تسجيل الدخول ❌\n"+err.message); }
+            } catch(err){
+                console.error(err);
+                showError("حدث خطأ أثناء تسجيل الدخول ❌");
+            }
         });
     }
 });
 </script>
 </body>
 </html>
+
 
 
 
