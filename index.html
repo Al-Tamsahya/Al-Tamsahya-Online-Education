@@ -1461,20 +1461,18 @@ async function addSupervisor() {
             }
 
             try {
-                if (!window.firestoreTools || !window.firestoreTools.db) {
-                    alert("Firebase لم يتم تحميله بعد ❌");
-                    return;
-                }
+  if (!window.firestoreTools || !window.firestoreTools.db) {
+      alert("Firebase لم يتم تحميله بعد ❌");
+      return;
+  }
 
-                const db = window.firestoreTools.db;
+  // استخدم window.db بدل إعادة تعريف const db
+  const snap = await window.db.collection("users").where("email", "==", email).get();
 
-                // ✅ منع التكرار
-                const snap = await db.collection("users").where("email", "==", email).get();
-
-                if (!snap.empty) {
-                    alert("هذا البريد مستخدم بالفعل!");
-                    return;
-                }
+  if (!snap.empty) {
+      alert("هذا البريد مستخدم بالفعل!");
+      return;
+  }
 
                 await db.collection("users").add({
                     name: email.split("@")[0],
@@ -2246,16 +2244,14 @@ body { padding-top: 45px; }
   }
 
   if (!window.db) {
-    window.db = window.firestoreTools?.db;
-  }
+window.db = window.db || window.firestoreTools?.db;  }
   // ✅ استخدم db العالمي فقط، لا تعيد تعريفه
-const db = window.db; // تم تعريفه مرة واحدة فقط
 
-  // ===================== Helpers =====================
-  async function getDocsWhere(collectionName, field, op, value) {
-    const snap = await db.collection(collectionName).where(field, op, value).get();
-    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  }
+ // ===================== Helpers =====================
+async function getDocsWhere(collectionName, field, op, value) {
+  const snap = await window.db.collection(collectionName).where(field, op, value).get();
+  return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
 
   async function addDocSafe(collectionName, data, uniqueField = null) {
     if (uniqueField) {
@@ -2467,6 +2463,7 @@ const db = window.db; // تم تعريفه مرة واحدة فقط
 </script>
 </body>
 </html>
+
 
 
 
