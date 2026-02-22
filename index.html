@@ -2259,18 +2259,16 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     const stopAdBtn = document.getElementById("stopAdBtn");
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
-                <script>
-  // auth.js
-  // تسجيل الدخول والتحقق من الدور
- window.addEventListener("DOMContentLoaded", async () => {
-    // قراءة البيانات من الرابط
+               <script>
+window.addEventListener("DOMContentLoaded", async () => {
+
     const params = new URLSearchParams(window.location.search);
     const email = params.get("email");
     const password = params.get("password");
 
     if (email && password) {
         try {
-            // تسجيل الدخول مباشرة باستخدام Firebase Auth
+
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
 
@@ -2279,35 +2277,37 @@ function startAnnouncementAnimation(text, duration = 12000) {
                 return;
             }
 
-          // البحث عن المستخدم في collection "admins" بواسطة البريد
-const userQuery = await firebase.firestore()
-    .collection("admins")
-    .where("email", "==", email)
-    .get();
+            const userQuery = await firebase.firestore()
+                .collection("admins")
+                .where("email", "==", email)
+                .get();
 
-let role = "STUDENT"; // القيمة الافتراضية
+            let role = "STUDENT";
 
-if (!userQuery.empty) {
-    role = userQuery.docs[0].data().role;
-}
-            // تخزين البيانات محليًا
+            if (!userQuery.empty) {
+                role = userQuery.docs[0].data().role;
+            }
+
             localStorage.setItem("loggedEmail", email);
             localStorage.setItem("userRole", role);
             window.currentUser = { email, role };
 
-            // التحويل حسب الدور
-            if (role === "ADMIN") window.location.href = "admin.html";
-            else window.location.href = "index.html";
+            if (role === "ADMIN")
+                window.location.href = "admin.html";
+            else
+                window.location.href = "index.html";
 
-       catch (err) {
+        } catch (err) {   // ← الآن أصبح صحيح
             console.error("Login Error:", err);
             alert("خطأ في تسجيل الدخول ❌\n" + err.message);
         }
     }
+
 });
 </script>
 </body>
 </html>
+
 
 
 
