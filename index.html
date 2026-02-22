@@ -2272,9 +2272,8 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     const stopAdBtn = document.getElementById("stopAdBtn");
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
- <script type="module">
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -2287,7 +2286,6 @@ function startAnnouncementAnimation(text, duration = 12000) {
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
   const db = getFirestore(app);
 
   window.addEventListener("DOMContentLoaded", () => {
@@ -2306,19 +2304,25 @@ function startAnnouncementAnimation(text, duration = 12000) {
         }
 
         try {
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
+          // تحقق من الأدمن أولاً
           const adminRef = doc(db, "admins", email);
           const adminDoc = await getDoc(adminRef);
 
           if (adminDoc.exists()) {
-            const role = adminDoc.data().role || "ADMIN";
+            const data = adminDoc.data();
+            if (data.password !== password) { // التحقق من كلمة المرور
+              alert("كلمة المرور خاطئة ❌");
+              return;
+            }
+
+            const role = data.role || "ADMIN";
             localStorage.setItem("loggedEmail", email);
             localStorage.setItem("userRole", role);
             window.location.href = "admin.html";
             return;
           }
 
+          // تحقق من الطلاب
           const q = query(collection(db, "students"), where("email", "==", email));
           const querySnapshot = await getDocs(q);
 
@@ -2328,6 +2332,10 @@ function startAnnouncementAnimation(text, duration = 12000) {
           }
 
           const studentData = querySnapshot.docs[0].data();
+          if (studentData.password !== password) { // التحقق من كلمة المرور
+            alert("كلمة المرور خاطئة ❌");
+            return;
+          }
 
           if (!studentData.approved) {
             alert("لم يتم الموافقة على حسابك بعد ✅");
@@ -2339,7 +2347,8 @@ function startAnnouncementAnimation(text, duration = 12000) {
           window.location.href = "index.html";
 
         } catch (err) {
-          alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+          console.error(err);
+          alert("حدث خطأ أثناء تسجيل الدخول ❌");
         }
       });
     }
@@ -2347,6 +2356,7 @@ function startAnnouncementAnimation(text, duration = 12000) {
 </script>
 </body>
 </html>
+
 
 
 
