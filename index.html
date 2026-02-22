@@ -1844,51 +1844,83 @@ async function rejectStudent(studentDocId) {
         renderStudents();
     } catch (err) { console.error(err); alert("فشل الرفض ❌\n" + err.message); }
 }
-
 // ===================== إدارة النماذج والتنقل =====================
-function closeModal(id) { document.getElementById(id)?.style.display = "none"; }
+
+// إغلاق أي نافذة/نموذج
+function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+}
+
+// عرض قائمة الاختبارات
 function renderTests() {
     const container = document.getElementById("testsList");
     if (!container) return;
     container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
     container.classList.remove("hidden");
-    ["studentsList","supervisorsList","resultsList"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
+
+    ["studentsList","supervisorsList","resultsList"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
 }
+
+// عرض قائمة النتائج الأسبوعية
 function renderResults() {
     const container = document.getElementById("resultsList");
     if (!container) return;
     container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
     container.classList.remove("hidden");
-    ["studentsList","supervisorsList","testsList"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
-}
-function resetNavigation() {
-    ["gradePage","subjectPage","unitPage","lessonPage"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
-    document.getElementById("lessonPath")?.style.display = "none";
+
+    ["studentsList","supervisorsList","testsList"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
 }
 
+// إعادة تعيين التنقل (إخفاء كل الصفحات عدا الرئيسية)
+function resetNavigation() {
+    ["gradePage","subjectPage","unitPage","lessonPage"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
+
+    const lessonPath = document.getElementById("lessonPath");
+    if (lessonPath) lessonPath.style.display = "none";
+}
+
+// 🔴 إيقاف الفيديو عند مغادرة صفحة الدرس
 function stopVideo() {
     const video = document.getElementById("lessonPlayer");
-    if (video) { video.pause(); video.currentTime=0; video.src=""; }
+    if (video) {
+        video.pause();
+        video.currentTime = 0;
+        video.src = "";
+    }
 }
 
-function updateLessonNav(showBackUnit=true) {
+// تحديث أزرار التنقل في صفحة الدرس
+function updateLessonNav(showBackUnit = true) {
     const btnBackUnit = document.getElementById("btnBackUnit");
-    const btnHome = document.getElementById("btnHome");
     if (btnBackUnit) btnBackUnit.style.display = showBackUnit ? "inline-block" : "none";
+
+    const btnHome = document.getElementById("btnHome");
     if (btnHome) btnHome.style.display = "inline-block";
 }
 
+// إظهار أو إخفاء التنقل العام
 function updateGlobalNav(show) {
     const nav = document.getElementById("globalNav");
     if (!nav) return;
-    nav.classList.toggle("hidden", !show);
+    if (show) nav.classList.remove("hidden");
+    else nav.classList.add("hidden");
 }
 
+// تبديل قائمة الدروس
 function toggleLessons() {
     const list = document.getElementById("lessonList");
     if (list) list.style.display = list.style.display === "none" ? "block" : "none";
 }
-
 // 🔹 الوضع الليلي
 function toggleDarkMode() {
     const body = document.body;
@@ -2356,4 +2388,5 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 </script>
 </body>
 </html>
+
 
