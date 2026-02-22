@@ -631,8 +631,8 @@ async function login() {
     return;
   }
 
-  const db = window.firestoreTools.db;
-
+// ⚠ لا تكتب const db هنا
+await db.collection("students").add({...});
   try {
     console.log("=== LOGIN START ===", email);
 
@@ -2229,25 +2229,27 @@ body { padding-top: 45px; }
 </style>
 
 <script>
-  // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
+   // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
   if (typeof firebase !== "undefined") {
     if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
       firebase.initializeApp(firebaseConfig);
     }
   }
-
   // ===================== Firebase Helpers =====================
   // حماية تعريف db و firestoreTools لمنع إعادة التعريف
-  if (typeof window.db === 'undefined') {
+  if (!window.db) {
     window.db = (() => {
-      if (typeof window.firestoreTools === 'undefined' && typeof firebase !== 'undefined' && firebase.firestore) {
-        const firestoreInstance = firebase.firestore();
-        window.firestoreTools = {
-          db: firestoreInstance,
-          collection: firestoreInstance.collection.bind(firestoreInstance),
-        };
-      }
-      return window.firestoreTools?.db;
+     // ⚡ تهيئة Firebase
+if (!window.firestoreTools && typeof firebase !== "undefined" && firebase.firestore) {
+    const firestoreInstance = firebase.firestore();
+    window.firestoreTools = {
+        db: firestoreInstance,
+        collection: firestoreInstance.collection.bind(firestoreInstance)
+    };
+}
+
+// ✅ استخدم var بدل const لتجنب التعارض
+var db = window.firestoreTools?.db;
     })();
   }
   // استخدام var بدل const لتجنب إعادة التعريف في أي سكربت آخر
@@ -2468,5 +2470,6 @@ body { padding-top: 45px; }
 </script>
 </body>
 </html>
+
 
 
