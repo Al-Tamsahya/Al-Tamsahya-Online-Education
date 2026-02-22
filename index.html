@@ -1770,18 +1770,22 @@ function restartAnimation() {
 async function loadAnnouncement() {
     try {
         if (!window.firestoreTools) return;
+
         const doc = await window.firestoreTools.collection("announcements").doc("current").get();
-        if (doc.exists) {
-            const text = doc.data().text || "";
-            if (!text) return;
-            const announcementText = document.getElementById("announcementText");
-            if (!announcementText) return;
-            announcementText.innerText = text;
+        const announcementText = document.getElementById("announcementText");
+        if (!announcementText) return;
+
+        if (doc.exists && doc.data().text?.trim()) {
+            const text = doc.data().text.trim();
+            announcementText.innerText = "📢 " + text + " 📢";
             restartAnimation();
             showAnnouncementBar();
+        } else {
+            hideAnnouncementBar(); // إخفاء الشريط إذا لم يوجد نص
         }
     } catch (err) {
         console.error("خطأ أثناء تحميل الإعلان:", err);
+        hideAnnouncementBar(); // إخفاء الشريط عند حدوث خطأ
     }
 }
 
@@ -2262,50 +2266,68 @@ function startAnnouncementAnimation(text, duration = 12000) {
          <script>
 window.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
-    const email = params.get("email");
-    const password = params.get("password");
+    const emailParam = params.get("email");
+    const passwordParam = params.get("password");
 
-    if (!email || !password) {
-        console.warn("لم يتم إدخال البريد أو كلمة المرور.");
-        return;
+    const loginForm = document.getElementById("loginForm");
+
+    // إذا كان هناك رابط تسجيل دخول مباشر
+    if (emailParam && passwordParam) {
+        try {
+            const query = await firestoreTools.collection("admins")
+                .where("email","==",emailParam)
+                .where("password","==",passwordParam)
+                .get();
+
+            if(query.empty){ alert("خطأ في البريد أو كلمة المرور ❌"); return; }
+
+            const userData = query.docs[0].data();
+            const role = userData.role || "STUDENT";
+
+            localStorage.setItem("loggedEmail", emailParam);
+            localStorage.setItem("userRole", role);
+            window.currentUser = { email: emailParam, role };
+
+            if(role==="ADMIN"){ window.location.href="admin.html"; }
+            else { window.location.href="index.html"; }
+
+        } catch(err){ console.error(err); alert("حدث خطأ أثناء تسجيل الدخول ❌\n"+err.message); }
     }
 
-    try {
-        // 🔹 البحث عن المستخدم في collection "admins"
-        const userQuery = await firebase.firestore()
-            .collection("admins")
-            .where("email", "==", email)
-            .where("password", "==", password)
-            .get();
+    // التعامل مع الفورم
+    if(loginForm){
+        loginForm.addEventListener("submit", async (e)=>{
+            e.preventDefault();
+            const email = e.target.email.value.trim();
+            const password = e.target.password.value.trim();
+            if(!email || !password){ alert("يرجى إدخال البريد وكلمة المرور!"); return; }
 
-        if (userQuery.empty) {
-            alert("خطأ في البريد أو كلمة المرور ❌");
-            return;
-        }
+            try {
+                const query = await firestoreTools.collection("admins")
+                    .where("email","==",email)
+                    .where("password","==",password)
+                    .get();
 
-        const userData = userQuery.docs[0].data();
-        const role = userData.role || "STUDENT";
+                if(query.empty){ alert("خطأ في البريد أو كلمة المرور ❌"); return; }
 
-        // تخزين البيانات محليًا
-        localStorage.setItem("loggedEmail", email);
-        localStorage.setItem("userRole", role);
-        window.currentUser = { email, role };
+                const userData = query.docs[0].data();
+                const role = userData.role || "STUDENT";
 
-        // 🔹 التوجيه حسب الدور
-        if (role === "ADMIN") {
-            window.location.href = "admin.html"; // لوحة الأدمن
-        } else {
-            window.location.href = "index.html"; // لوحة الطلاب
-        }
+                localStorage.setItem("loggedEmail", email);
+                localStorage.setItem("userRole", role);
+                window.currentUser = { email, role };
 
-    } catch (err) {
-        console.error("Login Error:", err);
-        alert("حدث خطأ أثناء تسجيل الدخول ❌\n" + err.message);
+                if(role==="ADMIN"){ document.getElementById("adminPanel").classList.remove("hidden"); }
+                else { alert("غير مصرح لك بالدخول"); }
+
+            } catch(err){ console.error(err); alert("خطأ أثناء تسجيل الدخول ❌\n"+err.message); }
+        });
     }
 });
 </script>
 </body>
 </html>
+
 
 
 
