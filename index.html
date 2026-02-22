@@ -632,8 +632,7 @@ async function login() {
   }
 
 // ⚠ لا تكتب const db هنا
-await db.collection("students").add({...});
-  try {
+const db = window.firestoreTools.db;  try {
     console.log("=== LOGIN START ===", email);
 
     // =========================
@@ -2229,33 +2228,30 @@ body { padding-top: 45px; }
 </style>
 
 <script>
-   // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
+  // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
   if (typeof firebase !== "undefined") {
     if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
       firebase.initializeApp(firebaseConfig);
     }
   }
+
   // ===================== Firebase Helpers =====================
   // حماية تعريف db و firestoreTools لمنع إعادة التعريف
-  if (!window.db) {
-    window.db = (() => {
-     // ⚡ تهيئة Firebase
-if (!window.firestoreTools && typeof firebase !== "undefined" && firebase.firestore) {
+  if (!window.firestoreTools && typeof firebase !== "undefined" && firebase.firestore) {
     const firestoreInstance = firebase.firestore();
     window.firestoreTools = {
-        db: firestoreInstance,
-        collection: firestoreInstance.collection.bind(firestoreInstance)
+      db: firestoreInstance,
+      collection: firestoreInstance.collection.bind(firestoreInstance)
     };
-}
-
-// ✅ استخدم var بدل const لتجنب التعارض
-var db = window.firestoreTools?.db;
-    })();
   }
-  // استخدام var بدل const لتجنب إعادة التعريف في أي سكربت آخر
+
+  // استخدام db عالمي مرة واحدة فقط
+  if (!window.db) {
+    window.db = window.firestoreTools?.db;
+  }
   var db = window.db;
 
-  // ===================== بقية الكود كما هو =====================
+  // ===================== Helpers =====================
   async function getDocsWhere(collectionName, field, op, value) {
     const snap = await db.collection(collectionName).where(field, op, value).get();
     return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -2462,6 +2458,7 @@ var db = window.firestoreTools?.db;
     localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
     document.getElementById('darkModeBtn').textContent=body.classList.contains('dark-mode') ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
   }
+
   window.addEventListener('DOMContentLoaded',()=>{
     if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark-mode');
     document.getElementById('darkModeBtn')?.addEventListener('click',toggleDarkMode);
@@ -2470,6 +2467,7 @@ var db = window.firestoreTools?.db;
 </script>
 </body>
 </html>
+
 
 
 
