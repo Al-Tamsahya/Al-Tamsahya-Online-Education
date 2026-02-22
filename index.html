@@ -1715,30 +1715,25 @@ if ('serviceWorker' in navigator) {
 
 <!-- جميع وظائف الأدمن والإعلانات -->
 <script>
-// 🔹 تهيئة المستخدم والمتغيرات المهمة
+// ===================== تهيئة المستخدم =====================
 const adminEmail = "admin@gmail.com";
 const loggedEmail = localStorage.getItem("loggedEmail") || "";
 const userRole = localStorage.getItem("userRole") || "STUDENT";
 
 window.currentUser = { email: loggedEmail, role: userRole };
 
-// 🔹 متغير لتثبيت التطبيق PWA
+// ===================== متغيرات عامة =====================
 let deferredPrompt = null;
-
-// 🔹 متغير الإعلان المتحرك
 let animationTimeout = null;
 
-// 🔹 تهيئة Firebase
+// ===================== تهيئة Firebase =====================
 if (typeof firebase !== "undefined") {
     if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
         firebase.initializeApp(firebaseConfig);
     }
     if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
         const db = firebase.firestore();
-        window.firestoreTools = {
-            db: db,
-            collection: db.collection.bind(db)
-        };
+        window.firestoreTools = { db, collection: db.collection.bind(db) };
     }
 }
 const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
@@ -1819,7 +1814,7 @@ async function deleteAnnouncement() {
     }
 }
 
-// 🔹 وظائف الطلاب والمشرفين
+// ===================== وظائف الطلاب والمشرفين =====================
 async function deleteUser(docId, collectionName) {
     if (!confirm("هل أنت متأكد من الحذف؟")) return;
     try {
@@ -1827,10 +1822,7 @@ async function deleteUser(docId, collectionName) {
         alert("تم الحذف بنجاح ✅");
         if (collectionName === "students") renderStudents();
         if (collectionName === "users") renderSupervisors();
-    } catch (err) {
-        console.error(err);
-        alert("فشل الحذف ❌\n" + err.message);
-    }
+    } catch (err) { console.error(err); alert("فشل الحذف ❌\n" + err.message); }
 }
 
 async function setApprove(studentDocId, approvedValue) {
@@ -1842,41 +1834,33 @@ async function setApprove(studentDocId, approvedValue) {
         await ref.update({ approved: approvedValue });
         alert("تمت الموافقة ✅");
         renderStudents();
-    } catch (err) {
-        console.error(err);
-        alert("فشل التحديث ❌");
-    }
+    } catch (err) { console.error(err); alert("فشل التحديث ❌"); }
 }
-
 async function rejectStudent(studentDocId) {
     if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
     try {
         await db.collection("students").doc(studentDocId).delete();
         alert("تم رفض الطلب وحذفه ❌");
         renderStudents();
-    } catch (err) {
-        console.error(err);
-        alert("فشل الرفض ❌\n" + err.message);
-    }
+    } catch (err) { console.error(err); alert("فشل الرفض ❌\n" + err.message); }
 }
 
-// 🔹 إدارة النماذج والتنقل
+// ===================== إدارة النماذج والتنقل =====================
 function closeModal(id) { document.getElementById(id)?.style.display = "none"; }
-
 function renderTests() {
     const container = document.getElementById("testsList");
+    if (!container) return;
     container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
     container.classList.remove("hidden");
     ["studentsList","supervisorsList","resultsList"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
 }
-
 function renderResults() {
     const container = document.getElementById("resultsList");
+    if (!container) return;
     container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
     container.classList.remove("hidden");
     ["studentsList","supervisorsList","testsList"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
 }
-
 function resetNavigation() {
     ["gradePage","subjectPage","unitPage","lessonPage"].forEach(id => document.getElementById(id)?.classList.add("hidden"));
     document.getElementById("lessonPath")?.style.display = "none";
@@ -2048,9 +2032,9 @@ window.addEventListener("DOMContentLoaded", () => {
       });
   }
 
- // ======= تثبيت التطبيق PWA =======
+// ======= تثبيت التطبيق PWA =======
 const installBtn = document.getElementById("installBtn");
-let deferredPrompt; // متغير لتخزين حدث beforeinstallprompt
+let deferredPrompt = null; // متغير لتخزين حدث beforeinstallprompt
 
 // الاستماع لحدث قبل تثبيت التطبيق
 window.addEventListener("beforeinstallprompt", (e) => {
@@ -2060,34 +2044,25 @@ window.addEventListener("beforeinstallprompt", (e) => {
 });
 
 // التعامل مع زر التثبيت
-if (installBtn) {
-    installBtn.addEventListener("click", async () => {
+installBtn?.addEventListener("click", async () => {
+    if (!deferredPrompt) return; // إذا المتصفح لا يدعم PWA لا نفعل شيء
 
-        if (!deferredPrompt) {
-            alert("📌 افتح قائمة المتصفح ⋮ ثم اختر (إضافة إلى الشاشة الرئيسية)");
-            return;
-        }
+    // عرض نافذة تثبيت التطبيق الرسمي
+    deferredPrompt.prompt();
 
-        // عرض نافذة تثبيت التطبيق
-        deferredPrompt.prompt();
+    // انتظار نتيجة اختيار المستخدم
+    const choiceResult = await deferredPrompt.userChoice;
 
-        // انتظار نتيجة اختيار المستخدم
-        const { outcome } = await deferredPrompt.userChoice;
+    // إخفاء الزر بعد التثبيت أو الإلغاء
+    if (installBtn) installBtn.hidden = true;
 
-        // إخفاء الزر إذا تم قبول التثبيت
-        if (outcome === "accepted") {
-            installBtn.hidden = true;
-        }
-
-        // إعادة تعيين المتغير بعد استخدامه
-        deferredPrompt = null;
-    });
-}
+    deferredPrompt = null; // إعادة تعيين الحدث
+});
 
 // الاستماع لحدث تثبيت التطبيق بعد اكتمال التثبيت
 window.addEventListener("appinstalled", () => {
     if (installBtn) installBtn.hidden = true; // إخفاء الزر بعد التثبيت
-    alert("تم تثبيت التطبيق بنجاح ✅");       // إشعار المستخدم
+    console.log("تم تثبيت التطبيق بنجاح ✅"); // يمكن استبدالها alert إذا أردت
 });
 </script>
 
@@ -2378,10 +2353,3 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
