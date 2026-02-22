@@ -2259,7 +2259,7 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     const stopAdBtn = document.getElementById("stopAdBtn");
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
-            <script>
+         <script>
 window.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);
     const email = params.get("email");
@@ -2271,7 +2271,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        // 🔹 تحقق من Firestore فقط
+        // 🔹 البحث عن المستخدم في collection "admins"
         const userQuery = await firebase.firestore()
             .collection("admins")
             .where("email", "==", email)
@@ -2283,7 +2283,8 @@ window.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        const role = userQuery.docs[0].data().role || "STUDENT";
+        const userData = userQuery.docs[0].data();
+        const role = userData.role || "STUDENT";
 
         // تخزين البيانات محليًا
         localStorage.setItem("loggedEmail", email);
@@ -2293,10 +2294,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         // 🔹 التوجيه حسب الدور
         if (role === "ADMIN") {
             window.location.href = "admin.html"; // لوحة الأدمن
-        } else if (role === "STUDENT") {
-            window.location.href = "index.html"; // لوحة الطلاب
         } else {
-            alert("غير مصرح لك بالدخول ❌");
+            window.location.href = "index.html"; // لوحة الطلاب
         }
 
     } catch (err) {
@@ -2307,6 +2306,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 </script>
 </body>
 </html>
+
 
 
 
