@@ -2266,7 +2266,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const email = params.get("email");
     const password = params.get("password");
 
-    if (email && password) {
+    if (email && password && password.length >= 6) {
         try {
 
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
@@ -2307,6 +2307,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 </script>
 </body>
 </html>
+
 
 
 
