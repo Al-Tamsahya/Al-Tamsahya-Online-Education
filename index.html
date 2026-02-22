@@ -2236,18 +2236,21 @@ body { padding-top: 45px; }
     }
   }
 
-  // حماية في حالة عدم وجود firestoreTools
- // ===================== Firebase Helpers =====================
-const db = (() => {
-  if (typeof window.firestoreTools === 'undefined' && typeof firebase !== 'undefined' && firebase.firestore) {
-    const firestoreInstance = firebase.firestore();
-    window.firestoreTools = {
-      db: firestoreInstance,
-      collection: firestoreInstance.collection.bind(firestoreInstance),
-    };
+  // ===================== Firebase Helpers =====================
+  // حماية تعريف db و firestoreTools لمنع إعادة التعريف
+  if (typeof window.db === 'undefined') {
+    window.db = (() => {
+      if (typeof window.firestoreTools === 'undefined' && typeof firebase !== 'undefined' && firebase.firestore) {
+        const firestoreInstance = firebase.firestore();
+        window.firestoreTools = {
+          db: firestoreInstance,
+          collection: firestoreInstance.collection.bind(firestoreInstance),
+        };
+      }
+      return window.firestoreTools?.db;
+    })();
   }
-  return window.firestoreTools?.db;
-})();
+  const db = window.db;
 
 async function getDocsWhere(collectionName, field, op, value) {
   const snap = await db.collection(collectionName).where(field, op, value).get();
@@ -2460,7 +2463,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('darkModeBtn')?.addEventListener('click',toggleDarkMode);
   loadAnnouncement();
 });
-
 </script>
 </body>
 </html>
+
