@@ -2033,36 +2033,40 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
 // ======= تثبيت التطبيق PWA =======
-const installBtn = document.getElementById("installBtn");
-let deferredPrompt = null; // متغير لتخزين حدث beforeinstallprompt
+document.addEventListener("DOMContentLoaded", () => {
+  const installBtn = document.getElementById("installBtn");
+  let deferredPrompt = null; // متغير لتخزين حدث beforeinstallprompt
 
-// الاستماع لحدث قبل تثبيت التطبيق
-window.addEventListener("beforeinstallprompt", (e) => {
+  // الاستماع لحدث قبل تثبيت التطبيق
+  window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault(); // منع ظهور نافذة التثبيت التلقائي
     deferredPrompt = e;  // تخزين الحدث لاستخدامه لاحقًا
     if (installBtn) installBtn.hidden = false; // إظهار زر التثبيت
-});
+  });
 
-// التعامل مع زر التثبيت
-installBtn?.addEventListener("click", async () => {
-    if (!deferredPrompt) return; // إذا المتصفح لا يدعم PWA لا نفعل شيء
+  // التعامل مع زر التثبيت
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return; // إذا المتصفح لا يدعم PWA لا نفعل شيء
 
-    // عرض نافذة تثبيت التطبيق الرسمي
-    deferredPrompt.prompt();
+      // عرض مربع تثبيت التطبيق الرسمي
+      deferredPrompt.prompt();
 
-    // انتظار نتيجة اختيار المستخدم
-    const choiceResult = await deferredPrompt.userChoice;
+      // انتظار نتيجة اختيار المستخدم
+      await deferredPrompt.userChoice;
 
-    // إخفاء الزر بعد التثبيت أو الإلغاء
-    if (installBtn) installBtn.hidden = true;
+      // إخفاء الزر بعد التثبيت أو الإلغاء
+      installBtn.hidden = true;
 
-    deferredPrompt = null; // إعادة تعيين الحدث
-});
+      deferredPrompt = null; // إعادة تعيين الحدث
+    });
+  }
 
-// الاستماع لحدث تثبيت التطبيق بعد اكتمال التثبيت
-window.addEventListener("appinstalled", () => {
+  // الاستماع لحدث تثبيت التطبيق بعد اكتمال التثبيت
+  window.addEventListener("appinstalled", () => {
     if (installBtn) installBtn.hidden = true; // إخفاء الزر بعد التثبيت
-    console.log("تم تثبيت التطبيق بنجاح ✅"); // يمكن استبدالها alert إذا أردت
+    console.log("تم تثبيت التطبيق بنجاح ✅");
+  });
 });
 </script>
 
@@ -2339,7 +2343,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     // تخزين البيانات
     localStorage.setItem("loggedEmail", email);
     localStorage.setItem("userRole", role);
-
     window.currentUser = { email, role };
 
     // التحويل حسب الدور
@@ -2353,3 +2356,4 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 </script>
 </body>
 </html>
+
