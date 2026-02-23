@@ -640,50 +640,60 @@ async function login() {
     console.log("=== LOGIN START ===", email);
 
     // =========================
-    // 1) Admin login (admins/admin)
-    // =========================
-    const adminRef = db.doc("admins/admin");
+       // =========================
+// 1) Admin login (admins/admin)
+// =========================
+try {
+    console.log("=== LOGIN START ===", email);
+
+    // جلب مستند الأدمن مباشرة من Firestore
+    const adminRef = db.collection("admins").doc("admin");
     const adminSnap = await adminRef.get();
 
     if (adminSnap.exists) {
-      const adminData = adminSnap.data();
-      const dbEmail = (adminData.email || "").toLowerCase();
-      const dbPass = adminData.password || "";
+        const adminData = adminSnap.data();
+        const dbEmail = (adminData.email || "").toLowerCase();
+        const dbPass = adminData.password || "";
 
-      if (dbEmail === email && dbPass === password) {
-        alert("تم تسجيل الدخول كأدمن ✅");
+        // التحقق من البريد وكلمة المرور
+        if (dbEmail === email.toLowerCase() && dbPass === password) {
+            alert("تم تسجيل الدخول كأدمن ✅");
 
-        localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
-        currentUser = { email: dbEmail, role: "ADMIN" };
+            localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
+            currentUser = { email: dbEmail, role: "ADMIN" };
 
-        document.getElementById("loginPage").classList.add("hidden");
-        document.getElementById("mainPage").classList.remove("hidden");
-        document.querySelector(".logout-btn").classList.remove("hidden");
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("mainPage").classList.remove("hidden");
+            document.querySelector(".logout-btn").classList.remove("hidden");
 
-        document.getElementById("welcomeMessage").classList.add("hidden");
-        document.getElementById("navUser").textContent = " | " + dbEmail;
+            document.getElementById("welcomeMessage").classList.add("hidden");
+            document.getElementById("navUser").textContent = " | " + dbEmail;
 
-                                    // ✅ إظهار لوحة الإدارة للأدمن
-                                    document.getElementById("adminPanel").classList.remove("hidden");
-                                    // 🔔 إظهار مربع إدارة الإعلان + تحميل الإعلان الحالي
-                                    const adBox = document.getElementById("adminAdBox");
-                                    if (adBox) adBox.style.display = "block";
+            // ✅ إظهار لوحة الإدارة للأدمن
+            document.getElementById("adminPanel").classList.remove("hidden");
+            // 🔔 إظهار مربع إدارة الإعلان + تحميل الإعلان الحالي
+            const adBox = document.getElementById("adminAdBox");
+            if (adBox) adBox.style.display = "block";
 
-                                    db.collection("announcements").doc("current").get()
-                                        .then(doc => {
-                                            if (doc.exists && document.getElementById("adminAdText")) {
-                                                document.getElementById("adminAdText").value = doc.data().text || "";
-                                            }
-                                        });
+            db.collection("announcements").doc("current").get()
+                .then(doc => {
+                    if (doc.exists && document.getElementById("adminAdText")) {
+                        document.getElementById("adminAdText").value = doc.data().text || "";
+                    }
+                });
 
+            renderGrades();
+            return;
+        }
+    }
 
-                                    renderGrades();
-                                    return;
-                                }
-                            }
+    // ✅ مهم جدًا: لو لم يكن أدمن احذف العلامة حتى لا يعلق في admin.html
+    localStorage.removeItem("isAdmin");
 
-                            // ✅ مهم جدًا: لو لم يكن أدمن احذف العلامة حتى لا يعلق في admin.html
-                            localStorage.removeItem("isAdmin");
+} catch (err) {
+    console.error(err);
+    alert("حدث خطأ أثناء تسجيل الدخول الأدمن ❌\n" + err.message);
+}
 
                             // =========================
                             // 2) Supervisor login (users)
@@ -2145,84 +2155,7 @@ function startAnnouncementAnimation(text, duration = 12000) {
 
                 <script>
                
-  // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
-  if (typeof firebase !== "undefined") {
-    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
-      firebase.initializeApp(firebaseConfig);
-    }
-  }
-
-  // 🔹 حماية في حالة عدم وجود firestoreTools
-  if (typeof window.firestoreTools === "undefined") {
-    if (typeof firebase !== "undefined" && firebase.firestore) {
-      const fbDb = firebase.firestore();
-      window.firestoreTools = {
-        db: fbDb,
-        collection: fbDb.collection.bind(fbDb)
-      };
-    }
-  }
-
-  // ✅ استخدام متغير db عالمي واحد بدون إعادة تعريفه
-  window.db = window.db || window.firestoreTools?.db;
-
-                    // دوال مساعدة لإظهار وإخفاء شريط الإعلان
-                    function showAnnouncementBar() {
-                        const bar = document.getElementById("announcementBar");
-                        if (bar) bar.style.display = "flex";
-                    }
-
-                    function hideAnnouncementBar() {
-                        const bar = document.getElementById("announcementBar");
-                        if (bar) bar.style.display = "none";
-                    }
-
-                    // 🔹 إعادة تشغيل حركة الإعلان مع سرعة مناسبة
-                    function restartAnimation() {
-                        const announcementText = document.getElementById("announcementText");
-                        if (!announcementText) return;
-
-                        // أوقف الحركة مؤقتًا
-                        announcementText.style.animation = "none";
-
-                        // ضع النص مباشرة على الشمال (خارج الشاشة) حتى يظهر فورًا
-                        announcementText.style.left = "-100%";
-
-                        // إعادة حساب CSS
-                        announcementText.offsetHeight;
-
-                        // حساب مدة الحركة بناءً على طول النص
-                        const textLength = announcementText.offsetWidth;
-                        const duration = Math.max(15, textLength / 50); // الحد الأدنى 15 ثانية
-
-                        // أعد تشغيل الحركة من الشمال إلى اليمين
-                        announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-                    }
-
-                    // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
-                    async function loadAnnouncement() {
-                        try {
-                            if (!window.firestoreTools) return;
-
-                            const doc = await window.firestoreTools.collection("announcements").doc("current").get();
-                            if (doc.exists) {
-                                const text = doc.data().text || "";
-                                if (text) {
-                                    const announcementText = document.getElementById("announcementText");
-                                    if (!announcementText) return;
-
-                                    announcementText.innerText = text;
-
-                                    // إعادة تشغيل الحركة بسرعة مناسبة
-                                    restartAnimation();
-
-                                    showAnnouncementBar();
-                                }
-                            }
-                        } catch (err) {
-                            console.error("خطأ أثناء تحميل الإعلان:", err);
-                        }
-                    }
+ 
 
                     window.addEventListener("DOMContentLoaded", loadAnnouncement);
 
@@ -2275,4 +2208,5 @@ function startAnnouncementAnimation(text, duration = 12000) {
 
 </body>
 </html>
+
 
