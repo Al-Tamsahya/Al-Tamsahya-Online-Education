@@ -156,19 +156,19 @@
                 </p>
             </section>
 
-           <form class="login-box" id="loginForm">
-    <h2>تسجيل الدخول</h2>
+            <form class="login-box" id="loginPage">
+                <h2>تسجيل الدخول</h2>
 
-    <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+                <input type="email" name="email" placeholder="البريد الإلكتروني" required>
 
-    <input type="password" name="password" placeholder="كلمة المرور" required>
+                <input type="password" name="password" placeholder="كلمة المرور" required>
 
-    <button type="submit" class="login-btn">تسجيل الدخول</button>
+                <button type="submit" class="login-btn">تسجيل الدخول</button>
 
-    <p style="margin-top:15px;">
-        <a href="#" onclick="registerStudentPage()">إنشاء حساب جديد</a>
-    </p>
-</form>
+                <p style="margin-top:15px;">
+                    <a href="#" onclick="registerStudentPage()">إنشاء حساب جديد</a>
+                </p>
+            </form>
 
 
             <script>
@@ -502,44 +502,44 @@
                             // 👑 ADMIN
                             if (currentUser?.role === "ADMIN") {
                                 actions += `
-                        <button class="custom-btn"
-                          onclick="editStudent('${s.email}')">✏️ تعديل</button>
-                      `;
+                                        <button class="custom-btn"
+                                          onclick="editStudent('${s.email}')">✏️ تعديل</button>
+                                      `;
 
                                 if (!s.approved) {
                                     actions += `
-                          <button class="custom-btn"
-                            onclick="setApprove('${s.id}', true)">✅ موافقة</button>
+                                          <button class="custom-btn"
+                                            onclick="setApprove('${s.id}', true)">✅ موافقة</button>
 
-                          <button class="custom-btn danger"
-                            onclick="rejectStudent('${s.id}')">❌ رفض</button>
-                        `;
+                                          <button class="custom-btn danger"
+                                            onclick="rejectStudent('${s.id}')">❌ رفض</button>
+                                        `;
                                 }
                             }
 
                             // 👤 SUPERVISOR (موافقة فقط)
                             if (currentUser?.role === "SUPERVISOR" && !s.approved) {
                                 actions += `
-                        <button class="custom-btn"
-                          onclick="setApprove('${s.id}', true)">✅ موافقة</button>
-                      `;
+                                        <button class="custom-btn"
+                                          onclick="setApprove('${s.id}', true)">✅ موافقة</button>
+                                      `;
                             }
 
                             rows += `
-                      <tr data-email="${(s.email || "").toLowerCase()}">
-                        <td>${s.email || "-"}</td>
-                        <td>
-                          ${s.approved
+                                      <tr data-email="${(s.email || "").toLowerCase()}">
+                                        <td>${s.email || "-"}</td>
+                                        <td>
+                                          ${s.approved
                                     ? `<span class="status approved">🟢 مفعل</span>`
                                     : `<span class="status pending">🟡 قيد المراجعة</span>`
                                 }
-                        </td>
-                        <td>${s.grade ?? "-"}</td>
-                        <td style="display:flex; gap:6px; justify-content:center;">
-                          ${actions || "-"}
-                        </td>
-                      </tr>
-                    `;
+                                        </td>
+                                        <td>${s.grade ?? "-"}</td>
+                                        <td style="display:flex; gap:6px; justify-content:center;">
+                                          ${actions || "-"}
+                                        </td>
+                                      </tr>
+                                    `;
                         });
 
                         document.getElementById("studentsTableBody").innerHTML =
@@ -601,99 +601,89 @@
                     //     localStorage.setItem("scores", JSON.stringify(scores));
                     // }
                     // ===============================
-                       // ✅ Firebase DB Global Reference
-        // ===============================
-        function getDB() {
-            if (!window.firestoreTools || !window.firestoreTools.db) {
-                throw new Error("Firebase لم يتم تحميله بعد");
-            }
-            return window.firestoreTools.db;
-        }
-
-        // ===============================
-       // ===============================
-// تسجيل الدخول (Admin + Supervisor + Student)
-// ===============================
-async function login() {
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const password = document.getElementById("password").value.trim();
-
-  if (!email || !password) {
-    alert("من فضلك أدخل البريد وكلمة المرور");
-    return;
-  }
-
-  if (!window.firestoreTools || !window.firestoreTools.db) {
-    alert("Firebase لم يتم تحميله بعد");
-    console.log("firestoreTools:", window.firestoreTools);
-    return;
-  }
-
-                if (user.role === "STUDENT" && !user.approved) {
-                    alert("حسابك لم يتم تفعيله بعد!");
-                    return;
-                }
-
-               const db = window.firestoreTools.db;
-
-  try {
-    console.log("=== LOGIN START ===", email);
-
-    // =========================
-       // =========================
-// 1) Admin login (admins/admin)
-// =========================
-try {
-    console.log("=== LOGIN START ===", email);
-
-    // جلب مستند الأدمن مباشرة من Firestore
-    const adminRef = db.collection("admins").doc("admin");
-    const adminSnap = await adminRef.get();
-
-    if (adminSnap.exists) {
-        const adminData = adminSnap.data();
-        const dbEmail = (adminData.email || "").toLowerCase();
-        const dbPass = adminData.password || "";
-
-        // التحقق من البريد وكلمة المرور
-        if (dbEmail === email.toLowerCase() && dbPass === password) {
-            alert("تم تسجيل الدخول كأدمن ✅");
-
-            localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
-            currentUser = { email: dbEmail, role: "ADMIN" };
-
-            document.getElementById("loginPage").classList.add("hidden");
-            document.getElementById("mainPage").classList.remove("hidden");
-            document.querySelector(".logout-btn").classList.remove("hidden");
-
-            document.getElementById("welcomeMessage").classList.add("hidden");
-            document.getElementById("navUser").textContent = " | " + dbEmail;
-
-            // ✅ إظهار لوحة الإدارة للأدمن
-            document.getElementById("adminPanel").classList.remove("hidden");
-            // 🔔 إظهار مربع إدارة الإعلان + تحميل الإعلان الحالي
-            const adBox = document.getElementById("adminAdBox");
-            if (adBox) adBox.style.display = "block";
-
-            db.collection("announcements").doc("current").get()
-                .then(doc => {
-                    if (doc.exists && document.getElementById("adminAdText")) {
-                        document.getElementById("adminAdText").value = doc.data().text || "";
+                    // ✅ Firebase DB Global Reference
+                    // ===============================
+                    function getDB() {
+                        if (!window.firestoreTools || !window.firestoreTools.db) {
+                            throw new Error("Firebase لم يتم تحميله بعد");
+                        }
+                        return window.firestoreTools.db;
                     }
-                });
 
-            renderGrades();
-            return;
-        }
-    }
+                    // ===============================
+                    // ===============================
+                    // تسجيل الدخول (Admin + Supervisor + Student)
+                    // ===============================
+                    async function login() {
+                        const email = document.getElementById("email").value.trim().toLowerCase();
+                        const password = document.getElementById("password").value.trim();
 
-    // ✅ مهم جدًا: لو لم يكن أدمن احذف العلامة حتى لا يعلق في admin.html
-    localStorage.removeItem("isAdmin");
+                        if (!email || !password) {
+                            alert("من فضلك أدخل البريد وكلمة المرور");
+                            return;
+                        }
 
-} catch (err) {
-    console.error(err);
-    alert("حدث خطأ أثناء تسجيل الدخول الأدمن ❌\n" + err.message);
-}
+                        if (!window.firestoreTools || !window.firestoreTools.db) {
+                            alert("Firebase لم يتم تحميله بعد");
+                            console.log("firestoreTools:", window.firestoreTools);
+                            return;
+                        }
+
+                        if (user.role === "STUDENT" && !user.approved) {
+                            alert("حسابك لم يتم تفعيله بعد!");
+                            return;
+                        }
+
+                        const db = window.firestoreTools.db;
+
+                        try {
+                            console.log("=== LOGIN START ===", email);
+
+                            // =========================
+                            // 1) Admin login (admins/admin)
+                            // =========================
+                            const adminRef = db.doc("admins/admin");
+                            const adminSnap = await adminRef.get();
+
+                            if (adminSnap.exists) {
+                                const adminData = adminSnap.data();
+                                const dbEmail = (adminData.email || "").toLowerCase();
+                                const dbPass = adminData.password || "";
+
+                                if (dbEmail === email && dbPass === password) {
+                                    alert("تم تسجيل الدخول كأدمن ✅");
+
+                                    localStorage.setItem("isAdmin", "true"); // ✅ حفظ الأدمن
+                                    currentUser = { email: dbEmail, role: "ADMIN" };
+
+                                    document.getElementById("loginPage").classList.add("hidden");
+                                    document.getElementById("mainPage").classList.remove("hidden");
+                                    document.querySelector(".logout-btn").classList.remove("hidden");
+
+                                    document.getElementById("welcomeMessage").classList.add("hidden");
+                                    document.getElementById("navUser").textContent = " | " + dbEmail;
+
+                                    // ✅ إظهار لوحة الإدارة للأدمن
+                                    document.getElementById("adminPanel").classList.remove("hidden");
+                                    // 🔔 إظهار مربع إدارة الإعلان + تحميل الإعلان الحالي
+                                    const adBox = document.getElementById("adminAdBox");
+                                    if (adBox) adBox.style.display = "block";
+
+                                    db.collection("announcements").doc("current").get()
+                                        .then(doc => {
+                                            if (doc.exists && document.getElementById("adminAdText")) {
+                                                document.getElementById("adminAdText").value = doc.data().text || "";
+                                            }
+                                        });
+
+
+                                    renderGrades();
+                                    return;
+                                }
+                            }
+
+                            // ✅ مهم جدًا: لو لم يكن أدمن احذف العلامة حتى لا يعلق في admin.html
+                            localStorage.removeItem("isAdmin");
 
                             // =========================
                             // 2) Supervisor login (users)
@@ -867,15 +857,15 @@ try {
                     }
 
                     // تسجيل طالب جديد
-                     async function registerStudent() {
-                const email = document.getElementById("regEmail").value.trim();
-                const password = document.getElementById("regPassword").value.trim();
+                    async function registerStudent() {
+                        const email = document.getElementById("regEmail").value.trim();
+                        const password = document.getElementById("regPassword").value.trim();
 
-                        
-                if (!email || !password) {
-                    alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-                    return;
-                }
+
+                        if (!email || !password) {
+                            alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+                            return;
+                        }
 
                         // ✅ نفس طريقة الأدمن (compat)
                         const db = window.firestoreTools.db;
@@ -930,11 +920,11 @@ try {
 
                         // هيكل منسق
                         container.innerHTML = `
-                                                                                                                                        <section class="grades-section">
-                                                                                                                                            <h2>اختر الصف الدراسي</h2>
-                                                                                                                                            <div class="grades-grid"></div>
-                                                                                                                                        </section>
-                                                                                                                                    `;
+                                                                                                                                                        <section class="grades-section">
+                                                                                                                                                            <h2>اختر الصف الدراسي</h2>
+                                                                                                                                                            <div class="grades-grid"></div>
+                                                                                                                                                        </section>
+                                                                                                                                                    `;
 
                         const grid = container.querySelector(".grades-grid");
 
@@ -968,12 +958,12 @@ try {
                         const container = document.getElementById("subjectPage");
 
                         container.innerHTML = `
-                                                                                                                                        <section class="subjects-section">
-                                                                                                                                            <h2>${grade}</h2>
-                                                                                                                                            <p class="section-subtitle">اختر المادة الدراسية</p>
-                                                                                                                                            <div class="subjects-grid"></div>
-                                                                                                                                        </section>
-                                                                                                                                    `;
+                                                                                                                                                        <section class="subjects-section">
+                                                                                                                                                            <h2>${grade}</h2>
+                                                                                                                                                            <p class="section-subtitle">اختر المادة الدراسية</p>
+                                                                                                                                                            <div class="subjects-grid"></div>
+                                                                                                                                                        </section>
+                                                                                                                                                    `;
 
                         const grid = container.querySelector(".subjects-grid");
 
@@ -990,8 +980,8 @@ try {
                             };
 
                             btn.innerHTML = `
-                           <div class="subject-icon">${icons[sub] || "📘"}</div>
-                           <div>${sub}</div>
+                                           <div class="subject-icon">${icons[sub] || "📘"}</div>
+                                           <div>${sub}</div>
 `;
 
                             btn.className = "subject-card";
@@ -1019,12 +1009,12 @@ try {
                         const container = document.getElementById("unitPage");
 
                         container.innerHTML = `
-                         <section class="units-section">
-                         <h2>${subject}</h2>
-                           <p class="section-subtitle">اختر الوحدة</p>
-                           <div class="units-grid"></div>
-                           </section>
-                                                                                                                                    `;
+                                         <section class="units-section">
+                                         <h2>${subject}</h2>
+                                           <p class="section-subtitle">اختر الوحدة</p>
+                                           <div class="units-grid"></div>
+                                           </section>
+                                                                                                                                                    `;
 
                         const grid = container.querySelector(".units-grid");
 
@@ -1075,19 +1065,19 @@ try {
                         const textDiv = document.getElementById("lessonText");
 
                         videoDiv.innerHTML = `
-                        <video
-                          id="lessonPlayer"
-                          controls
-                          playsinline
-                          preload="auto"
-                          muted
-                          width="100%"
-                          style="max-height: 220px; border-radius: 12px;"
-                        >
-                          <source src="./videos/Lesson1.mp4?v=1" type="video/mp4">
-                          المتصفح لا يدعم تشغيل الفيديو
-                        </video>
-                      `;
+                                        <video
+                                          id="lessonPlayer"
+                                          controls
+                                          playsinline
+                                          preload="auto"
+                                          muted
+                                          width="100%"
+                                          style="max-height: 220px; border-radius: 12px;"
+                                        >
+                                          <source src="./videos/Lesson1.mp4?v=1" type="video/mp4">
+                                          المتصفح لا يدعم تشغيل الفيديو
+                                        </video>
+                                      `;
 
                         const video = document.getElementById("lessonPlayer");
                         if (video) {
@@ -1142,12 +1132,12 @@ try {
 
                         // مسار الدرس
                         document.getElementById("lessonPath").innerHTML = `
-                          <span>${currentSubject}</span>
-                           <span> &gt; </span>
-                            <span>${currentUnit}</span>
-                             <span> &gt; </span>
-                            <strong>${lesson.title}</strong>
-                                                                                                                            `;
+                                          <span>${currentSubject}</span>
+                                           <span> &gt; </span>
+                                            <span>${currentUnit}</span>
+                                             <span> &gt; </span>
+                                            <strong>${lesson.title}</strong>
+                                                                                                                                            `;
 
                         showLessonDetail(lesson);
 
@@ -1289,8 +1279,8 @@ try {
                         let rows = snapshot.docs.map(doc => {
                             const s = doc.data();
                             return `<tr><td>${s.email}</td><td>
-                      <button onclick="deleteUser('${doc.id}','users')" class="danger">حذف</button>
-                    </td></tr>`;
+                                      <button onclick="deleteUser('${doc.id}','users')" class="danger">حذف</button>
+                                    </td></tr>`;
                         }).join("");
 
                         container.innerHTML = `
@@ -1302,37 +1292,37 @@ try {
 </table>`;
                     }
 
-                   async function addSupervisor() {
-    const email = document.getElementById("newSupervisorEmail").value.trim().toLowerCase();
-    const password = document.getElementById("newSupervisorPassword").value.trim();
+                    async function addSupervisor() {
+                        const email = document.getElementById("newSupervisorEmail").value.trim().toLowerCase();
+                        const password = document.getElementById("newSupervisorPassword").value.trim();
 
-    if (!email || !password) {
-        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
-        return;
-    }
+                        if (!email || !password) {
+                            alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+                            return;
+                        }
 
-    try {
-        // إنشاء الحساب في Firebase Auth
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+                        try {
+                            // إنشاء الحساب في Firebase Auth
+                            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                            const user = userCredential.user;
 
-        // إنشاء بياناته في Firestore بنفس UID
-        await firebase.firestore().collection("users").doc(user.uid).set({
-            email: email,
-            role: "SUPERVISOR",
-            createdAt: new Date().toISOString()
-        });
+                            // إنشاء بياناته في Firestore بنفس UID
+                            await firebase.firestore().collection("users").doc(user.uid).set({
+                                email: email,
+                                role: "SUPERVISOR",
+                                createdAt: new Date().toISOString()
+                            });
 
-        alert("تمت إضافة المشرف بنجاح ✅");
+                            alert("تمت إضافة المشرف بنجاح ✅");
 
-        closeModal("supervisorModal");
-        renderSupervisors();
+                            closeModal("supervisorModal");
+                            renderSupervisors();
 
-    } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء إضافة المشرف ❌\n" + err.message);
-    }
-}
+                        } catch (err) {
+                            console.error(err);
+                            alert("حدث خطأ أثناء إضافة المشرف ❌\n" + err.message);
+                        }
+                    }
 
 
                     // عرض نموذج إضافة طالب
@@ -1401,10 +1391,10 @@ try {
                         );
 
                         container.innerHTML = `
-                        <h4>المشرفون</h4>
-                        <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
-                        <p>جاري تحميل المشرفين...</p>
-                      `;
+                                        <h4>المشرفون</h4>
+                                        <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+                                        <p>جاري تحميل المشرفين...</p>
+                                      `;
 
                         try {
                             if (!window.firestoreTools || !window.firestoreTools.db) {
@@ -1427,38 +1417,38 @@ try {
                                 const id = docSnap.id;
 
                                 rows += `
-                            <tr>
-                              <td>${s.email || "-"}</td>
-                              <td>
-                                <button class="custom-btn" onclick="deleteUser('${id}', 'users')">حذف</button>
-                              </td>
-                            </tr>
-                          `;
+                                            <tr>
+                                              <td>${s.email || "-"}</td>
+                                              <td>
+                                                <button class="custom-btn" onclick="deleteUser('${id}', 'users')">حذف</button>
+                                              </td>
+                                            </tr>
+                                          `;
                             });
 
                             container.innerHTML = `
-                          <h4>المشرفون</h4>
-                          <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
-                          <div style="margin:10px 0;">
-                  <button onclick="filterStudents('all')">الكل</button>
-                  <button onclick="filterStudents('approved')">🟢 مفعلين</button>
-                  <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
+                                          <h4>المشرفون</h4>
+                                          <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
+                                          <div style="margin:10px 0;">
+                                  <button onclick="filterStudents('all')">الكل</button>
+                                  <button onclick="filterStudents('approved')">🟢 مفعلين</button>
+                                  <button onclick="filterStudents('pending')">🟡 قيد المراجعة</button>
 </div>
 
-                          <div class="table-container">
-                            <table>
-                              <thead>
-                                <tr>
-                                  <th>البريد الإلكتروني</th>
-                                  <th>خيارات</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                ${rows || `<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>`}
-                              </tbody>
-                            </table>
-                          </div>
-                        `;
+                                          <div class="table-container">
+                                            <table>
+                                              <thead>
+                                                <tr>
+                                                  <th>البريد الإلكتروني</th>
+                                                  <th>خيارات</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                ${rows || `<tr><td colspan="2">لا يوجد مشرفين حاليا</td></tr>`}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        `;
                         } catch (err) {
                             console.error(err);
                             container.innerHTML = `<p>حدث خطأ أثناء تحميل المشرفين ❌<br>${err.message}</p>`;
@@ -1483,19 +1473,19 @@ try {
                             return;
                         }
 
-                      try {
-  if (!window.firestoreTools || !window.firestoreTools.db) {
-      alert("Firebase لم يتم تحميله بعد ❌");
-      return;
-  }
+                        try {
+                            if (!window.firestoreTools || !window.firestoreTools.db) {
+                                alert("Firebase لم يتم تحميله بعد ❌");
+                                return;
+                            }
 
-  // استخدم window.db بدل إعادة تعريف const db
-  const snap = await window.db.collection("users").where("email", "==", email).get();
+                            // استخدم window.db بدل إعادة تعريف const db
+                            const snap = await window.db.collection("users").where("email", "==", email).get();
 
-  if (!snap.empty) {
-      alert("هذا البريد مستخدم بالفعل!");
-      return;
-  }
+                            if (!snap.empty) {
+                                alert("هذا البريد مستخدم بالفعل!");
+                                return;
+                            }
                             await db.collection("users").add({
                                 name: email.split("@")[0],
                                 email,
@@ -1698,29 +1688,30 @@ try {
                 <script src="js/app.js"></script>
                 </div>-->
                 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<!-- Firebase init -->
-<script src="./js/firebase.js"></script>
-<!-- Service Worker + PWA Install -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js")
-    .then((reg) => {
-      console.log("Service Worker Registered");
-      reg.update();
+                <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-      if (reg.waiting) {
-        reg.waiting.postMessage({ type: "SKIP_WAITING" });
-      }
+                <!-- Firebase init -->
+                <script src="./js/firebase.js"></script>
+                <!-- Service Worker + PWA Install -->
+                <script>
+                    if ("serviceWorker" in navigator) {
+                        navigator.serviceWorker.register("./sw.js")
+                            .then((reg) => {
+                                console.log("Service Worker Registered");
+                                reg.update();
 
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        window.location.reload();
-      });
-    })
-    .catch(err => console.log("SW registration failed:", err));
-}
+                                if (reg.waiting) {
+                                    reg.waiting.postMessage({ type: "SKIP_WAITING" });
+                                }
+
+                                navigator.serviceWorker.addEventListener("controllerchange", () => {
+                                    window.location.reload();
+                                });
+                            })
+                            .catch(err => console.log("SW registration failed:", err));
+                    }
                 </script>
 
                 <!-- جميع وظائف الأدمن والإعلانات -->
@@ -1735,328 +1726,328 @@ if ("serviceWorker" in navigator) {
                     // ===================== متغيرات عامة =====================
                     let deferredPrompt = null;
                     let animationTimeout = null;
-// ===================== تهيئة Firebase =====================
-if (typeof firebase !== "undefined") {
-    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
-        firebase.initializeApp(firebaseConfig);
-    }
-    if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
-        const fbDb = firebase.firestore();
-        window.firestoreTools = { db: fbDb, collection: fbDb.collection.bind(fbDb) };
-    }
-}
-const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
+                    // ===================== تهيئة Firebase =====================
+                    if (typeof firebase !== "undefined") {
+                        if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+                            firebase.initializeApp(firebaseConfig);
+                        }
+                        if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
+                            const fbDb = firebase.firestore();
+                            window.firestoreTools = { db: fbDb, collection: fbDb.collection.bind(fbDb) };
+                        }
+                    }
+                    const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
 
-// ===================== دوال شريط الإعلان =====================
-window.animationTimeout = window.animationTimeout || null;
-function showAnnouncementBar() {
-    const bar = document.getElementById("announcementBar");
-    if (bar) bar.style.display = "flex";
-}
+                    // ===================== دوال شريط الإعلان =====================
+                    window.animationTimeout = window.animationTimeout || null;
+                    function showAnnouncementBar() {
+                        const bar = document.getElementById("announcementBar");
+                        if (bar) bar.style.display = "flex";
+                    }
 
-function hideAnnouncementBar() {
-    const bar = document.getElementById("announcementBar");
-    if (bar) bar.style.display = "none";
-    if (animationTimeout) {
-        clearTimeout(animationTimeout);
-        animationTimeout = null;
-    }
-}
+                    function hideAnnouncementBar() {
+                        const bar = document.getElementById("announcementBar");
+                        if (bar) bar.style.display = "none";
+                        if (animationTimeout) {
+                            clearTimeout(animationTimeout);
+                            animationTimeout = null;
+                        }
+                    }
 
-function restartAnimation() {
-    const announcementText = document.getElementById("announcementText");
-    if (!announcementText) return;
+                    function restartAnimation() {
+                        const announcementText = document.getElementById("announcementText");
+                        if (!announcementText) return;
 
-    announcementText.style.animation = "none";
-    announcementText.style.left = "-100%";
-    announcementText.offsetHeight;
+                        announcementText.style.animation = "none";
+                        announcementText.style.left = "-100%";
+                        announcementText.offsetHeight;
 
-    const textLength = announcementText.offsetWidth;
-    const duration = Math.max(15, textLength / 50);
-    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-}
+                        const textLength = announcementText.offsetWidth;
+                        const duration = Math.max(15, textLength / 50);
+                        announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+                    }
 
-async function loadAnnouncement() {
-    try {
-        if (!window.firestoreTools) return;
+                    async function loadAnnouncement() {
+                        try {
+                            if (!window.firestoreTools) return;
 
-        const doc = await window.firestoreTools.collection("announcements").doc("current").get();
-        const announcementText = document.getElementById("announcementText");
-        if (!announcementText) return;
+                            const doc = await window.firestoreTools.collection("announcements").doc("current").get();
+                            const announcementText = document.getElementById("announcementText");
+                            if (!announcementText) return;
 
-        if (doc.exists && doc.data().text?.trim()) {
-            const text = doc.data().text.trim();
-            announcementText.innerText = "📢 " + text + " 📢";
-            restartAnimation();
-            showAnnouncementBar();
-        } else {
-            hideAnnouncementBar(); // إخفاء الشريط إذا لم يوجد نص
-        }
-    } catch (err) {
-        console.error("خطأ أثناء تحميل الإعلان:", err);
-        hideAnnouncementBar(); // إخفاء الشريط عند حدوث خطأ
-    }
-}
+                            if (doc.exists && doc.data().text?.trim()) {
+                                const text = doc.data().text.trim();
+                                announcementText.innerText = "📢 " + text + " 📢";
+                                restartAnimation();
+                                showAnnouncementBar();
+                            } else {
+                                hideAnnouncementBar(); // إخفاء الشريط إذا لم يوجد نص
+                            }
+                        } catch (err) {
+                            console.error("خطأ أثناء تحميل الإعلان:", err);
+                            hideAnnouncementBar(); // إخفاء الشريط عند حدوث خطأ
+                        }
+                    }
 
-// ===================== دوال الأدمن =====================
-async function saveAnnouncement() {
-    const input = document.getElementById("adminAdText");
-    if (!input) return;
-    const text = input.value.trim();
-    if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
+                    // ===================== دوال الأدمن =====================
+                    async function saveAnnouncement() {
+                        const input = document.getElementById("adminAdText");
+                        if (!input) return;
+                        const text = input.value.trim();
+                        if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
 
-    try {
-        await window.firestoreTools.collection("announcements").doc("current").set({ text });
-        const announcementText = document.getElementById("announcementText");
-        if (announcementText) { announcementText.innerText = text; restartAnimation(); }
-        showAnnouncementBar();
-        alert("تم حفظ الإعلان ✅");
-    } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
-    }
-}
+                        try {
+                            await window.firestoreTools.collection("announcements").doc("current").set({ text });
+                            const announcementText = document.getElementById("announcementText");
+                            if (announcementText) { announcementText.innerText = text; restartAnimation(); }
+                            showAnnouncementBar();
+                            alert("تم حفظ الإعلان ✅");
+                        } catch (err) {
+                            console.error(err);
+                            alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+                        }
+                    }
 
-async function deleteAnnouncement() {
-    try {
-        if (!window.firestoreTools || !window.firestoreTools.collection) {
-            alert("Firestore لم يتم تحميله بعد ❌");
-            return;
-        }
-        await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
-        if (typeof hideAnnouncementBar === "function") hideAnnouncementBar();
-        alert("تم إيقاف الإعلان ✅");
-    } catch (err) {
-        console.error(err);
-        alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
-    }
-}
+                    async function deleteAnnouncement() {
+                        try {
+                            if (!window.firestoreTools || !window.firestoreTools.collection) {
+                                alert("Firestore لم يتم تحميله بعد ❌");
+                                return;
+                            }
+                            await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+                            if (typeof hideAnnouncementBar === "function") hideAnnouncementBar();
+                            alert("تم إيقاف الإعلان ✅");
+                        } catch (err) {
+                            console.error(err);
+                            alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
+                        }
+                    }
 
-// ===================== وظائف الطلاب والمشرفين =====================
-async function deleteUser(docId, collectionName) {
-    if (!confirm("هل أنت متأكد من الحذف؟")) return;
-    try {
-        await db.collection(collectionName).doc(docId).delete();
-        alert("تم الحذف بنجاح ✅");
-        if (collectionName === "students") renderStudents();
-        if (collectionName === "users") renderSupervisors();
-    } catch (err) { console.error(err); alert("فشل الحذف ❌\n" + err.message); }
-}
+                    // ===================== وظائف الطلاب والمشرفين =====================
+                    async function deleteUser(docId, collectionName) {
+                        if (!confirm("هل أنت متأكد من الحذف؟")) return;
+                        try {
+                            await db.collection(collectionName).doc(docId).delete();
+                            alert("تم الحذف بنجاح ✅");
+                            if (collectionName === "students") renderStudents();
+                            if (collectionName === "users") renderSupervisors();
+                        } catch (err) { console.error(err); alert("فشل الحذف ❌\n" + err.message); }
+                    }
 
-async function setApprove(studentDocId, approvedValue) {
-    try {
-        const ref = db.collection("students").doc(studentDocId);
-        const snap = await ref.get();
-        if (!snap.exists) return;
-        if (snap.data().approved === true) { alert("هذا الطالب مفعل بالفعل ✅"); return; }
-        await ref.update({ approved: approvedValue });
-        alert("تمت الموافقة ✅");
-        renderStudents();
-    } catch (err) { console.error(err); alert("فشل التحديث ❌"); }
-}
+                    async function setApprove(studentDocId, approvedValue) {
+                        try {
+                            const ref = db.collection("students").doc(studentDocId);
+                            const snap = await ref.get();
+                            if (!snap.exists) return;
+                            if (snap.data().approved === true) { alert("هذا الطالب مفعل بالفعل ✅"); return; }
+                            await ref.update({ approved: approvedValue });
+                            alert("تمت الموافقة ✅");
+                            renderStudents();
+                        } catch (err) { console.error(err); alert("فشل التحديث ❌"); }
+                    }
 
-async function rejectStudent(studentDocId) {
-    if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
-    try {
-        await db.collection("students").doc(studentDocId).delete();
-        alert("تم رفض الطلب وحذفه ❌");
-        renderStudents();
-    } catch (err) { console.error(err); alert("فشل الرفض ❌\n" + err.message); }
-}
+                    async function rejectStudent(studentDocId) {
+                        if (!confirm("هل تريد رفض الطالب وحذف طلبه نهائياً؟")) return;
+                        try {
+                            await db.collection("students").doc(studentDocId).delete();
+                            alert("تم رفض الطلب وحذفه ❌");
+                            renderStudents();
+                        } catch (err) { console.error(err); alert("فشل الرفض ❌\n" + err.message); }
+                    }
 
-// ===================== إدارة النماذج والتنقل =====================
-function closeModal(id) {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-}
+                    // ===================== إدارة النماذج والتنقل =====================
+                    function closeModal(id) {
+                        const el = document.getElementById(id);
+                        if (el) el.style.display = "none";
+                    }
 
-function renderTests() {
-    const container = document.getElementById("testsList");
-    if (!container) return;
-    container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
-    container.classList.remove("hidden");
-    ["studentsList", "supervisorsList", "resultsList"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add("hidden");
-    });
-}
+                    function renderTests() {
+                        const container = document.getElementById("testsList");
+                        if (!container) return;
+                        container.innerHTML = `<h4>قائمة الاختبارات</h4><p>هنا يمكنك إضافة وإدارة الاختبارات لاحقاً.</p>`;
+                        container.classList.remove("hidden");
+                        ["studentsList", "supervisorsList", "resultsList"].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.classList.add("hidden");
+                        });
+                    }
 
-function renderResults() {
-    const container = document.getElementById("resultsList");
-    if (!container) return;
-    container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
-    container.classList.remove("hidden");
-    ["studentsList", "supervisorsList", "testsList"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add("hidden");
-    });
-}
+                    function renderResults() {
+                        const container = document.getElementById("resultsList");
+                        if (!container) return;
+                        container.innerHTML = `<h4>النتائج الأسبوعية</h4><p>هنا يمكنك عرض نتائج الامتحانات الأسبوعية للطلاب.</p>`;
+                        container.classList.remove("hidden");
+                        ["studentsList", "supervisorsList", "testsList"].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.classList.add("hidden");
+                        });
+                    }
 
-function resetNavigation() {
-    ["gradePage", "subjectPage", "unitPage", "lessonPage"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add("hidden");
-    });
-    const lessonPath = document.getElementById("lessonPath");
-    if (lessonPath) lessonPath.style.display = "none";
-}
+                    function resetNavigation() {
+                        ["gradePage", "subjectPage", "unitPage", "lessonPage"].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.classList.add("hidden");
+                        });
+                        const lessonPath = document.getElementById("lessonPath");
+                        if (lessonPath) lessonPath.style.display = "none";
+                    }
 
-function stopVideo() {
-    const video = document.getElementById("lessonPlayer");
-    if (video) {
-        video.pause();
-        video.currentTime = 0;
-        video.src = "";
-    }
-}
+                    function stopVideo() {
+                        const video = document.getElementById("lessonPlayer");
+                        if (video) {
+                            video.pause();
+                            video.currentTime = 0;
+                            video.src = "";
+                        }
+                    }
 
-function updateLessonNav(showBackUnit = true) {
-    const btnBackUnit = document.getElementById("btnBackUnit");
-    if (btnBackUnit) btnBackUnit.style.display = showBackUnit ? "inline-block" : "none";
-    const btnHome = document.getElementById("btnHome");
-    if (btnHome) btnHome.style.display = "inline-block";
-}
+                    function updateLessonNav(showBackUnit = true) {
+                        const btnBackUnit = document.getElementById("btnBackUnit");
+                        if (btnBackUnit) btnBackUnit.style.display = showBackUnit ? "inline-block" : "none";
+                        const btnHome = document.getElementById("btnHome");
+                        if (btnHome) btnHome.style.display = "inline-block";
+                    }
 
-function updateGlobalNav(show) {
-    const nav = document.getElementById("globalNav");
-    if (!nav) return;
-    if (show) nav.classList.remove("hidden");
-    else nav.classList.add("hidden");
-}
+                    function updateGlobalNav(show) {
+                        const nav = document.getElementById("globalNav");
+                        if (!nav) return;
+                        if (show) nav.classList.remove("hidden");
+                        else nav.classList.add("hidden");
+                    }
 
-function toggleLessons() {
-    const list = document.getElementById("lessonList");
-    if (list) list.style.display = list.style.display === "none" ? "block" : "none";
-}
+                    function toggleLessons() {
+                        const list = document.getElementById("lessonList");
+                        if (list) list.style.display = list.style.display === "none" ? "block" : "none";
+                    }
 
-function toggleDarkMode() {
-    const body = document.body;
-    const btn = document.getElementById('darkModeBtn');
-    body.classList.toggle("dark-mode");
-    if (btn) btn.textContent = body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
-    localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
-}
+                    function toggleDarkMode() {
+                        const body = document.body;
+                        const btn = document.getElementById('darkModeBtn');
+                        body.classList.toggle("dark-mode");
+                        if (btn) btn.textContent = body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+                        localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
+                    }
 
-// ===================== DOMContentLoaded =====================
-window.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById('darkModeBtn');
-    if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
-    if (btn) btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
+                    // ===================== DOMContentLoaded =====================
+                    window.addEventListener("DOMContentLoaded", () => {
+                        const btn = document.getElementById('darkModeBtn');
+                        if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
+                        if (btn) btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
 
-    loadAnnouncement();
+                        loadAnnouncement();
 
-    document.getElementById("saveAdBtn")?.addEventListener("click", saveAnnouncement);
-    document.getElementById("stopAdBtn")?.addEventListener("click", deleteAnnouncement);
+                        document.getElementById("saveAdBtn")?.addEventListener("click", saveAnnouncement);
+                        document.getElementById("stopAdBtn")?.addEventListener("click", deleteAnnouncement);
 
-const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = e.target.email.value.trim();
-        const password = e.target.password.value.trim();
+                        const loginForm = document.getElementById("loginForm");
+                        if (loginForm) {
+                            loginForm.addEventListener("submit", async (e) => {
+                                e.preventDefault();
+                                const email = e.target.email.value.trim();
+                                const password = e.target.password.value.trim();
 
-        try {
-            // تسجيل الدخول عبر Firebase Auth
-            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-            const user = userCredential.user;
+                                try {
+                                    // تسجيل الدخول عبر Firebase Auth
+                                    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                                    const user = userCredential.user;
 
-            // 🔹 تحقق من Firestore إذا كان أدمن
-            const userDoc = await firebase.firestore().collection("admins").doc(email).get();
-            const role = userDoc.exists ? userDoc.data().role || "ADMIN" : "STUDENT";
+                                    // 🔹 تحقق من Firestore إذا كان أدمن
+                                    const userDoc = await firebase.firestore().collection("admins").doc(email).get();
+                                    const role = userDoc.exists ? userDoc.data().role || "ADMIN" : "STUDENT";
 
-            localStorage.setItem("loggedEmail", email);
-            localStorage.setItem("userRole", role);
-            window.currentUser = { email, role };
+                                    localStorage.setItem("loggedEmail", email);
+                                    localStorage.setItem("userRole", role);
+                                    window.currentUser = { email, role };
 
-            // 🔹 توجيه المستخدم حسب الدور
-            window.location.href = role === "ADMIN" ? "admin.html" : "index.html";
+                                    // 🔹 توجيه المستخدم حسب الدور
+                                    window.location.href = role === "ADMIN" ? "admin.html" : "index.html";
 
-        } catch (err) {
-            alert("خطأ في تسجيل الدخول ❌\n" + err.message);
-        }
-    });
-}
+                                } catch (err) {
+                                    alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+                                }
+                            });
+                        }
 
-    // PWA Install Button
-    const installBtn = document.getElementById("installBtn");
-    let deferredPrompt = null;
-    window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        if (installBtn) installBtn.hidden = false;
-    });
-    if (installBtn) {
-        installBtn.addEventListener("click", async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            installBtn.hidden = true;
-            deferredPrompt = null;
-        });
-    }
-    window.addEventListener("appinstalled", () => {
-        if (installBtn) installBtn.hidden = true;
-        console.log("تم تثبيت التطبيق بنجاح ✅");
-    });
-});
+                        // PWA Install Button
+                        const installBtn = document.getElementById("installBtn");
+                        let deferredPrompt = null;
+                        window.addEventListener("beforeinstallprompt", (e) => {
+                            e.preventDefault();
+                            deferredPrompt = e;
+                            if (installBtn) installBtn.hidden = false;
+                        });
+                        if (installBtn) {
+                            installBtn.addEventListener("click", async () => {
+                                if (!deferredPrompt) return;
+                                deferredPrompt.prompt();
+                                await deferredPrompt.userChoice;
+                                installBtn.hidden = true;
+                                deferredPrompt = null;
+                            });
+                        }
+                        window.addEventListener("appinstalled", () => {
+                            if (installBtn) installBtn.hidden = true;
+                            console.log("تم تثبيت التطبيق بنجاح ✅");
+                        });
+                    });
 
-// ===================== عرض الإعلانات =====================
-const adsContainer = document.getElementById("ads-container");
-if (adsContainer && window.firestoreTools?.collection) {
-    window.firestoreTools.collection("ads")
-        .orderBy("date", "desc")
-        .onSnapshot(snapshot => {
-            adsContainer.innerHTML = "";
-            snapshot.forEach(doc => {
-                const ad = doc.data();
-                const adElement = document.createElement("div");
-                adElement.className = "ad";
-                adElement.innerHTML = `
-                    <h3>${ad.title}</h3>
-                    <p>${ad.content}</p>
-                    <small>${ad.date?.toDate ? ad.date.toDate().toLocaleString() : ""}</small>
-                `;
-                adsContainer.appendChild(adElement);
-            });
-        });
-}
+                    // ===================== عرض الإعلانات =====================
+                    const adsContainer = document.getElementById("ads-container");
+                    if (adsContainer && window.firestoreTools?.collection) {
+                        window.firestoreTools.collection("ads")
+                            .orderBy("date", "desc")
+                            .onSnapshot(snapshot => {
+                                adsContainer.innerHTML = "";
+                                snapshot.forEach(doc => {
+                                    const ad = doc.data();
+                                    const adElement = document.createElement("div");
+                                    adElement.className = "ad";
+                                    adElement.innerHTML = `
+                                    <h3>${ad.title}</h3>
+                                    <p>${ad.content}</p>
+                                    <small>${ad.date?.toDate ? ad.date.toDate().toLocaleString() : ""}</small>
+                                `;
+                                    adsContainer.appendChild(adElement);
+                                });
+                            });
+                    }
 
-// ===================== شريط الإعلان المتحرك =====================
-if (window.firestoreTools?.db) {
-    const db = window.firestoreTools.db;
-    db.collection("announcements").doc("current").onSnapshot(doc => {
-        if (doc.exists && doc.data()?.text?.trim()) {
-            startAnnouncementAnimation(doc.data().text, 12000);
-        } else {
-            hideAnnouncementBar();
-        }
-    });
-}
+                    // ===================== شريط الإعلان المتحرك =====================
+                    if (window.firestoreTools?.db) {
+                        const db = window.firestoreTools.db;
+                        db.collection("announcements").doc("current").onSnapshot(doc => {
+                            if (doc.exists && doc.data()?.text?.trim()) {
+                                startAnnouncementAnimation(doc.data().text, 12000);
+                            } else {
+                                hideAnnouncementBar();
+                            }
+                        });
+                    }
 
-function startAnnouncementAnimation(text, duration = 12000) {
-    const bar = document.getElementById("announcementBar");
-    const textBox = document.getElementById("announcementText");
-    if (!bar || !textBox || !text?.trim()) { hideAnnouncementBar(); return; }
+                    function startAnnouncementAnimation(text, duration = 12000) {
+                        const bar = document.getElementById("announcementBar");
+                        const textBox = document.getElementById("announcementText");
+                        if (!bar || !textBox || !text?.trim()) { hideAnnouncementBar(); return; }
 
-    textBox.innerText = "📢 " + text + " 📢";
-    bar.style.display = "flex";
+                        textBox.innerText = "📢 " + text + " 📢";
+                        bar.style.display = "flex";
 
-    const screenWidth = bar.offsetWidth;
-    const textWidth = textBox.offsetWidth;
+                        const screenWidth = bar.offsetWidth;
+                        const textWidth = textBox.offsetWidth;
 
-    function move() {
-        textBox.style.transition = "none";
-        textBox.style.left = -textWidth + "px";
-        setTimeout(() => {
-            textBox.style.transition = `left ${duration}ms linear`;
-            textBox.style.left = screenWidth + "px";
-        }, 50);
-        animationTimeout = setTimeout(move, duration + 2000);
-    }
+                        function move() {
+                            textBox.style.transition = "none";
+                            textBox.style.left = -textWidth + "px";
+                            setTimeout(() => {
+                                textBox.style.transition = `left ${duration}ms linear`;
+                                textBox.style.left = screenWidth + "px";
+                            }, 50);
+                            animationTimeout = setTimeout(move, duration + 2000);
+                        }
 
-    if (animationTimeout) clearTimeout(animationTimeout);
-    move();
-}
+                        if (animationTimeout) clearTimeout(animationTimeout);
+                        move();
+                    }
                     function hideAnnouncementBar() {
                         const bar = document.getElementById("announcementBar");
                         if (bar) bar.style.display = "none";
@@ -2154,8 +2145,85 @@ function startAnnouncementAnimation(text, duration = 12000) {
                 </style>
 
                 <script>
-               
- 
+
+                    // 🔹 تهيئة Firebase مرة واحدة فقط (بحماية كاملة)
+                    if (typeof firebase !== "undefined") {
+                        if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+                            firebase.initializeApp(firebaseConfig);
+                        }
+                    }
+
+                    // 🔹 حماية في حالة عدم وجود firestoreTools
+                    if (typeof window.firestoreTools === "undefined") {
+                        if (typeof firebase !== "undefined" && firebase.firestore) {
+                            const fbDb = firebase.firestore();
+                            window.firestoreTools = {
+                                db: fbDb,
+                                collection: fbDb.collection.bind(fbDb)
+                            };
+                        }
+                    }
+
+                    // ✅ استخدام متغير db عالمي واحد بدون إعادة تعريفه
+                    window.db = window.db || window.firestoreTools?.db;
+
+                    // دوال مساعدة لإظهار وإخفاء شريط الإعلان
+                    function showAnnouncementBar() {
+                        const bar = document.getElementById("announcementBar");
+                        if (bar) bar.style.display = "flex";
+                    }
+
+                    function hideAnnouncementBar() {
+                        const bar = document.getElementById("announcementBar");
+                        if (bar) bar.style.display = "none";
+                    }
+
+                    // 🔹 إعادة تشغيل حركة الإعلان مع سرعة مناسبة
+                    function restartAnimation() {
+                        const announcementText = document.getElementById("announcementText");
+                        if (!announcementText) return;
+
+                        // أوقف الحركة مؤقتًا
+                        announcementText.style.animation = "none";
+
+                        // ضع النص مباشرة على الشمال (خارج الشاشة) حتى يظهر فورًا
+                        announcementText.style.left = "-100%";
+
+                        // إعادة حساب CSS
+                        announcementText.offsetHeight;
+
+                        // حساب مدة الحركة بناءً على طول النص
+                        const textLength = announcementText.offsetWidth;
+                        const duration = Math.max(15, textLength / 50); // الحد الأدنى 15 ثانية
+
+                        // أعد تشغيل الحركة من الشمال إلى اليمين
+                        announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+                    }
+
+                    // 🔹 تحميل الإعلان عند فتح الصفحة للطلاب
+                    async function loadAnnouncement() {
+                        try {
+                            if (!window.firestoreTools) return;
+
+                            const doc = await window.firestoreTools.collection("announcements").doc("current").get();
+                            if (doc.exists) {
+                                const text = doc.data().text || "";
+                                if (text) {
+                                    const announcementText = document.getElementById("announcementText");
+                                    if (!announcementText) return;
+
+                                    announcementText.innerText = text;
+
+                                    // إعادة تشغيل الحركة بسرعة مناسبة
+                                    restartAnimation();
+
+                                    showAnnouncementBar();
+                                }
+                            }
+                        } catch (err) {
+                            console.error("خطأ أثناء تحميل الإعلان:", err);
+                        }
+                    }
 
                     window.addEventListener("DOMContentLoaded", loadAnnouncement);
 
@@ -2205,7 +2273,66 @@ function startAnnouncementAnimation(text, duration = 12000) {
                     const stopAdBtn = document.getElementById("stopAdBtn");
                     if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
                 </script>
+                <script>
+                    window.addEventListener("DOMContentLoaded", () => {
+                        const loginForm = document.getElementById("loginForm");
 
+                        if (loginForm) {
+                            loginForm.addEventListener("submit", async (e) => {
+                                e.preventDefault();
+                                const email = e.target.email.value.trim();
+                                const password = e.target.password.value.trim();
+
+                                if (!email || !password) {
+                                    alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+                                    return;
+                                }
+
+                                try {
+                                    // 1️⃣ تسجيل الدخول عبر Firebase Auth
+                                    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                                    const user = userCredential.user;
+
+                                    // 2️⃣ تحقق إذا هو أدمن
+                                    const adminDoc = await firebase.firestore().collection("admins").doc(email).get();
+                                    if (adminDoc.exists) {
+                                        const role = adminDoc.data().role || "ADMIN";
+                                        localStorage.setItem("loggedEmail", email);
+                                        localStorage.setItem("userRole", role);
+                                        window.currentUser = { email, role };
+                                        window.location.href = "admin.html";
+                                        return;
+                                    }
+
+                                    // 3️⃣ تحقق إذا هو طالب
+                                    const studentQuery = await firebase.firestore().collection("students")
+                                        .where("email", "==", email).get();
+
+                                    if (studentQuery.empty) {
+                                        alert("هذا الحساب غير مسجل كطالب ❌");
+                                        return;
+                                    }
+
+                                    const studentData = studentQuery.docs[0].data();
+                                    if (!studentData.approved) {
+                                        alert("لم يتم الموافقة على حسابك بعد. يرجى الانتظار ✅");
+                                        return;
+                                    }
+
+                                    // 4️⃣ تسجيل دخول الطالب
+                                    localStorage.setItem("loggedEmail", email);
+                                    localStorage.setItem("userRole", "STUDENT");
+                                    window.currentUser = { email, role: "STUDENT" };
+                                    window.location.href = "index.html";
+
+                                } catch (err) {
+                                    console.error(err);
+                                    alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+                                }
+                            });
+                        }
+                    });
+                </script>
 </body>
 </html>
 
