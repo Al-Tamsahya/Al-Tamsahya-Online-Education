@@ -1716,272 +1716,268 @@
                             .catch(err => console.log("SW registration failed:", err));
                     }
                 </script>
+<script>
+/* ===================== تهيئة المستخدم ===================== */
+const loggedEmail = localStorage.getItem("loggedEmail") || "";
+const userRole = localStorage.getItem("userRole") || "STUDENT";
+window.currentUser = { email: loggedEmail, role: userRole };
 
-               <script>
-    // ===================== تهيئة المستخدم =====================
-    const loggedEmail = localStorage.getItem("loggedEmail") || "";
-    const userRole = localStorage.getItem("userRole") || "STUDENT";
-    window.currentUser = { email: loggedEmail, role: userRole };
+/* ===================== متغيرات عامة ===================== */
+let deferredPrompt = null;
+let animationTimeout = null;
 
-    // ===================== متغيرات عامة =====================
-    let deferredPrompt = null;
-    let animationTimeout = null;
-
-    // ===================== تهيئة Firebase =====================
-    if (typeof firebase !== "undefined") {
-        if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
-            firebase.initializeApp(firebaseConfig);
-        }
-        if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
-            const fbDb = firebase.firestore();
-            window.firestoreTools = { db: fbDb, collection: fbDb.collection.bind(fbDb) };
-        }
+/* ===================== تهيئة Firebase ===================== */
+if (typeof firebase !== "undefined") {
+    if (!firebase.apps.length && typeof firebaseConfig !== "undefined") {
+        firebase.initializeApp(firebaseConfig);
     }
-    const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
-</script>
-                <script>
-    // ===================== دوال شريط الإعلان =====================
-    function showAnnouncementBar() {
-        const bar = document.getElementById("announcementBar");
-        if (bar) bar.style.display = "flex";
+    if (typeof window.firestoreTools === "undefined" && firebase.firestore) {
+        const fbDb = firebase.firestore();
+        window.firestoreTools = { db: fbDb, collection: fbDb.collection.bind(fbDb) };
     }
+}
+const db = window.firestoreTools?.db || (firebase?.firestore ? firebase.firestore() : null);
 
-    function hideAnnouncementBar() {
-        const bar = document.getElementById("announcementBar");
-        if (bar) bar.style.display = "none";
-        if (animationTimeout) {
-            clearTimeout(animationTimeout);
-            animationTimeout = null;
-        }
+/* ===================== دوال شريط الإعلان ===================== */
+function showAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "flex";
+}
+
+function hideAnnouncementBar() {
+    const bar = document.getElementById("announcementBar");
+    if (bar) bar.style.display = "none";
+    if (animationTimeout) {
+        clearTimeout(animationTimeout);
+        animationTimeout = null;
     }
+}
 
-    function restartAnimation() {
+function restartAnimation() {
+    const announcementText = document.getElementById("announcementText");
+    if (!announcementText) return;
+
+    announcementText.style.animation = "none";
+    announcementText.style.left = "-100%";
+    announcementText.offsetHeight;
+
+    const textLength = announcementText.offsetWidth;
+    const duration = Math.max(15, textLength / 50);
+    announcementText.style.animation = `slide-right ${duration}s linear infinite`;
+}
+
+async function loadAnnouncement() {
+    try {
+        if (!window.firestoreTools) return;
+        const doc = await window.firestoreTools.collection("announcements").doc("current").get();
         const announcementText = document.getElementById("announcementText");
         if (!announcementText) return;
 
-        announcementText.style.animation = "none";
-        announcementText.style.left = "-100%";
-        announcementText.offsetHeight;
-
-        const textLength = announcementText.offsetWidth;
-        const duration = Math.max(15, textLength / 50);
-        announcementText.style.animation = `slide-right ${duration}s linear infinite`;
-    }
-
-    async function loadAnnouncement() {
-        try {
-            if (!window.firestoreTools) return;
-
-            const doc = await window.firestoreTools.collection("announcements").doc("current").get();
-            const announcementText = document.getElementById("announcementText");
-            if (!announcementText) return;
-
-            if (doc.exists && doc.data()?.text?.trim()) {
-                const text = doc.data().text.trim();
-                announcementText.innerText = "📢 " + text + " 📢";
-                restartAnimation();
-                showAnnouncementBar();
-            } else {
-                hideAnnouncementBar();
-            }
-        } catch (err) {
-            console.error("خطأ أثناء تحميل الإعلان:", err);
-            hideAnnouncementBar();
-        }
-    }
-
-    function startAnnouncementAnimation(text, duration = 12000) {
-        const bar = document.getElementById("announcementBar");
-        const textBox = document.getElementById("announcementText");
-        if (!bar || !textBox || !text?.trim()) { hideAnnouncementBar(); return; }
-
-        textBox.innerText = "📢 " + text + " 📢";
-        bar.style.display = "flex";
-
-        const screenWidth = bar.offsetWidth;
-        const textWidth = textBox.offsetWidth;
-
-        function move() {
-            textBox.style.transition = "none";
-            textBox.style.left = -textWidth + "px";
-            setTimeout(() => {
-                textBox.style.transition = `left ${duration}ms linear`;
-                textBox.style.left = screenWidth + "px";
-            }, 50);
-            animationTimeout = setTimeout(move, duration + 2000);
-        }
-
-        if (animationTimeout) clearTimeout(animationTimeout);
-        move();
-    }
-
-    if (window.firestoreTools?.db) {
-        const db = window.firestoreTools.db;
-        db.collection("announcements").doc("current").onSnapshot(doc => {
-            if (doc.exists && doc.data()?.text?.trim()) {
-                startAnnouncementAnimation(doc.data().text, 12000);
-            } else {
-                hideAnnouncementBar();
-            }
-        });
-    }
-
-    window.addEventListener("DOMContentLoaded", loadAnnouncement);
-</script>
-                <script>
-    // ===================== دوال الأدمن =====================
-    async function saveAnnouncement() {
-        const input = document.getElementById("adminAdText");
-        if (!input) return;
-
-        const text = input.value.trim();
-        if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
-
-        try {
-            await window.firestoreTools.collection("announcements").doc("current").set({ text });
-            const announcementText = document.getElementById("announcementText");
-            if (announcementText) { announcementText.innerText = text; restartAnimation(); }
+        if (doc.exists && doc.data()?.text?.trim()) {
+            const text = doc.data().text.trim();
+            announcementText.innerText = "📢 " + text + " 📢";
+            restartAnimation();
             showAnnouncementBar();
-            alert("تم حفظ الإعلان ✅");
-        } catch (err) {
-            console.error(err);
-            alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
-        }
-    }
-
-    async function deleteAnnouncement() {
-        try {
-            await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+        } else {
             hideAnnouncementBar();
-            alert("تم إيقاف الإعلان ✅");
-        } catch (err) {
-            console.error(err);
-            alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
         }
+    } catch (err) {
+        console.error("خطأ أثناء تحميل الإعلان:", err);
+        hideAnnouncementBar();
+    }
+}
+
+function startAnnouncementAnimation(text, duration = 12000) {
+    const bar = document.getElementById("announcementBar");
+    const textBox = document.getElementById("announcementText");
+    if (!bar || !textBox || !text?.trim()) { hideAnnouncementBar(); return; }
+
+    textBox.innerText = "📢 " + text + " 📢";
+    bar.style.display = "flex";
+
+    const screenWidth = bar.offsetWidth;
+    const textWidth = textBox.offsetWidth;
+
+    function move() {
+        textBox.style.transition = "none";
+        textBox.style.left = -textWidth + "px";
+        setTimeout(() => {
+            textBox.style.transition = `left ${duration}ms linear`;
+            textBox.style.left = screenWidth + "px";
+        }, 50);
+        animationTimeout = setTimeout(move, duration + 2000);
     }
 
-    // ربط الأزرار بالأحداث
-    const saveAdBtn = document.getElementById("saveAdBtn");
-    if (saveAdBtn) saveAdBtn.addEventListener("click", saveAnnouncement);
+    if (animationTimeout) clearTimeout(animationTimeout);
+    move();
+}
 
-    const stopAdBtn = document.getElementById("stopAdBtn");
-    if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
-</script>
-                <script>
-    window.addEventListener("DOMContentLoaded", () => {
-        const loginForm = document.getElementById("loginForm");
-        if (!loginForm) return;
+if (window.firestoreTools?.db) {
+    const db = window.firestoreTools.db;
+    db.collection("announcements").doc("current").onSnapshot(doc => {
+        if (doc.exists && doc.data()?.text?.trim()) {
+            startAnnouncementAnimation(doc.data().text, 12000);
+        } else {
+            hideAnnouncementBar();
+        }
+    });
+}
 
-        loginForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = e.target.email.value.trim();
-            const password = e.target.password.value.trim();
+window.addEventListener("DOMContentLoaded", loadAnnouncement);
 
-            if (!email || !password) {
-                alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+/* ===================== دوال الأدمن ===================== */
+async function saveAnnouncement() {
+    const input = document.getElementById("adminAdText");
+    if (!input) return;
+
+    const text = input.value.trim();
+    if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
+
+    try {
+        await window.firestoreTools.collection("announcements").doc("current").set({ text });
+        const announcementText = document.getElementById("announcementText");
+        if (announcementText) { announcementText.innerText = text; restartAnimation(); }
+        showAnnouncementBar();
+        alert("تم حفظ الإعلان ✅");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الحفظ ❌\n" + err.message);
+    }
+}
+
+async function deleteAnnouncement() {
+    try {
+        await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+        hideAnnouncementBar();
+        alert("تم إيقاف الإعلان ✅");
+    } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message);
+    }
+}
+
+const saveAdBtn = document.getElementById("saveAdBtn");
+if (saveAdBtn) saveAdBtn.addEventListener("click", saveAnnouncement);
+
+const stopAdBtn = document.getElementById("stopAdBtn");
+if (stopAdBtn) stopAdBtn.addEventListener("click", deleteAnnouncement);
+
+/* ===================== تسجيل الدخول ===================== */
+window.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    if (!loginForm) return;
+
+    loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value.trim();
+        const password = e.target.password.value.trim();
+
+        if (!email || !password) {
+            alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+            return;
+        }
+
+        try {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+
+            // تحقق من الأدمن
+            const adminDoc = await firebase.firestore().collection("admins").doc(email).get();
+            if (adminDoc.exists) {
+                const role = adminDoc.data()?.role || "ADMIN";
+                localStorage.setItem("loggedEmail", email);
+                localStorage.setItem("userRole", role);
+                window.currentUser = { email, role };
+                window.location.href = "admin.html";
                 return;
             }
 
-            try {
-                // تسجيل الدخول عبر Firebase Auth
-                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            // تحقق من الطالب
+            const studentQuery = await firebase.firestore().collection("students")
+                .where("email", "==", email).get();
 
-                // تحقق إذا هو أدمن
-                const adminDoc = await firebase.firestore().collection("admins").doc(email).get();
-                if (adminDoc.exists) {
-                    const role = adminDoc.data().role || "ADMIN";
-                    localStorage.setItem("loggedEmail", email);
-                    localStorage.setItem("userRole", role);
-                    window.currentUser = { email, role };
-                    window.location.href = "admin.html";
-                    return;
-                }
-
-                // تحقق إذا هو طالب
-                const studentQuery = await firebase.firestore().collection("students")
-                    .where("email", "==", email).get();
-
-                if (studentQuery.empty) {
-                    alert("هذا الحساب غير مسجل كطالب ❌");
-                    return;
-                }
-
-                const studentData = studentQuery.docs[0].data();
-                if (!studentData.approved) {
-                    alert("لم يتم الموافقة على حسابك بعد. يرجى الانتظار ✅");
-                    return;
-                }
-
-                localStorage.setItem("loggedEmail", email);
-                localStorage.setItem("userRole", "STUDENT");
-                window.currentUser = { email, role: "STUDENT" };
-                window.location.href = "index.html";
-
-            } catch (err) {
-                console.error(err);
-                alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+            if (studentQuery.empty) {
+                alert("هذا الحساب غير مسجل كطالب ❌");
+                return;
             }
-        });
+
+            const studentData = studentQuery.docs[0].data();
+            if (!studentData.approved) {
+                alert("لم يتم الموافقة على حسابك بعد. يرجى الانتظار ✅");
+                return;
+            }
+
+            const role = "STUDENT"; // ✅ تعريف الدور للطالب
+            localStorage.setItem("loggedEmail", email);
+            localStorage.setItem("userRole", role);
+            window.currentUser = { email, role };
+            window.location.href = "index.html";
+
+        } catch (err) {
+            console.error(err);
+            alert("خطأ في تسجيل الدخول ❌\n" + err.message);
+        }
     });
+});
+
+/* ===================== تثبيت التطبيق PWA ===================== */
+const installBtn = document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.hidden = false;
+});
+
+if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+        if (!deferredPrompt) return;
+        await deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        installBtn.hidden = true;
+        deferredPrompt = null;
+    });
+}
+
+window.addEventListener("appinstalled", () => {
+    if (installBtn) installBtn.hidden = true;
+    console.log("تم تثبيت التطبيق بنجاح ✅");
+});
 </script>
-                <script>
-    const installBtn = document.getElementById("installBtn");
 
-    window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        if (installBtn) installBtn.hidden = false;
-    });
+<style>
+.announcement-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #2563eb;
+    color: #fff;
+    overflow: hidden;
+    z-index: 9999;
+    height: 45px;
+    display: flex;
+    align-items: center;
+}
 
-    if (installBtn) {
-        installBtn.addEventListener("click", async () => {
-            if (!deferredPrompt) return;
-            await deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            installBtn.hidden = true;
-            deferredPrompt = null;
-        });
-    }
+.announcement-text {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    position: relative;
+    left: -100%;
+    animation: slide-right 15s linear infinite;
+}
 
-    window.addEventListener("appinstalled", () => {
-        if (installBtn) installBtn.hidden = true;
-        console.log("تم تثبيت التطبيق بنجاح ✅");
-    });
-</script>
-                <style>
-    .announcement-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: #2563eb;
-        color: #fff;
-        overflow: hidden;
-        z-index: 9999;
-        height: 45px;
-        display: flex;
-        align-items: center;
-    }
+@keyframes slide-right {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
 
-    .announcement-text {
-        white-space: nowrap;
-        font-weight: bold;
-        font-size: 16px;
-        display: inline-block;
-        position: relative;
-        left: -100%;
-        animation: slide-right 15s linear infinite;
-    }
-
-    @keyframes slide-right {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-
-    body { padding-top: 45px; }
+body { padding-top: 45px; }
 </style>
 </body>
 </html>
+
 
 
 
