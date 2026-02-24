@@ -1878,12 +1878,14 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+            // تسجيل الدخول عبر Firebase Auth
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
 
             // تحقق من الأدمن
             const adminDoc = await firebase.firestore().collection("admins").doc(email).get();
+            let role = "STUDENT"; // تعريف الدور الافتراضي
             if (adminDoc.exists) {
-                const role = adminDoc.data()?.role || "ADMIN";
+                role = adminDoc.data()?.role || "ADMIN"; // حماية null
                 localStorage.setItem("loggedEmail", email);
                 localStorage.setItem("userRole", role);
                 window.currentUser = { email, role };
@@ -1895,18 +1897,19 @@ window.addEventListener("DOMContentLoaded", () => {
             const studentQuery = await firebase.firestore().collection("students")
                 .where("email", "==", email).get();
 
-            if (studentQuery.empty) {
+            if (!studentQuery || studentQuery.empty) {
                 alert("هذا الحساب غير مسجل كطالب ❌");
                 return;
             }
 
-            const studentData = studentQuery.docs[0].data();
+            const studentData = studentQuery.docs[0]?.data() || {};
             if (!studentData.approved) {
                 alert("لم يتم الموافقة على حسابك بعد. يرجى الانتظار ✅");
                 return;
             }
 
-            const role = "STUDENT"; // ✅ تعريف الدور للطالب
+            // تعيين الدور للطالب مع حماية null
+            role = "STUDENT";
             localStorage.setItem("loggedEmail", email);
             localStorage.setItem("userRole", role);
             window.currentUser = { email, role };
@@ -1918,7 +1921,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
 /* ===================== تثبيت التطبيق PWA ===================== */
 const installBtn = document.getElementById("installBtn");
 window.addEventListener("beforeinstallprompt", (e) => {
@@ -1977,6 +1979,7 @@ body { padding-top: 45px; }
 </style>
 </body>
 </html>
+
 
 
 
