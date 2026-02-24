@@ -1,4 +1,5 @@
 (function () {
+  // ===================== إعداد Firebase =====================
   const firebaseConfig = {
     apiKey: "AIzaSyDRAwI-FZxQyD_KRPcdtLhAVbjgwLSZ9xU",
     authDomain: "ai-tamsahya-online-education.firebaseapp.com",
@@ -13,12 +14,12 @@
     firebase.initializeApp(firebaseConfig);
   }
 
-  // ✅ تعريف db مرة واحدة فقط على window
+  // تعريف db مرة واحدة فقط على window
   if (!window.db) {
     window.db = firebase.firestore();
   }
 
-  // أدوات compat جاهزة
+  // أدوات Firestore جاهزة مع وظائف مساعدة
   if (!window.firestoreTools) {
     window.firestoreTools = {
       db: window.db,
@@ -33,6 +34,17 @@
       where: (field, op, value) => [field, op, value],
     };
   }
+
+  // دالة مساعدة للحصول على دور المستخدم بأمان
+  window.getUserRole = async function(email) {
+    try {
+      const adminDoc = await window.db.collection("admins").doc(email).get();
+      return adminDoc.exists ? adminDoc.data()?.role || "ADMIN" : "STUDENT";
+    } catch (err) {
+      console.error("خطأ في جلب الدور:", err);
+      return "STUDENT";
+    }
+  };
 
   console.log("🔥 Firebase Initialized Successfully (compat mode)");
 })();
