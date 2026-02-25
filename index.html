@@ -160,8 +160,16 @@
 <form class="login-box" id="loginPage" onsubmit="event.preventDefault(); login();">
     <h2>تسجيل الدخول</h2>
 
-    <input type="text" id="email" placeholder="البريد الإلكتروني" />
-    <input type="password" id="password" placeholder="كلمة المرور" />
+    <input type="text" id="email" placeholder="البريد الإلكتروني" required />
+    <input type="password" id="password" placeholder="كلمة المرور" required />
+
+    <!-- إذا كنت تحتاج الدور (طالب/معلم/مدير) أضف هذا الحقل -->
+    <select id="role" required>
+        <option value="">اختر الدور</option>
+        <option value="student">طالب</option>
+        <option value="teacher">معلم</option>
+        <option value="admin">مدير</option>
+    </select>
 
     <button type="submit" class="login-btn">تسجيل الدخول</button>
 
@@ -169,6 +177,7 @@
         <a href="#" onclick="registerStudentPage()">إنشاء حساب جديد</a>
     </p>
 </form>
+
 
 <script>
     // ✅ تعريف المتغير قبل أي استخدام
@@ -1979,6 +1988,7 @@ body { padding-top: 45px; }
 </style>
 </body>
 </html>
+
 
 
 
