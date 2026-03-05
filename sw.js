@@ -1,3 +1,4 @@
+// service-worker.js
 const CACHE_NAME = "edu-platform-v3";
 
 // الملفات الثابتة التي سيتم كاشها
@@ -35,28 +36,34 @@ self.addEventListener("fetch", (event) => {
 
     const url = new URL(event.request.url);
 
-    // السماح لطلبات Firebase بالمرور
+    // السماح لجميع طلبات Firebase بالمرور مباشرة
     if (
-        url.hostname.includes("googleapis.com") ||
-        url.hostname.includes("gstatic.com") ||
+        url.hostname.includes("firebaseio.com") ||      // Firebase Realtime Database
+        url.hostname.includes("firebasestorage.googleapis.com") || // Storage
+        url.hostname.includes("firestore.googleapis.com") ||      // Firestore
+        url.hostname.includes("googleapis.com") ||    // أي API Firebase
+        url.hostname.includes("gstatic.com") ||      // ملفات JS/CSS Firebase
         url.pathname.startsWith("/api") ||
         url.pathname.includes("login") ||
         url.pathname.includes("register")
     ) {
-        return;
+        return; // تمر الطلبات مباشرة بدون كاش
     }
 
     event.respondWith(
         fetch(event.request)
             .then((res) => {
+                // حفظ نسخة في الكاش للطلبات GET العادية
                 const copy = res.clone();
                 caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
                 return res;
             })
             .catch(async () => {
+                // إذا لم يكن هناك اتصال
                 const cached = await caches.match(event.request);
                 if (cached) return cached;
 
+                // صفحة offline بسيطة
                 return new Response(
                     `<html>
                         <head>
