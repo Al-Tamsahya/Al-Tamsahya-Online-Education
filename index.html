@@ -162,13 +162,6 @@
     <input type="text" id="email" placeholder="البريد الإلكتروني" required />
     <input type="password" id="password" placeholder="كلمة المرور" required />
 
-    <!-- إذا كنت تحتاج الدور (طالب/معلم/مدير) أضف هذا الحقل -->
-    <select id="role" required>
-        <option value="">اختر الدور</option>
-        <option value="student">طالب</option>
-        <option value="teacher">معلم</option>
-        <option value="admin">مدير</option>
-    </select>
 
     <button type="submit" class="login-btn">تسجيل الدخول</button>
 
@@ -1272,10 +1265,6 @@
              // 👨‍💼 إدارة الطلاب والمشرفين
              ============================== -->
 
-<script>
-// ==============================
-// 👨‍🏫 إدارة المشرفين
-// ==============================
 async function renderSupervisors() {
     const container = document.getElementById("supervisorsList");
     if (!container) return;
@@ -1716,4 +1705,5 @@ body { padding-top: 45px; }
 </style>
 </body>
 </html>
+
 
