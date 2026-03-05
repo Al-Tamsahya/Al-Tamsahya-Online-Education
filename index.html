@@ -1439,6 +1439,74 @@ async function addSupervisor() {
 // ==============================
 // 👨‍🎓 إدارة الطلاب
 // ==============================
+                    // ==============================
+// 👨‍🎓 عرض الطلاب
+// ==============================
+async function renderStudents() {
+    const container = document.getElementById("studentsList");
+    if (!container) return;
+
+    // إخفاء الأقسام الأخرى
+    ["supervisorsList", "testsList", "resultsList"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add("hidden");
+    });
+
+    container.classList.remove("hidden");
+    container.innerHTML = `
+        <h4>الطلاب</h4>
+        <button class="custom-btn" onclick="showAddStudentModal()">إضافة طالب</button>
+        <p>جاري تحميل الطلاب...</p>
+    `;
+
+    try {
+        const snap = await window.firestoreTools.collection("students").get();
+
+        let rows = "";
+        snap.forEach(docSnap => {
+            const s = docSnap.data();
+            const id = docSnap.id;
+
+            const name = s.name || "-";
+            const email = s.email || "-";
+            const approved = s.approved ? "✅" : "❌";
+
+            rows += `
+                <tr>
+                    <td>${name}</td>
+                    <td>${email}</td>
+                    <td>${approved}</td>
+                    <td>
+                        <button class="custom-btn danger" onclick="deleteUser('${id}', 'students')">حذف</button>
+                        <button class="custom-btn" onclick="setApprove('${id}')">الموافقة</button>
+                        <button class="custom-btn danger" onclick="rejectStudent('${id}')">رفض</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        container.innerHTML = `
+            <h4>الطلاب</h4>
+            <button class="custom-btn" onclick="showAddStudentModal()">إضافة طالب</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>مفعل؟</th>
+                        <th>خيارات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows || `<tr><td colspan="4">لا يوجد طلاب حاليا</td></tr>`}
+                </tbody>
+            </table>
+        `;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p>حدث خطأ أثناء تحميل الطلاب ❌<br>${err.message}</p>`;
+    }
+}
 function showAddStudentModal() {
     const emailInput = document.getElementById("newStudentEmail");
     const passwordInput = document.getElementById("newStudentPassword");
@@ -1781,6 +1849,7 @@ body { padding-top: 45px; }
 </style>
 </body>
 </html>
+
 
 
 
