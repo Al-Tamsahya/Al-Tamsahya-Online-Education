@@ -1,4 +1,5 @@
 // service-worker.js
+
 const CACHE_NAME = "edu-platform-v3";
 
 // الملفات الثابتة التي سيتم كاشها
@@ -83,3 +84,4 @@ self.addEventListener("fetch", (event) => {
             })
     );
 });
+
