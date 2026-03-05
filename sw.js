@@ -1,92 +1,78 @@
-const CACHE_NAME = "Al-Tamsahya-cache-v2";
+const CACHE_NAME = "edu-platform-v3";
 
-const CORE_FILES = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./css/style.css",
-  "./icon-192.png"
+// الملفات الثابتة التي سيتم كاشها
+const FILES_TO_CACHE = [
+    "./",
+    "./css/style.css",
+    "./manifest.json",
+    "./icon-192.png",
+    "./icon-512.png"
 ];
 
-/* ==================
-   INSTALL
-================== */
+// Install
 self.addEventListener("install", (event) => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_FILES);
-    })
-  );
+    self.skipWaiting();
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+    );
 });
 
-/* ==================
-   ACTIVATE
-================== */
+// Activate
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    )
-  );
-  self.clients.claim();
+    event.waitUntil(
+        caches.keys().then((keys) =>
+            Promise.all(
+                keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null))
+            )
+        )
+    );
+    self.clients.claim();
 });
 
-/* ==================
-   FETCH (SAFE + SMART)
-================== */
+// Fetch
 self.addEventListener("fetch", (event) => {
-  const request = event.request;
+    if (event.request.method !== "GET") return;
 
-  // ❌ تجاهل أي طلب غير GET (حل المشكلة الأساسية)
-  if (request.method !== "GET") {
-    return;
-  }
+    const url = new URL(event.request.url);
 
-  // ❌ تجاهل Firebase / Admin / Auth
-  if (
-    request.url.includes("firebase") ||
-    request.url.includes("googleapis") ||
-    request.url.includes("/admin")
-  ) {
-    return;
-  }
+    // السماح لطلبات Firebase بالمرور
+    if (
+        url.hostname.includes("googleapis.com") ||
+        url.hostname.includes("gstatic.com") ||
+        url.pathname.startsWith("/api") ||
+        url.pathname.includes("login") ||
+        url.pathname.includes("register")
+    ) {
+        return;
+    }
 
-  event.respondWith(
-    caches.match(request).then((cachedResponse) => {
-      // لو موجود في الكاش → رجّعه
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+    event.respondWith(
+        fetch(event.request)
+            .then((res) => {
+                const copy = res.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+                return res;
+            })
+            .catch(async () => {
+                const cached = await caches.match(event.request);
+                if (cached) return cached;
 
-      // غير موجود → اجلبه من الشبكة وخزّنه
-      return fetch(request)
-        .then((networkResponse) => {
-          if (
-            !networkResponse ||
-            networkResponse.status !== 200 ||
-            networkResponse.type !== "basic"
-          ) {
-            return networkResponse;
-          }
-
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
-
-          return networkResponse;
-        })
-        .catch(() => {
-          // fallback لو مفيش شبكة
-          return caches.match("./index.html");
-        });
-    })
-  );
+                return new Response(
+                    `<html>
+                        <head>
+                            <title>🚫 لا يوجد اتصال بالإنترنت</title>
+                            <style>
+                                body { text-align:center; margin-top:100px; font-family:Arial,sans-serif; }
+                                h1 { color:red; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>🚫 لا يوجد اتصال بالإنترنت</h1>
+                            <p>حاول مرة أخرى عند توفر الشبكة</p>
+                        </body>
+                    </html>`,
+                    { headers: { "Content-Type": "text/html" }, status: 503 }
+                );
+            })
+    );
 });
