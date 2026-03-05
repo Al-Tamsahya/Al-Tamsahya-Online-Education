@@ -1311,6 +1311,7 @@ async function renderSupervisors() {
     `;
 
     try {
+        // جلب المشرفين من Collection "users" حيث role = "SUPERVISOR"
         const snap = await window.firestoreTools.db.collection("users")
             .where("role", "==", "SUPERVISOR")
             .get();
@@ -1319,9 +1320,13 @@ async function renderSupervisors() {
         snap.forEach(docSnap => {
             const s = docSnap.data();
             const id = docSnap.id;
+
+            // التأكد من أن البيانات موجودة لتجنب Null أو Undefined
+            const email = s.email ? s.email : "-";
+
             rows += `
                 <tr>
-                    <td>${s.email || "-"}</td>
+                    <td>${email}</td>
                     <td>
                         <button class="custom-btn danger" onclick="deleteUser('${id}', 'users')">حذف</button>
                     </td>
@@ -1329,6 +1334,7 @@ async function renderSupervisors() {
             `;
         });
 
+        // عرض الجدول مع الزر وإظهار رسالة إذا لم يوجد مشرفين
         container.innerHTML = `
             <h4>المشرفون</h4>
             <button class="custom-btn" onclick="showAddSupervisorModal()">إضافة مشرف</button>
@@ -1775,6 +1781,7 @@ body { padding-top: 45px; }
 </style>
 </body>
 </html>
+
 
 
 
