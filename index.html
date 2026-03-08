@@ -118,6 +118,32 @@
             body.dark-mode .login-btn {
                 background-color: #16a34a;
             }
+
+        <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    direction: rtl;
+}
+
+/* تصميم اسم المستخدم */
+#userBox{
+display:inline-flex;
+align-items:center;
+margin-right:15px;
+font-weight:bold;
+}
+
+#userAvatar{
+width:28px;
+height:28px;
+border-radius:50%;
+margin-left:6px;
+}
+
+</style>
     </style>
 </head>
 <body>
@@ -129,11 +155,17 @@
 
     <!-- شريط المنصة -->
     <div class="header">
-        منصة التمساحية التعليمية
-        <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
-            🌙 الوضع الليلي
-        </button>
+    منصة التمساحية التعليمية
+
+    <div id="userBox">
+        <img id="userAvatar" src="https://i.imgur.com/6VBx3io.png">
+        <span id="navUser"></span>
     </div>
+
+    <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
+        🌙 الوضع الليلي
+    </button>
+</div>
     <!-- محتوى الصفحة -->
     <div class="content">
         <p class="description">
@@ -282,6 +314,7 @@
 
                 <h1 class="register-title">تسجيل حساب جديد</h1>
 
+                <input type="text" id="regName" placeholder="اسم الطالب">
                 <input type="text" id="regEmail" placeholder="البريد الإلكتروني">
                 <input type="password" id="regPassword" placeholder="كلمة المرور">
 
@@ -791,7 +824,7 @@
 
         document.getElementById("welcomeMessage").classList.add("hidden");
         const navUserStudent = document.getElementById("navUser");
-        if(navUserStudent) navUserStudent.textContent = " | " + student.email;
+        if(navUserStudent) navUserStudent.textContent = student.name;
 
         // ❌ إخفاء لوحة الإدارة للطلاب
         document.getElementById("adminPanel").classList.add("hidden");
@@ -887,9 +920,10 @@
 
                     // تسجيل طالب جديد
                     async function registerStudent() {
+                        const name = document.getElementById("regName").value.trim();
                         const email = document.getElementById("regEmail").value.trim();
-                        const password = document.getElementById("regPassword").value.trim();
-
+                        const password = document.getElementById("regPassword").value.trim();;
+                        
 
                         if (!email || !password) {
                             alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
@@ -913,13 +947,14 @@
 
                             // ✅ إضافة الطالب في Firestore
                             // لا تخزن كلمة المرور في Firestore، اعتمد فقط على Firebase Auth
-await db.collection("students").add({
-    name: email.split("@")[0],
-    email,
-    role: "STUDENT",
-    approved: false,
-    createdAt: new Date().toISOString()
-});
+                            await db.collection("students").add({
+                                name: name,
+                                email: email,
+                                password: password,
+                                role: "STUDENT",
+                                approved: false,
+                                createdAt: new Date().toISOString()
+                            });
 
                             alert("تم إنشاء الحساب بنجاح ✅\بانتظار موافقة الإدارة");
 
@@ -1094,19 +1129,19 @@ await db.collection("students").add({
                         const textDiv = document.getElementById("lessonText");
 
                         videoDiv.innerHTML = `
-                                        <video
-                                          id="lessonPlayer"
-                                          controls
-                                          playsinline
-                                          preload="auto"
-                                          muted
-                                          width="100%"
-                                          style="max-height: 220px; border-radius: 12px;"
-                                        >
-                                          <source src="./videos/Lesson1.mp4?v=1" type="video/mp4">
-                                          المتصفح لا يدعم تشغيل الفيديو
-                                        </video>
-                                      `;
+<video
+id="lessonPlayer"
+controls
+playsinline
+preload="auto"
+muted
+width="100%"
+style="max-height: 220px; border-radius: 12px;"
+>
+<source src="${lesson.video}" type="video/mp4">
+المتصفح لا يدعم تشغيل الفيديو
+</video>
+`;
 
                         const video = document.getElementById("lessonPlayer");
                         if (video) {
@@ -1847,8 +1882,21 @@ window.addEventListener("appinstalled", () => {
 }
 body { padding-top: 45px; }
 </style>
+
+                <div id="mobileNav">
+
+<button onclick="smartBack()" class="navBtn">
+⬅ رجوع
+</button>
+
+<button onclick="goHome()" class="navBtn">
+🏠 الرئيسية
+</button>
+
+</div>
 </body>
 </html>
+
 
 
 
