@@ -612,25 +612,33 @@ margin-left:6px;
 
 
                     // ===== باقي كودك =====
-                    function updateBackButton() {
-                        const backBtn = document.getElementById("backBtn");
-                        const homeBtn = document.getElementById("homeBtn");
-                        const globalNav = document.getElementById("globalNav");
+                   function updateBackButton() {
 
-                        if (!backBtn || !homeBtn || !globalNav) return;
+const backBtn = document.getElementById("backBtn");
+const homeBtn = document.getElementById("homeBtn");
+const subjectsBtn = document.getElementById("subjectsBtn");
 
-                        // لو في الصفحة الرئيسية (اختيار الصفوف)
-                        if (!currentGrade) {
-                            globalNav.classList.add("hidden");   // ❌ اخفاء الشريط كله
-                            return;
-                        }
+if(!backBtn || !homeBtn || !subjectsBtn) return;
 
-                        // في أي صفحة داخلية
-                        globalNav.classList.remove("hidden");
-                        backBtn.style.display = "inline-block";
-                        homeBtn.style.display = "inline-block";
-                    }
+backBtn.style.display = "none";
+homeBtn.style.display = "none";
+subjectsBtn.style.display = "none";
 
+if(currentGrade){
+homeBtn.style.display = "inline-block";
+}
+
+if(currentSubject){
+subjectsBtn.style.display = "inline-block";
+}
+
+if(currentUnit){
+backBtn.style.display = "inline-block";
+subjectsBtn.style.display = "inline-block";
+homeBtn.style.display = "inline-block";
+}
+
+}
 
 
 
@@ -882,7 +890,11 @@ margin-left:6px;
                         currentUnit = null;
                         renderGrades();   // الذهاب لاختيار المرحلة
                     }
-
+                        function goSubjects() {
+                            stopVideo();
+                            currentUnit = null;
+                            renderSubjects(currentGrade);
+                        }
 
                     // صفحة التسجيل
                     function registerStudentPage() {
@@ -1285,7 +1297,27 @@ style="max-height: 220px; border-radius: 12px;"
                         }
                     }
 
+                    function updateNavButtons(screen){
 
+let backBtn = document.getElementById("backBtn");
+let subjectsBtn = document.getElementById("subjectsBtn");
+let homeBtn = document.getElementById("homeBtn");
+
+backBtn.style.display = "none";
+subjectsBtn.style.display = "none";
+homeBtn.style.display = "none";
+
+if(screen === "lessonsScreen"){
+backBtn.style.display = "inline-block";
+subjectsBtn.style.display = "inline-block";
+homeBtn.style.display = "inline-block";
+}
+
+if(screen === "subjectsScreen"){
+homeBtn.style.display = "inline-block";
+}
+
+}
 
                     // إظهار قسم معين وإخفاء الباقي
                     function showSection(idToShow) {
@@ -1883,19 +1915,24 @@ window.addEventListener("appinstalled", () => {
 body { padding-top: 45px; }
 </style>
 
-                <div id="mobileNav">
+<div id="mobileNav">
 
-<button onclick="smartBack()" class="navBtn">
+<button id="backBtn" onclick="smartBack()" class="navBtn">
 ⬅ رجوع
 </button>
 
-<button onclick="goHome()" class="navBtn">
+<button id="subjectsBtn" onclick="goSubjects()" class="navBtn">
+📚 المواد
+</button>
+
+<button id="homeBtn" onclick="goHome()" class="navBtn">
 🏠 الرئيسية
 </button>
 
 </div>
 </body>
 </html>
+
 
 
 
