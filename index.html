@@ -1140,21 +1140,23 @@ homeBtn.style.display = "inline-block";
                         const videoDiv = document.getElementById("lessonVideo");
                         const textDiv = document.getElementById("lessonText");
 
-                        videoDiv.innerHTML = `
-<video
-id="lessonPlayer"
-controls
-playsinline
-preload="auto"
-muted
-width="100%"
-style="max-height: 220px; border-radius: 12px;"
->
-<source src="${lesson.video}" type="video/mp4">
-المتصفح لا يدعم تشغيل الفيديو
-</video>
-`;
+                         videoDiv.innerHTML = `
+                                 <video
+                                   id="lessonPlayer"
+                                   controls
+                                   playsinline
+                                   preload="auto"
+                                   muted
+                                   width="100%"
+                                   style="max-height: 220px; border-radius: 12px;"
+                                 >
+                                   <source src="./videos/Lesson1.mp4?v=1" type="video/mp4">
+                                   المتصفح لا يدعم تشغيل الفيديو
+                                 </video>
+                               `;
 
+
+                      
                         const video = document.getElementById("lessonPlayer");
                         if (video) {
                             video.play().catch(err => console.log("Autoplay blocked:", err));
@@ -1932,6 +1934,7 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
+
 
 
 
