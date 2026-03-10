@@ -690,9 +690,9 @@ homeBtn.style.display = "inline-block";
                     }
 
                    // ===============================
-                    // تسجيل الدخول (Admin + Supervisor + Student)
-                    // ===============================
-                 async function login() {
+                  // تسجيل الدخول (Admin + Supervisor + Student)
+// ===============================
+async function login() {
     const email = document.getElementById("email").value.trim().toLowerCase();
     const password = document.getElementById("password").value.trim();
 
@@ -737,6 +737,13 @@ homeBtn.style.display = "inline-block";
                 const navUser = document.getElementById("navUser");
                 if(navUser) navUser.textContent = " | " + dbEmail;
 
+                // ✅ إظهار مربع البروفايل في الهيدر
+                const userBox = document.getElementById("userBox");
+                if(userBox) {
+                    userBox.classList.remove("hidden");
+                    userBox.textContent = dbEmail + " ▼"; // إضافة السهم للأسفل
+                }
+
                 // ✅ إظهار لوحة الإدارة للأدمن
                 document.getElementById("adminPanel").classList.remove("hidden");
                 // 🔔 إظهار مربع إدارة الإعلان + تحميل الإعلان الحالي
@@ -754,7 +761,6 @@ homeBtn.style.display = "inline-block";
                 return;
             }
         }
-
         // ✅ لو لم يكن أدمن احذف العلامة
         localStorage.removeItem("isAdmin");
 
@@ -791,7 +797,11 @@ homeBtn.style.display = "inline-block";
             document.getElementById("welcomeMessage").classList.add("hidden");
             const navUser = document.getElementById("navUser");
             if(navUser) navUser.textContent = " | " + sup.email;
-
+            const userBox = document.getElementById("userBox");
+            if(userBox) {
+                userBox.classList.remove("hidden");
+                userBox.textContent = sup.email + " ▼";
+            }
             // المشرف يشوف لوحة الإدارة
             document.getElementById("adminPanel").classList.remove("hidden");
 
@@ -840,7 +850,12 @@ homeBtn.style.display = "inline-block";
         document.getElementById("welcomeMessage").classList.add("hidden");
         const navUserStudent = document.getElementById("navUser");
         if(navUserStudent) navUserStudent.textContent = student.name;
-
+        const userBox = document.getElementById("userBox");
+            if(userBox) {
+                userBox.classList.remove("hidden");
+                userBox.textContent = student.name + " ▼";
+            }
+    
         // ❌ إخفاء لوحة الإدارة للطلاب
         document.getElementById("adminPanel").classList.add("hidden");
 
@@ -869,26 +884,33 @@ homeBtn.style.display = "inline-block";
 
 
 
-                    // تسجيل خروج
-                    function logout() {
-                        currentUser = null;
-                    
-                        // ✅ حذف صلاحية الأدمن
-                        localStorage.removeItem("isAdmin");
-                    
-                        // إيقاف الفيديو نهائيًا
-                        document.getElementById("lessonVideo").innerHTML = "";
-                    
-                        document.getElementById("loginPage").classList.remove("hidden");
-                        document.getElementById("registerPage").classList.add("hidden");
-                        document.getElementById("mainPage").classList.add("hidden");
-                        document.getElementById("adminPanel").classList.add("hidden");
-                        document.querySelector(".logout-btn").classList.add("hidden");
-                        document.getElementById("navUser").textContent = "";
-                        document.getElementById("welcomeMessage").classList.remove("hidden");
-                    
-                        resetNavigation();
-                    }
+                // تسجيل خروج
+function logout() {
+    currentUser = null;
+
+    // ✅ حذف صلاحية الأدمن
+    localStorage.removeItem("isAdmin");
+
+    // إيقاف الفيديو نهائيًا
+    document.getElementById("lessonVideo").innerHTML = "";
+
+    // إظهار صفحة تسجيل الدخول وإخفاء باقي الصفحات
+    document.getElementById("loginPage").classList.remove("hidden");
+    document.getElementById("registerPage").classList.add("hidden");
+    document.getElementById("mainPage").classList.add("hidden");
+    document.getElementById("adminPanel").classList.add("hidden");
+
+    // إخفاء زر تسجيل الخروج والبروفايل
+    document.querySelector(".logout-btn").classList.add("hidden");
+    document.getElementById("userBox").classList.add("hidden"); // ← تم الإضافة
+
+    // إعادة تعيين اسم المستخدم ورسائل الترحيب
+    document.getElementById("navUser").textContent = "";
+    document.getElementById("welcomeMessage").classList.remove("hidden");
+
+    // إعادة ضبط قائمة التنقل
+    resetNavigation();
+}
                  function toggleUserMenu(){
                         const menu = document.getElementById("userMenu");
                         menu.classList.toggle("hidden");
@@ -1956,3 +1978,4 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
+
