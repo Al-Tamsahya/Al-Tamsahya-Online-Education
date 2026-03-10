@@ -157,10 +157,19 @@ margin-left:6px;
     <div class="header">
     منصة التمساحية التعليمية
 
-    <div id="userBox">
-        <img id="userAvatar" src="https://i.imgur.com/6VBx3io.png">
-        <span id="navUser"></span>
-    </div>
+    <div id="userBox" onclick="toggleUserMenu()">
+
+<img id="userAvatar" src="https://i.imgur.com/6VBx3io.png">
+
+<span id="navUser"></span>
+
+<span class="userArrow">▼</span>
+
+<div id="userMenu" class="hidden">
+<button onclick="logout()">🚪 تسجيل الخروج</button>
+</div>
+
+</div>
 
     <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
         🌙 الوضع الليلي
@@ -446,9 +455,7 @@ margin-left:6px;
                     </div>
                 </div>
 
-                <button class="logout-btn hidden" onclick="logout()">
-                    تسجيل الخروج
-                </button>
+                
 
                 <footer>© 2026 منصة التمساحية التعليمية</footer>
                 
@@ -865,13 +872,13 @@ homeBtn.style.display = "inline-block";
                     // تسجيل خروج
                     function logout() {
                         currentUser = null;
-
+                    
                         // ✅ حذف صلاحية الأدمن
                         localStorage.removeItem("isAdmin");
-
+                    
                         // إيقاف الفيديو نهائيًا
                         document.getElementById("lessonVideo").innerHTML = "";
-
+                    
                         document.getElementById("loginPage").classList.remove("hidden");
                         document.getElementById("registerPage").classList.add("hidden");
                         document.getElementById("mainPage").classList.add("hidden");
@@ -879,10 +886,13 @@ homeBtn.style.display = "inline-block";
                         document.querySelector(".logout-btn").classList.add("hidden");
                         document.getElementById("navUser").textContent = "";
                         document.getElementById("welcomeMessage").classList.remove("hidden");
-
+                    
                         resetNavigation();
                     }
-
+                 function toggleUserMenu(){
+                        const menu = document.getElementById("userMenu");
+                        menu.classList.toggle("hidden");
+                        }
                     function goHome() {
                         stopVideo();      // ⛔ إيقاف الفيديو مثل زر الرجوع
                         currentGrade = null;
@@ -1885,6 +1895,18 @@ window.addEventListener("appinstalled", () => {
     if (installBtn) installBtn.hidden = true;
     console.log("تم تثبيت التطبيق بنجاح ✅");
 });
+
+// 👇 إغلاق قائمة البروفايل عند الضغط خارجها
+document.addEventListener("click", function(event){
+
+const userBox = document.getElementById("userBox");
+const menu = document.getElementById("userMenu");
+
+if(userBox && !userBox.contains(event.target)){
+menu.classList.add("hidden");
+}
+
+});
 </script>
 
 <style>
@@ -1934,10 +1956,3 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
