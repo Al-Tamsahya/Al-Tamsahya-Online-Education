@@ -1908,14 +1908,13 @@ window.addEventListener("appinstalled", () => {
 
 // 👇 إغلاق قائمة البروفايل عند الضغط خارجها
 document.addEventListener("click", function(event){
+    const userBox = document.getElementById("userBox");
+    const menu = document.getElementById("userMenu");
 
-const userBox = document.getElementById("userBox");
-const menu = document.getElementById("userMenu");
-
-if(userBox && !userBox.contains(event.target)){
-menu.classList.add("hidden");
-}
-
+    // ✅ تحقق أن كلا العنصرين موجودين
+    if(userBox && menu && !userBox.contains(event.target)){
+        menu.classList.add("hidden");
+    }
 });
                     firebase.auth().onAuthStateChanged(user => {
     const userBox = document.getElementById("userBox");
@@ -1978,6 +1977,7 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
+
 
 
 
