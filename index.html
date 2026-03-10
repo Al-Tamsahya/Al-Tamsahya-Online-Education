@@ -159,9 +159,10 @@ margin-left:6px;
 
    <!-- مربع البروفايل (مخفي افتراضياً) -->
 <!-- مربع البروفايل (مخفي افتراضياً) -->
-<div id="userBox" style="display:none; align-items:center; cursor:pointer;" onclick="toggleUserMenu()">
+<div id="userBox" class="hidden" style="display:flex; align-items:center; cursor:pointer; position:relative;" onclick="toggleUserMenu()">
     <!-- صورة المستخدم -->
-    <img id="userAvatar" src="https://i.imgur.com/6VBx3io.png" style="width:28px; height:28px; border-radius:50%; margin-left:6px;">
+    <img id="userAvatar" src="https://i.imgur.com/6VBx3io.png" 
+         style="width:28px; height:28px; border-radius:50%; margin-left:6px;">
     
     <!-- اسم المستخدم -->
     <span id="navUser" style="margin-right:6px; font-weight:bold;"></span>
@@ -170,8 +171,12 @@ margin-left:6px;
     <span class="userArrow">▼</span>
 
     <!-- القائمة المنسدلة -->
-    <div id="userMenu" class="hidden" style="position:absolute; right:0; background:#fff; border:1px solid #ccc; border-radius:6px; padding:5px; z-index:10;">
-        <button onclick="logout()" style="background:none; border:none; cursor:pointer;">🚪 تسجيل الخروج</button>
+    <div id="userMenu" class="hidden" 
+         style="position:absolute; top:36px; right:0; background:#fff; border:1px solid #ccc; border-radius:6px; padding:5px; z-index:10; min-width:120px;">
+        <button onclick="logout()" 
+                style="width:100%; text-align:left; background:none; border:none; cursor:pointer; padding:5px;">
+            🚪 تسجيل الخروج
+        </button>
     </div>
 </div>
 
@@ -1977,6 +1982,7 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
+
 
 
 
