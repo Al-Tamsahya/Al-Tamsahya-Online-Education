@@ -716,7 +716,8 @@ async function login() {
     try {
         console.log("=== LOGIN START ===", email);
 
-        const userBox = document.getElementById("userBox"); // ✅ تعريف userBox مرة واحدة هنا
+        // ✅ إرجاع userBox بعد التأكد من وجود DOM
+        const getUserBox = () => document.getElementById("userBox");
 
         // =========================
         // 1) Admin login (admins/admin)
@@ -737,10 +738,10 @@ async function login() {
 
                 document.getElementById("loginPage").classList.add("hidden");
                 document.getElementById("mainPage").classList.remove("hidden");
-                document.querySelector(".logout-btn").classList.remove("hidden");
+                document.querySelector(".logout-btn")?.classList.remove("hidden");
                 document.getElementById("welcomeMessage").classList.add("hidden");
 
-                // ✅ إظهار البروفايل فقط بعد تسجيل الدخول
+                const userBox = getUserBox();
                 if (userBox) {
                     userBox.classList.remove("hidden");
                     userBox.innerHTML = dbEmail + " ▼";
@@ -789,10 +790,10 @@ async function login() {
             currentUser = { ...sup, id: supDoc.id, role: "SUPERVISOR" };
             document.getElementById("loginPage").classList.add("hidden");
             document.getElementById("mainPage").classList.remove("hidden");
-            document.querySelector(".logout-btn").classList.remove("hidden");
+            document.querySelector(".logout-btn")?.classList.remove("hidden");
             document.getElementById("welcomeMessage").classList.add("hidden");
 
-            // ✅ إظهار البروفايل فقط بعد تسجيل الدخول
+            const userBox = getUserBox();
             if (userBox) {
                 userBox.classList.remove("hidden");
                 userBox.innerHTML = sup.email + " ▼";
@@ -835,16 +836,15 @@ async function login() {
         currentUser = { ...student, id: studentDoc.id, role: "STUDENT" };
         document.getElementById("loginPage").classList.add("hidden");
         document.getElementById("mainPage").classList.remove("hidden");
-        document.querySelector(".logout-btn").classList.remove("hidden");
+        document.querySelector(".logout-btn")?.classList.remove("hidden");
         document.getElementById("welcomeMessage").classList.add("hidden");
 
-        // ✅ إظهار البروفايل فقط بعد تسجيل الدخول
+        const userBox = getUserBox();
         if (userBox) {
             userBox.classList.remove("hidden");
             userBox.innerHTML = student.name + " ▼";
         }
 
-        // ❌ إخفاء لوحة الإدارة للطلاب
         document.getElementById("adminPanel").classList.add("hidden");
 
         renderGrades();
@@ -855,6 +855,7 @@ async function login() {
         alert("حدث خطأ أثناء تسجيل الدخول ❌\n" + err.message);
     }
 }
+    
                     function filterStudents() {
                         const input = document.getElementById("studentSearch");
                         const filter = input.value.toLowerCase();
@@ -1977,6 +1978,7 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
+
 
 
 
