@@ -14,7 +14,6 @@ body {
     background: #f3f4f6;
     color: #111827;
 }
-
 h1, h2, h3 {
     line-height: 1.2;
 }
@@ -150,7 +149,6 @@ button {
     font-weight: 800;
     border-radius: 999px;
 }
-
     /* إرسال طلب التسجيل */
     .register-btn.primary {
         background: #22c55e;
