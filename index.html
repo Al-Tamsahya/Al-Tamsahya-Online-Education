@@ -157,18 +157,21 @@ margin-left:6px;
     <div class="header">
     منصة التمساحية التعليمية
 
-    <div id="userBox" onclick="toggleUserMenu()">
+   <!-- مربع البروفايل (مخفي افتراضياً) -->
+<div id="userBox" style="display:none; align-items:center; cursor:pointer;" onclick="toggleUserMenu()">
+    <!-- صورة المستخدم -->
+    <img id="userAvatar" src="https://i.imgur.com/6VBx3io.png" style="width:28px; height:28px; border-radius:50%; margin-left:6px;">
+    
+    <!-- اسم المستخدم -->
+    <span id="navUser" style="margin-right:6px; font-weight:bold;"></span>
 
-<img id="userAvatar" src="https://i.imgur.com/6VBx3io.png">
+    <!-- السهم للأسفل -->
+    <span class="userArrow">▼</span>
 
-<span id="navUser"></span>
-
-<span class="userArrow">▼</span>
-
-<div id="userMenu" class="hidden">
-<button onclick="logout()">🚪 تسجيل الخروج</button>
-</div>
-
+    <!-- القائمة المنسدلة -->
+    <div id="userMenu" class="hidden" style="position:absolute; right:0; background:#fff; border:1px solid #ccc; border-radius:6px; padding:5px; z-index:10;">
+        <button onclick="logout()" style="background:none; border:none; cursor:pointer;">🚪 تسجيل الخروج</button>
+    </div>
 </div>
 
     <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
@@ -1929,6 +1932,18 @@ menu.classList.add("hidden");
 }
 
 });
+                    firebase.auth().onAuthStateChanged(user => {
+    const userBox = document.getElementById("userBox");
+    if (userBox) {
+        if (user) {
+            // المستخدم مسجل دخول → إظهار زر البروفايل
+            userBox.style.display = "inline-block";
+        } else {
+            // المستخدم غير مسجل دخول → إخفاء زر البروفايل
+            userBox.style.display = "none";
+        }
+    }
+});
 </script>
 
 <style>
@@ -1978,4 +1993,5 @@ body { padding-top: 45px; }
 </div>
 </body>
 </html>
+
 
