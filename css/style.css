@@ -14,6 +14,7 @@ body {
     background: #f3f4f6;
     color: #111827;
 }
+
 h1, h2, h3 {
     line-height: 1.2;
 }
@@ -149,6 +150,7 @@ button {
     font-weight: 800;
     border-radius: 999px;
 }
+
     /* إرسال طلب التسجيل */
     .register-btn.primary {
         background: #22c55e;
@@ -216,7 +218,7 @@ button {
    Admin Box
 ===================== */
 .admin-box {
-    background: #e2e8f0;
+    background: #111827;
     padding: 18px;
     border-radius: 10px;
     margin-top: 20px;
