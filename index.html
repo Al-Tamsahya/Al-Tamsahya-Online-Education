@@ -159,7 +159,7 @@ margin-left:6px;
 
    <!-- مربع البروفايل (مخفي افتراضياً) -->
 <!-- مربع البروفايل (مخفي افتراضياً) -->
-<div id="userBox" class="hidden" style="display:none;" onclick="toggleUserMenu()">
+<div id="userBox" class="hidden" style="display:flex; align-items:center; cursor:pointer; position:relative;" onclick="toggleUserMenu()">
     <!-- صورة المستخدم -->
     <img id="userAvatar" src="https://i.imgur.com/6VBx3io.png" 
          style="width:28px; height:28px; border-radius:50%; margin-left:6px;">
@@ -171,13 +171,15 @@ margin-left:6px;
     <span class="userArrow">▼</span>
 
     <!-- القائمة المنسدلة -->
-    <div id="userMenu" class="hidden" 
-         style="position:absolute; top:36px; right:0; background:#fff; border:1px solid #ccc; border-radius:6px; padding:5px; z-index:10; min-width:120px;">
-        <button onclick="logout()" 
-                style="width:100%; text-align:left; background:none; border:none; cursor:pointer; padding:5px;">
-            🚪 تسجيل الخروج
-        </button>
-    </div>
+    <div id="userMenu" class="hidden"
+     style="position:absolute; top:40px; right:0; background:#ffffff; border:1px solid #ddd; border-radius:8px; padding:6px; z-index:999; min-width:140px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+
+    <button onclick="logout()"
+            style="width:100%; text-align:right; background:none; border:none; cursor:pointer; padding:8px; font-size:14px;">
+        🚪 تسجيل الخروج
+    </button>
+
+</div>
 </div>
 
     <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
@@ -749,7 +751,7 @@ async function login() {
                 const userBox = getUserBox();
                 if (userBox) {
                     userBox.classList.remove("hidden");
-                    userBox.innerHTML = dbEmail + " ▼";
+                document.getElementById("navUser").textContent = dbEmail;
                 }
 
                 document.getElementById("adminPanel").classList.remove("hidden");
@@ -801,7 +803,7 @@ async function login() {
             const userBox = getUserBox();
             if (userBox) {
                 userBox.classList.remove("hidden");
-                userBox.innerHTML = sup.email + " ▼";
+                document.getElementById("navUser").textContent = sup.email;
             }
 
             document.getElementById("adminPanel").classList.remove("hidden");
@@ -847,7 +849,7 @@ async function login() {
         const userBox = getUserBox();
         if (userBox) {
             userBox.classList.remove("hidden");
-            userBox.innerHTML = student.name + " ▼";
+            document.getElementById("navUser").textContent = student.name;
         }
 
         document.getElementById("adminPanel").classList.add("hidden");
@@ -1923,13 +1925,26 @@ document.addEventListener("click", function(event){
 });
                     firebase.auth().onAuthStateChanged(user => {
     const userBox = document.getElementById("userBox");
-    if (userBox) {
-        if (user) {
-            // المستخدم مسجل دخول → إظهار زر البروفايل
-            userBox.style.display = "inline-block";
-        } else {
-            // المستخدم غير مسجل دخول → إخفاء زر البروفايل
-            userBox.style.display = "none";
+    const menu = document.getElementById("userMenu");
+
+    if (!userBox) return;
+
+    if (user) {
+        // المستخدم مسجل دخول → إظهار البروفايل
+        userBox.style.display = "flex";
+        userBox.classList.remove("hidden");
+
+        // تأكد أن القائمة مخفية افتراضيًا
+        if (menu) {
+            menu.classList.add("hidden");
+        }
+
+    } else {
+        // المستخدم غير مسجل دخول → إخفاء كل شيء
+        userBox.style.display = "none";
+
+        if (menu) {
+            menu.classList.add("hidden");
         }
     }
 });
