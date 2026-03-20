@@ -158,32 +158,36 @@ margin-left:6px;
     منصة التمساحية التعليمية
 
    <!-- مربع البروفايل (مخفي افتراضياً) -->
-<!-- مربع البروفايل (مخفي افتراضياً) -->
+   <!-- مربع البروفايل (مخفي افتراضياً) -->
+
 <div id="userBox" class="hidden"
-     style="display:none; align-items:center; cursor:pointer; position:relative;"
+     style="display:none; align-items:center; cursor:pointer; position:relative; padding:4px 8px; border-radius:8px;"
      onclick="toggleUserMenu()">
 
     <!-- صورة المستخدم -->
     <img id="userAvatar"
          src="https://i.imgur.com/6VBx3io.png"
-         style="width:28px; height:28px; border-radius:50%; margin-left:6px;">
+         style="width:28px; height:28px; border-radius:50%; margin-left:6px; object-fit:cover;">
 
     <!-- اسم المستخدم -->
     <span id="navUser" style="margin-right:6px; font-weight:bold;"></span>
 
     <!-- السهم للأسفل -->
-    <span class="userArrow">▼</span>
+    <span class="userArrow" style="transition:0.2s;">▼</span>
 
     <!-- القائمة المنسدلة -->
     <div id="userMenu" class="hidden"
-         style="position:absolute; top:40px; right:0; background:#ffffff; border:1px solid #ddd; border-radius:8px; padding:6px; z-index:999; min-width:140px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+         style="position:absolute; top:45px; right:0; background:#ffffff; border:1px solid #ddd; border-radius:10px; padding:6px; z-index:999; min-width:150px; box-shadow:0 6px 15px rgba(0,0,0,0.15); overflow:hidden;">
 
         <button onclick="logout()"
-                style="width:100%; text-align:right; background:none; border:none; cursor:pointer; padding:8px; font-size:14px;">
-            🚪 تسجيل الخروج
+        onmouseover="this.style.background='#f2f2f2'"
+        onmouseout="this.style.background='transparent'"
+        style="width:100%; text-align:right; background:none; border:none; cursor:pointer; padding:10px; font-size:14px; border-radius:6px; transition:0.2s;">
+        🚪 تسجيل الخروج
         </button>
 
     </div>
+
 </div>
 
     <button class="dark-mode-btn" onclick="toggleDarkMode()" id="darkModeBtn">
@@ -1943,20 +1947,34 @@ document.addEventListener("click", function(event){
         menu.classList.add("hidden");
     }
 });
-                  
-                    function setUserUI(email) {
+                  function setUserUI(email) {
     const userBox = document.getElementById("userBox");
     const navUser = document.getElementById("navUser");
     const menu = document.getElementById("userMenu");
     const logoutBtn = document.querySelector(".logout-btn");
+    const avatar = document.getElementById("userAvatar");
 
-    if (userBox) {
-        userBox.style.display = "flex";
-        userBox.classList.remove("hidden");
-    }
+    if (!userBox) return;
+
+    userBox.style.display = "flex";
+    userBox.classList.remove("hidden");
 
     if (navUser) {
         navUser.textContent = email || "";
+    }
+
+    // 👤 أول حرف في الأفاتار
+    if (avatar) {
+        const letter = (email || "U").charAt(0).toUpperCase();
+
+        avatar.src = "";
+        avatar.style.background = "#2563eb";
+        avatar.style.color = "white";
+        avatar.style.display = "flex";
+        avatar.style.alignItems = "center";
+        avatar.style.justifyContent = "center";
+        avatar.style.fontWeight = "bold";
+        avatar.textContent = letter;
     }
 
     if (menu) {
