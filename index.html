@@ -742,37 +742,36 @@ async function login() {
             const dbPass = adminData.password || "";
 
             if (dbEmail === email && dbPass === password) {
-                alert("تم تسجيل الدخول كأدمن ✅");
+    alert("تم تسجيل الدخول كأدمن ✅");
 
-                localStorage.setItem("isAdmin", "true");
-                currentUser = { email: dbEmail, role: "ADMIN" };
+    localStorage.setItem("isAdmin", "true");
+    currentUser = { email: dbEmail, role: "ADMIN" };
 
-                document.getElementById("loginPage").classList.add("hidden");
-                document.getElementById("mainPage").classList.remove("hidden");
-                document.querySelector(".logout-btn")?.classList.remove("hidden");
-                document.getElementById("welcomeMessage").classList.add("hidden");
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("mainPage").classList.remove("hidden");
+    document.querySelector(".logout-btn")?.classList.remove("hidden");
+    document.getElementById("welcomeMessage").classList.add("hidden");
 
-                const userBox = getUserBox();
-                if (userBox) {
-                    userBox.classList.remove("hidden");
-                document.getElementById("navUser").textContent = dbEmail;
-                }
+    // 👇 UI موحد للبروفايل
+    setUserUI(dbEmail);
 
-                document.getElementById("adminPanel").classList.remove("hidden");
-                const adBox = document.getElementById("adminAdBox");
-                if (adBox) adBox.style.display = "block";
+    // 👇 لوحة الأدمن (داخل الشرط)
+    document.getElementById("adminPanel").classList.remove("hidden");
+    const adBox = document.getElementById("adminAdBox");
+    if (adBox) adBox.style.display = "block";
 
-                db.collection("announcements").doc("current").get()
-                    .then(doc => {
-                        if (doc.exists && document.getElementById("adminAdText")) {
-                            document.getElementById("adminAdText").value = doc.data().text || "";
-                        }
-                    });
-
-                renderGrades();
-                return;
+    db.collection("announcements").doc("current").get()
+        .then(doc => {
+            if (doc.exists && document.getElementById("adminAdText")) {
+                document.getElementById("adminAdText").value = doc.data().text || "";
             }
+        });
+
+    renderGrades();
+    return;
+}
         }
+        
 
         localStorage.removeItem("isAdmin");
 
@@ -890,25 +889,40 @@ function logout() {
     // ✅ حذف صلاحية الأدمن
     localStorage.removeItem("isAdmin");
 
-    // إيقاف الفيديو نهائيًا
-    document.getElementById("lessonVideo").innerHTML = "";
+    // إيقاف الفيديو (مع حماية من الخطأ)
+    const video = document.getElementById("lessonVideo");
+    if (video) video.innerHTML = "";
 
     // إظهار صفحة تسجيل الدخول وإخفاء باقي الصفحات
-    document.getElementById("loginPage").classList.remove("hidden");
-    document.getElementById("registerPage").classList.add("hidden");
-    document.getElementById("mainPage").classList.add("hidden");
-    document.getElementById("adminPanel").classList.add("hidden");
+    document.getElementById("loginPage")?.classList.remove("hidden");
+    document.getElementById("registerPage")?.classList.add("hidden");
+    document.getElementById("mainPage")?.classList.add("hidden");
+    document.getElementById("adminPanel")?.classList.add("hidden");
 
-    // إخفاء زر تسجيل الخروج والبروفايل
-    document.querySelector(".logout-btn").classList.add("hidden");
-    document.getElementById("userBox").classList.add("hidden"); // ← تم الإضافة
+    // ❗ إخفاء البروفايل
+    const userBox = document.getElementById("userBox");
+    if (userBox) userBox.classList.add("hidden");
 
-    // إعادة تعيين اسم المستخدم ورسائل الترحيب
-    document.getElementById("navUser").textContent = "";
-    document.getElementById("welcomeMessage").classList.remove("hidden");
+    // ❗ إخفاء القائمة المنسدلة (مهم جدًا)
+    const menu = document.getElementById("userMenu");
+    if (menu) menu.classList.add("hidden");
 
-    // إعادة ضبط قائمة التنقل
-    resetNavigation();
+    // ❗ إخفاء زر تسجيل الخروج (لو موجود)
+    const logoutBtn = document.querySelector(".logout-btn");
+    if (logoutBtn) logoutBtn.classList.add("hidden");
+
+    // إعادة تعيين اسم المستخدم
+    const navUser = document.getElementById("navUser");
+    if (navUser) navUser.textContent = "";
+
+    // إخفاء رسالة الترحيب
+    const welcome = document.getElementById("welcomeMessage");
+    if (welcome) welcome.classList.remove("hidden");
+
+    // إعادة ضبط التنقل
+    if (typeof resetNavigation === "function") {
+        resetNavigation();
+    }
 }
                        function toggleUserMenu() {
                         const menu = document.getElementById("userMenu");
@@ -1929,31 +1943,30 @@ document.addEventListener("click", function(event){
         menu.classList.add("hidden");
     }
 });
-                    firebase.auth().onAuthStateChanged(user => {
+                  
+                    function setUserUI(email) {
     const userBox = document.getElementById("userBox");
+    const navUser = document.getElementById("navUser");
     const menu = document.getElementById("userMenu");
+    const logoutBtn = document.querySelector(".logout-btn");
 
-    if (!userBox) return;
-
-    if (user) {
-        // المستخدم مسجل دخول → إظهار البروفايل
+    if (userBox) {
         userBox.style.display = "flex";
         userBox.classList.remove("hidden");
-
-        // تأكد أن القائمة مخفية افتراضيًا
-        if (menu) {
-            menu.classList.add("hidden");
-        }
-
-    } else {
-        // المستخدم غير مسجل دخول → إخفاء كل شيء
-        userBox.style.display = "none";
-
-        if (menu) {
-            menu.classList.add("hidden");
-        }
     }
-});
+
+    if (navUser) {
+        navUser.textContent = email || "";
+    }
+
+    if (menu) {
+        menu.classList.add("hidden");
+    }
+
+    if (logoutBtn) {
+        logoutBtn.classList.remove("hidden");
+    }
+}
 </script>
 
 <style>
