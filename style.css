@@ -219,18 +219,21 @@ button {
 ===================== */
 /* الوضع النهاري */
 .admin-box {
-    background: #9E9E9E;
+    background: #ffffff; /* أبيض */
+    color: #4B5563; /* رمادي داكن للنص */
     padding: 18px;
     border-radius: 10px;
     margin-top: 20px;
     text-align: center;
-    color: #9E9E9E;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* إضافة ظل بسيط للنهار */
+    transition: all 0.3s ease; /* للانتقال بين النهار والليل بسلاسة */
 }
 
 /* الوضع الليلي */
 body.dark .admin-box {
-    background: #111827;
-    color: #fff;
+    background: #111827; /* داكن جداً */
+    color: #F9FAFB; /* أبيض للنص */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5); /* ظل أقوى للتمييز عن الخلفية الداكنة */
 }
 /* =====================
    Logout Button
