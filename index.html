@@ -173,20 +173,33 @@ margin-left:6px;
     <span id="navUser" style="margin-right:6px; font-weight:bold;"></span>
 
     <!-- السهم للأسفل -->
-    <span class="userArrow" style="transition:0.2s;">▼</span>
-
+<span class="userArrow" style="margin-right:6px; font-size:12px; transition:0.2s;">▾</span>
     <!-- القائمة المنسدلة -->
-    <div id="userMenu" class="hidden"
-         style="position:absolute; top:45px; right:0; background:#ffffff; border:1px solid #ddd; border-radius:10px; padding:6px; z-index:999; min-width:150px; box-shadow:0 6px 15px rgba(0,0,0,0.15); overflow:hidden;">
+<div id="userMenu" class="hidden"
+     style="position:absolute; top:45px; right:0; background:#ffffff; border:1px solid #ddd; border-radius:12px; padding:10px; z-index:999; width:220px; box-shadow:0 10px 25px rgba(0,0,0,0.15);">
 
-        <button onclick="logout()"
-        onmouseover="this.style.background='#f2f2f2'"
-        onmouseout="this.style.background='transparent'"
-        style="width:100%; text-align:right; background:none; border:none; cursor:pointer; padding:10px; font-size:14px; border-radius:6px; transition:0.2s;">
-        🚪 تسجيل الخروج
-        </button>
-
+    <!-- 👤 صورة المستخدم -->
+    <div style="text-align:center; margin-bottom:10px;">
+        <img id="profilePreview"
+             src="https://i.imgur.com/6VBx3io.png"
+             style="width:70px; height:70px; border-radius:50%; object-fit:cover;">
     </div>
+
+    <!-- 📸 زر تغيير الصورة -->
+    <label style="display:block; text-align:center; cursor:pointer; color:#2563eb; margin-bottom:10px;">
+        📸 تغيير الصورة
+        <input type="file" id="uploadAvatar" accept="image/*" style="display:none;">
+    </label>
+
+    <hr>
+
+    <!-- 🚪 تسجيل الخروج -->
+    <button onclick="logout()"
+        style="width:100%; text-align:right; background:none; border:none; cursor:pointer; padding:10px; font-size:14px; border-radius:6px;">
+        🚪 تسجيل الخروج
+    </button>
+
+</div>
 
 </div>
 
@@ -928,24 +941,65 @@ function logout() {
         resetNavigation();
     }
 }
-                       function toggleUserMenu() {
-                        const menu = document.getElementById("userMenu");
-                        if (!menu) return;
-                    
-                        menu.classList.toggle("hidden");
-                    }
-                    function goHome() {
-                        stopVideo();      // ⛔ إيقاف الفيديو مثل زر الرجوع
-                        currentGrade = null;
-                        currentSubject = null;
-                        currentUnit = null;
-                        renderGrades();   // الذهاب لاختيار المرحلة
-                    }
-                        function goSubjects() {
-                            stopVideo();
-                            currentUnit = null;
-                            renderSubjects(currentGrade);
-                        }
+                     function toggleUserMenu() {
+    const menu = document.getElementById("userMenu");
+    const arrow = document.querySelector(".userArrow");
+
+    if (!menu) return;
+
+    // ✅ فتح القائمة
+    if (menu.classList.contains("hidden") || menu.style.display === "none") {
+        menu.classList.remove("hidden");
+        menu.style.display = "block";
+
+        // 🔄 لف السهم
+        if (arrow) arrow.style.transform = "rotate(180deg)";
+    } 
+    // ❌ قفل القائمة
+    else {
+        menu.classList.add("hidden");
+        menu.style.display = "none";
+
+        // 🔄 رجوع السهم
+        if (arrow) arrow.style.transform = "rotate(0deg)";
+    }
+}
+
+function goHome() {
+    stopVideo();
+
+    // ❌ قفل القائمة عند التنقل
+    const menu = document.getElementById("userMenu");
+    const arrow = document.querySelector(".userArrow");
+
+    if (menu) {
+        menu.classList.add("hidden");
+        menu.style.display = "none";
+    }
+    if (arrow) arrow.style.transform = "rotate(0deg)";
+
+    currentGrade = null;
+    currentSubject = null;
+    currentUnit = null;
+    renderGrades();
+}
+
+function goSubjects() {
+    stopVideo();
+
+    // ❌ قفل القائمة هنا كمان
+    const menu = document.getElementById("userMenu");
+    const arrow = document.querySelector(".userArrow");
+
+    if (menu) {
+        menu.classList.add("hidden");
+        menu.style.display = "none";
+    }
+    if (arrow) arrow.style.transform = "rotate(0deg)";
+
+    currentUnit = null;
+    renderSubjects(currentGrade);
+}
 
                     // صفحة التسجيل
                     function registerStudentPage() {
@@ -1947,7 +2001,7 @@ document.addEventListener("click", function(event){
         menu.classList.add("hidden");
     }
 });
-                  function setUserUI(email) {
+                 function setUserUI(email) {
     const userBox = document.getElementById("userBox");
     const navUser = document.getElementById("navUser");
     const menu = document.getElementById("userMenu");
@@ -1962,6 +2016,13 @@ document.addEventListener("click", function(event){
     if (navUser) {
         navUser.textContent = email || "";
     }
+
+    // ← نضيف الكود هنا بعد ما نتأكد إن العنصر موجود
+    const savedAvatar = localStorage.getItem("userAvatar");
+    if (savedAvatar && avatar) {
+        avatar.src = savedAvatar;
+    }
+}
 
     // 👤 أول حرف في الأفاتار
     if (avatar) {
@@ -1985,6 +2046,26 @@ document.addEventListener("click", function(event){
         logoutBtn.classList.remove("hidden");
     }
 }
+document.getElementById("uploadAvatar").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+        const imageData = event.target.result;
+
+        // عرض الصورة
+        document.getElementById("userAvatar").src = imageData;
+        document.getElementById("profilePreview").src = imageData;
+
+        // حفظها
+        localStorage.setItem("userAvatar", imageData);
+    };
+
+    reader.readAsDataURL(file);
+});
+                    
 </script>
 
 <style>
