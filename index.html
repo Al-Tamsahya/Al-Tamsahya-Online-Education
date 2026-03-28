@@ -2024,8 +2024,18 @@ document.addEventListener("click", function(event){
     }
 }
 
-    // 👤 أول حرف في الأفاتار
-    if (avatar) {
+// 👤 تحديث واجهة المستخدم
+if (avatar) {
+    const savedAvatar = localStorage.getItem("userAvatar");
+
+    if (savedAvatar) {
+        // لو فيه صورة مخزنة، نعرضها
+        avatar.src = savedAvatar;
+        avatar.textContent = ""; // نشيل الحرف لو فيه صورة
+        avatar.style.background = "";
+        avatar.style.color = "";
+    } else {
+        // لو مفيش صورة، نعرض أول حرف من الإيميل
         const letter = (email || "U").charAt(0).toUpperCase();
 
         avatar.src = "";
@@ -2037,14 +2047,15 @@ document.addEventListener("click", function(event){
         avatar.style.fontWeight = "bold";
         avatar.textContent = letter;
     }
+}
 
-    if (menu) {
-        menu.classList.add("hidden");
-    }
+if (menu) {
+    menu.classList.add("hidden");
+}
 
-    if (logoutBtn) {
-        logoutBtn.classList.remove("hidden");
-    }
+if (logoutBtn) {
+    logoutBtn.classList.remove("hidden");
+}
 
 document.getElementById("uploadAvatar").addEventListener("change", function(e){
     const file = e.target.files[0];
