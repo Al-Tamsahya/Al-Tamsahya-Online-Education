@@ -1010,3 +1010,7 @@ padding-bottom:60px;
         transform: translateY(0);
     }
 }
+
+#userBox:hover {
+    background: rgba(255,255,255,0.1);
+}
