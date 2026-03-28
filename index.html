@@ -2072,6 +2072,7 @@ function setUserUI(email) {
     }
 }
 
+// رفع أو تغيير الصورة
 document.getElementById("uploadAvatar").addEventListener("change", function(e){
     const file = e.target.files[0];
     if(!file) return;
@@ -2081,16 +2082,46 @@ document.getElementById("uploadAvatar").addEventListener("change", function(e){
     reader.onload = function(event){
         const imageData = event.target.result;
 
-        // عرض الصورة
+        // عرض الصورة مع تكبير الحجم
         document.getElementById("userAvatar").src = imageData;
         document.getElementById("profilePreview").src = imageData;
+        document.getElementById("userAvatar").style.width = "300px";
+        document.getElementById("userAvatar").style.height = "300px";
+        document.getElementById("profilePreview").style.width = "300px";
+        document.getElementById("profilePreview").style.height = "300px";
 
-        // حفظها
+        // حفظ الصورة
         localStorage.setItem("userAvatar", imageData);
+
+        // إظهار زر الحذف
+        document.getElementById("removeAvatar").style.display = "inline-block";
     };
 
     reader.readAsDataURL(file);
 });
+
+// حذف الصورة
+document.getElementById("removeAvatar").addEventListener("click", function(){
+    document.getElementById("userAvatar").src = "";
+    document.getElementById("profilePreview").src = "";
+    document.getElementById("uploadAvatar").value = "";
+    localStorage.removeItem("userAvatar");
+    document.getElementById("removeAvatar").style.display = "none";
+});
+
+// عند تحميل الصفحة، عرض الصورة المحفوظة إذا كانت موجودة
+window.addEventListener("load", function(){
+    const savedAvatar = localStorage.getItem("userAvatar");
+    if(savedAvatar){
+        document.getElementById("userAvatar").src = savedAvatar;
+        document.getElementById("profilePreview").src = savedAvatar;
+        document.getElementById("userAvatar").style.width = "300px";
+        document.getElementById("userAvatar").style.height = "300px";
+        document.getElementById("profilePreview").style.width = "300px";
+        document.getElementById("profilePreview").style.height = "300px";
+        document.getElementById("removeAvatar").style.display = "inline-block";
+    }
+});;
                     
 </script>
 
