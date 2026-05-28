@@ -155,7 +155,7 @@ margin-left:6px;
 
     <!-- شريط المنصة -->
     <div class="header">
-    منصة التمساحية التعليمية
+    منصة الخطيب التعليمية
 
    <!-- مربع البروفايل (مخفي افتراضياً) -->
    <!-- مربع البروفايل (مخفي افتراضياً) -->
@@ -1745,10 +1745,24 @@ async function renderStudents() {
                     <td>${email}</td>
                     <td>${approved}</td>
                     <td>
-                        <button class="custom-btn danger" onclick="deleteUser('${id}', 'students')">حذف</button>
-                        <button class="custom-btn" onclick="setApprove('${id}')">الموافقة</button>
-                        <button class="custom-btn danger" onclick="rejectStudent('${id}')">رفض</button>
-                    </td>
+    ${!s.approved ? `
+        <button class="custom-btn success" onclick="setApprove('${id}', true)">
+            ✅ قبول
+        </button>
+
+        <button class="custom-btn danger" onclick="rejectStudent('${id}')">
+            ❌ رفض
+        </button>
+    ` : `
+        <button class="custom-btn edit" onclick="editStudent('${id}')">
+            ✏️ تعديل
+        </button>
+
+        <button class="custom-btn danger" onclick="deleteUser('${id}', 'students')">
+            🗑 حذف
+        </button>
+    `}
+</td>
                 </tr>
             `;
         });
