@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التمساحية التعليمية</title>
+    <title>منصة الخطيب التعليمية</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -213,10 +213,10 @@ margin-left:6px;
             <!-- 🧑‍🎓 رسالة ترحيب رسمية -->
         <section class="welcome-message" id="welcomeMessage">
 
-    <h2>مرحبًا بكم في منصة التمساحية التعليمية 🎓</h2>
+    <h2>مرحبًا بكم في منصة الخطيب التعليمية 🎓</h2>
 
     <p>
-        نرحب بطلاب المرحلة الإعدادية في منصتنا التعليمية الرقمية،
+        نرحب بطلاب آل الخطيب في منصتنا التعليمية الرقمية،
         والتي تهدف إلى تقديم محتوى تعليمي مبسط ومنظم
         وفقًا للمنهج المصري.
     </p>
@@ -280,12 +280,12 @@ margin-left:6px;
                     document.body.classList.toggle('dark-mode');
                 }
             </script>
-            <meta name="application-name" content="منصة التمساحية التعليمية">
-            <meta name="description" content="منصة التمساحية التعليمية تقدم محتوى تعليمي عربي مبسط لطلاب المرحلة الإعدادية المصرية">
+            <meta name="application-name" content="منصة الخطيب التعليمية">
+            <meta name="description" content="منصة الخطيب التعليمية تقدم محتوى تعليمي عربي مبسط للمنهج المصري">
 
             <!-- Open Graph (للمشاركة على السوشيال ميديا) -->
-            <meta property="og:title" content="منصة التمساحية التعليمية">
-            <meta property="og:description" content="منصة عربية متخصصة في التعليم الأونلاين للمرحلة الإعدادية المصرية">
+            <meta property="og:title" content="منصة الخطيب التعليمية">
+            <meta property="og:description" content="منصة عربية متخصصة في التعليم الأونلاين للمنهج المصري">
             <meta property="og:type" content="website">
             <meta property="og:url" content="https://al-tamsahya.github.io/Al-Tamsahya-Online-Education/">
             <meta property="og:image" content="https://al-tamsahya.github.io/Al-Tamsahya-Online-Education/icon-192.png">
@@ -489,7 +489,7 @@ margin-left:6px;
 
                 
 
-                <footer>© 2026 منصة التمساحية التعليمية</footer>
+                <footer>© 2026 منصة الخطيب التعليمية</footer>
                 
                 <script>
                     // ✅ لا نستخدم defaultUsers نهائيًا
@@ -498,71 +498,157 @@ margin-left:6px;
                     // let users = JSON.parse(localStorage.getItem("users") || "[]");
 
 
-                    const grades = ["الصف الأول الإعدادي", "الصف الثاني الإعدادي", "الصف الثالث الإعدادي"];
-                    const subjectsPerGrade = {
-                        "الصف الأول الإعدادي": [
-                            "اللغة العربية",
-                            "اللغة الإنجليزية",
-                            "الرياضيات",
-                            "العلوم",
-                            "الدراسات الاجتماعية",
-                            "التربية الدينية",
-                            "النشاط الفني/الحاسب الآلي/الرياضة",
-                        ],
-                        "الصف الثاني الإعدادي": [
-                            "اللغة العربية",
-                            "اللغة الإنجليزية",
-                            "الرياضيات",
-                            "العلوم",
-                            "الدراسات الاجتماعية",
-                            "التربية الدينية",
-                            "النشاط الفني/الحاسب الآلي/الرياضة",
-                        ],
-                        "الصف الثالث الإعدادي": [
-                            "اللغة العربية",
-                            "اللغة الإنجليزية",
-                            "الرياضيات",
-                            "العلوم",
-                            "الدراسات الاجتماعية",
-                            "التربية الدينية",
-                            "النشاط الفني/الحاسب الآلي/الرياضة",
-                        ],
-                    };
-                    const sectionsPerSubject = {
-                        "اللغة العربية": ["النحو", "البلاغة", "القراءة", "النصوص", "التعبير", "القصة"],
-                        "اللغة الإنجليزية": ["القواعد", "المفردات", "القراءة", "الكتابة"],
-                        الرياضيات: ["جبر", "هندسة", "إحصاء", "مراجعة"],
-                        العلوم: ["المادة والطاقة", "الكائنات الحية", "الأرض والفضاء", "التجارب العلمية"],
-                        "الدراسات الاجتماعية": ["التاريخ", "الجغرافيا", "الوطنية", "التربية الدينية"],
-                        "التربية الدينية": ["القرآن/الكتاب المقدس", "السلوك والقيم"],
-                        "النشاط الفني/الحاسب الآلي/الرياضة": ["الفنون", "الحاسب الآلي", "الرياضة"],
-                    };
-                    let lessons = {};
+             const grades = [
+    "الصف الأول الإعدادي",
+    "الصف الثاني الإعدادي",
+    "الصف الثالث الإعدادي"
+];
 
-                    grades.forEach((grade) => {
-                        lessons[grade] = {};
+const subjectsPerGrade = {
 
-                        subjectsPerGrade[grade].forEach((sub) => {
-                            lessons[grade][sub] = {};
+    "الصف الأول الإعدادي": [
+        "اللغة العربية",
+        "اللغة الإنجليزية",
+        "الرياضيات",
+        "العلوم",
+        "الدراسات الاجتماعية",
+        "التربية الدينية",
+        "النشاط الفني/الحاسب الآلي/الرياضة",
+    ],
 
-                            if (sectionsPerSubject[sub]) {
-                                sectionsPerSubject[sub].forEach((unit) => {
-                                    lessons[grade][sub][unit] = [
-                                        {
-                                            title: "درس 1 " + unit,
-                                            content: "شرح نصي مفصل لدرس 1 في " + unit,
-                                            video: `videos/${sub}/${unit}-lesson1.mp4`,
-                                        },
-                                        {
-                                            title: "درس 2 " + unit,
-                                            content: "شرح نصي مفصل لدرس 2 في " + unit,
-                                            video: `videos/${sub}/${unit}-lesson2.mp4`,
-                                        },
-                                    ];
-                                });
-                            }
-                        });
-                    });
+    "الصف الثاني الإعدادي": [
+        "اللغة العربية",
+        "اللغة الإنجليزية",
+        "الرياضيات",
+        "العلوم",
+        "الدراسات الاجتماعية",
+        "التربية الدينية",
+        "النشاط الفني/الحاسب الآلي/الرياضة",
+    ],
+
+    "الصف الثالث الإعدادي": [
+        "اللغة العربية",
+        "اللغة الإنجليزية",
+        "الرياضيات",
+        "العلوم",
+        "الدراسات الاجتماعية",
+        "التربية الدينية",
+        "النشاط الفني/الحاسب الآلي/الرياضة",
+    ],
+};
+
+const sectionsPerSubject = {
+
+    "اللغة العربية": [
+        "النحو",
+        "البلاغة",
+        "القراءة",
+        "النصوص",
+        "التعبير",
+        "القصة"
+    ],
+
+    "اللغة الإنجليزية": [
+        "القواعد",
+        "المفردات",
+        "القراءة",
+        "الكتابة"
+    ],
+
+    "الرياضيات": [
+        "جبر",
+        "هندسة",
+        "إحصاء",
+        "مراجعة"
+    ],
+
+    "العلوم": [
+        "المادة والطاقة",
+        "الكائنات الحية",
+        "الأرض والفضاء",
+        "التجارب العلمية"
+    ],
+
+    "الدراسات الاجتماعية": [
+        "التاريخ",
+        "الجغرافيا",
+        "الوطنية",
+        "التربية الدينية"
+    ],
+
+    "التربية الدينية": [
+        "القرآن/الكتاب المقدس",
+        "السلوك والقيم"
+    ],
+
+    "النشاط الفني/الحاسب الآلي/الرياضة": [
+        "الفنون",
+        "الحاسب الآلي",
+        "الرياضة"
+    ],
+};
+
+
+// ✅ أسماء مجلدات الفيديوهات
+const subjectFolders = {
+
+    "اللغة العربية": "arabic",
+    "اللغة الإنجليزية": "english",
+    "الرياضيات": "math",
+    "العلوم": "science",
+    "الدراسات الاجتماعية": "social",
+    "التربية الدينية": "religion",
+    "النشاط الفني/الحاسب الآلي/الرياضة": "activities"
+
+};
+
+let lessons = {};
+
+grades.forEach((grade) => {
+
+    lessons[grade] = {};
+
+    subjectsPerGrade[grade].forEach((sub) => {
+
+        lessons[grade][sub] = {};
+
+        if (sectionsPerSubject[sub]) {
+
+            sectionsPerSubject[sub].forEach((unit) => {
+
+                lessons[grade][sub][unit] = [
+
+                    {
+                        title: "درس 1 " + unit,
+
+                        content:
+                            "شرح نصي مفصل لدرس 1 في " + unit,
+
+                        // ✅ فيديو الدرس الأول
+                        video:
+                            `videos/${subjectFolders[sub]}/${unit}-lesson1.mp4`,
+                    },
+
+                    {
+                        title: "درس 2 " + unit,
+
+                        content:
+                            "شرح نصي مفصل لدرس 2 في " + unit,
+
+                        // ✅ فيديو الدرس الثاني
+                        video:
+                            `videos/${subjectFolders[sub]}/${unit}-lesson2.mp4`,
+                    }
+
+                ];
+
+            });
+
+        }
+
+    });
+
+});
 
                     let scores = JSON.parse(localStorage.getItem("scores") || "{}");
 
@@ -1064,14 +1150,19 @@ function goSubjects() {
 
                             // ✅ إضافة الطالب في Firestore
                             // لا تخزن كلمة المرور في Firestore، اعتمد فقط على Firebase Auth
-                            await db.collection("students").add({
-                                name: name,
-                                email: email,
-                                password: password,
-                                role: "STUDENT",
-                                approved: false,
-                                createdAt: new Date().toISOString()
-                            });
+                            const userCredential =
+await firebase.auth()
+.createUserWithEmailAndPassword(email, password);
+
+await db.collection("students")
+.doc(userCredential.user.uid)
+.set({
+    name: name,
+    email: email,
+    role: "STUDENT",
+    approved: false,
+    createdAt: new Date().toISOString()
+});
 
                             alert("تم إنشاء الحساب بنجاح ✅\بانتظار موافقة الإدارة");
 
@@ -1240,52 +1331,55 @@ function goSubjects() {
                         renderLessonList();
                         loadLesson(currentLessonIndex);
                     }
+function showLessonDetail(lesson) {
 
-                    function showLessonDetail(lesson) {
-                        const videoDiv = document.getElementById("lessonVideo");
-                        const textDiv = document.getElementById("lessonText");
+    const videoDiv = document.getElementById("lessonVideo");
+    const textDiv = document.getElementById("lessonText");
 
-                         videoDiv.innerHTML = `
-                                 <video
-                                   id="lessonPlayer"
-                                   controls
-                                   playsinline
-                                   preload="auto"
-                                   muted
-                                   width="100%"
-                                   style="max-height: 220px; border-radius: 12px;"
-                                 >
-                                   <source src="./videos/Lesson1.mp4?v=1" type="video/mp4">
-                                   المتصفح لا يدعم تشغيل الفيديو
-                                 </video>
-                               `;
+    // ✅ استخدام فيديو الدرس الحقيقي
+    videoDiv.innerHTML = `
+        <video
+            id="lessonPlayer"
+            controls
+            playsinline
+            preload="auto"
+            width="100%"
+            style="max-height:220px; border-radius:12px;"
+        >
+            <source src="${lesson.video}" type="video/mp4">
+            المتصفح لا يدعم تشغيل الفيديو
+        </video>
+    `;
 
+    const video = document.getElementById("lessonPlayer");
 
-                      
-                        const video = document.getElementById("lessonPlayer");
-                        if (video) {
-                            video.play().catch(err => console.log("Autoplay blocked:", err));
+    if (video) {
 
-                            lessonCompleted = false;
-                            const nextBtn = document.getElementById("nextLessonBtn");
-                            if (nextBtn) nextBtn.disabled = true;
+        lessonCompleted = false;
 
-                            video.addEventListener("loadeddata", () => {
-                                video.muted = false;
-                                video.play().catch(() => console.log("المتصفح منع التشغيل التلقائي بالصوت"));
-                            });
+        const nextBtn = document.getElementById("nextLessonBtn");
 
-                            video.addEventListener("ended", () => {
-                                lessonCompleted = true;
-                                if (nextBtn) nextBtn.disabled = false;
-                                saveLastLesson(currentLessonIndex);
-                            });
-                        }
+        if (nextBtn) {
+            nextBtn.disabled = true;
+        }
 
-                        textDiv.textContent = lesson.content;
-                        updateLessonNav(true);
-                    }
+        video.addEventListener("ended", () => {
 
+            lessonCompleted = true;
+
+            if (nextBtn) {
+                nextBtn.disabled = false;
+            }
+
+            saveLastLesson(currentLessonIndex);
+        });
+    }
+
+    // ✅ النص الخاص بالدرس
+    textDiv.textContent = lesson.content;
+
+    updateLessonNav(true);
+}
 
                     // عرض قائمة الدروس بشكل كروت
                     function renderLessonList() {
@@ -2001,28 +2095,7 @@ document.addEventListener("click", function(event){
         menu.classList.add("hidden");
     }
 });
-                 function setUserUI(email) {
-    const userBox = document.getElementById("userBox");
-    const navUser = document.getElementById("navUser");
-    const menu = document.getElementById("userMenu");
-    const logoutBtn = document.querySelector(".logout-btn");
-    const avatar = document.getElementById("userAvatar");
-
-    if (!userBox) return;
-
-    userBox.style.display = "flex";
-    userBox.classList.remove("hidden");
-
-    if (navUser) {
-        navUser.textContent = email || "";
-    }
-
-    // ← نضيف الكود هنا بعد ما نتأكد إن العنصر موجود
-    const savedAvatar = localStorage.getItem("userAvatar");
-    if (savedAvatar && avatar) {
-        avatar.src = savedAvatar;
-    }
-}
+ 
 
 // 👤 تحديث واجهة المستخدم
 function setUserUI(email) {
