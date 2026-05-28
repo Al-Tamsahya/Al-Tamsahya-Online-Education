@@ -1763,6 +1763,71 @@ async function renderStudents() {
         </button>
     `}
 </td>
+// ==============================
+// ✏️ تعديل بيانات الطالب
+// ==============================
+async function editStudent(studentId) {
+
+    try {
+
+        const ref =
+            window.firestoreTools.db
+            .collection("students")
+            .doc(studentId);
+
+        const snap = await ref.get();
+
+        if (!snap.exists) {
+
+            alert("الطالب غير موجود ❌");
+            return;
+        }
+
+        const data = snap.data();
+
+        // الاسم الجديد
+        const newName = prompt(
+            "تعديل اسم الطالب:",
+            data.name || ""
+        );
+
+        if (newName === null) return;
+
+        // الإيميل الجديد
+        const newEmail = prompt(
+            "تعديل البريد الإلكتروني:",
+            data.email || ""
+        );
+
+        if (newEmail === null) return;
+
+        // تحديث البيانات
+        await ref.update({
+
+            name: newName.trim(),
+
+            email:
+                newEmail
+                .trim()
+                .toLowerCase()
+
+        });
+
+        alert("تم تعديل الطالب ✅");
+
+        // إعادة تحميل القائمة
+        renderStudents();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(
+            "حدث خطأ أثناء التعديل ❌\n" +
+            err.message
+        );
+    }
+}
                 </tr>
             `;
         });
