@@ -966,9 +966,9 @@ async function login() {
                 document.getElementById("adminAdText").value = doc.data().text || "";
             }
         });
-
+    document.getElementById("mobileNav").style.display = "flex";
     renderGrades();
-    return;
+       return;
 }
         }
         
@@ -1010,9 +1010,9 @@ async function login() {
             }
 
             document.getElementById("adminPanel").classList.remove("hidden");
-
+            document.getElementById("mobileNav").style.display = "flex";
             renderGrades();
-            return;
+                       return;
         }
 
         // =========================
@@ -1056,9 +1056,9 @@ async function login() {
         }
 
         document.getElementById("adminPanel").classList.add("hidden");
-
+        document.getElementById("mobileNav").style.display = "flex";
         renderGrades();
-        return;
+            return;
 
     } catch (err) {
         console.error(err);
@@ -2859,7 +2859,7 @@ body.has-announcement {
 }
 </style>
 
-<div id="mobileNav">
+<div id="mobileNav" style="display:none;">
 
 <button id="backBtn" onclick="smartBack()" class="navBtn">
 ⬅ رجوع
