@@ -180,9 +180,14 @@ margin-left:6px;
 
     <!-- 📸 زر تغيير الصورة -->
     <label style="display:block; text-align:center; cursor:pointer; color:#2563eb; margin-bottom:10px;">
-        📸 تغيير الصورة
-        <input type="file" id="uploadAvatar" accept="image/*" style="display:none;">
-    </label>
+    📸 تغيير الصورة
+    <input type="file" id="uploadAvatar" accept="image/*" style="display:none;">
+</label>
+
+<button id="removeAvatar"
+style="display:none; width:100%; margin-top:10px;">
+🗑 حذف الصورة
+</button>
 
     <hr>
 
@@ -717,16 +722,6 @@ let currentFilter = "all";
 
 let savedStudents = [];
 
-// ===============================
-// فلترة الطلاب
-// ===============================
-
-function filterStudentsByStatus(type) {
-
-    currentFilter = type;
-
-    renderStudentsFiltered();
-}
 // ===============================
 // فلترة الطلاب
 // ===============================
@@ -1416,11 +1411,8 @@ async function renderLessons(grade, subject, unit) {
 // ==============================
 function showLessonDetail(lesson) {
 
-    const videoDiv =
-        document.getElementById("lessonVideo");
-
-    const textDiv =
-        document.getElementById("lessonText");
+    const videoDiv = document.getElementById("lessonVideo");
+    const textDiv = document.getElementById("lessonText");
 
     videoDiv.innerHTML = `
         <video id="lessonPlayer" controls width="100%">
@@ -1428,38 +1420,7 @@ function showLessonDetail(lesson) {
         </video>
     `;
 
-    textDiv.textContent =
-        lesson.content.ar;
-
-    let video =
-        document.getElementById("lessonPlayer");
-
-    if (video) {
-
-        lessonCompleted = false;
-
-        const nextBtn =
-            document.getElementById("nextLessonBtn");
-
-        if (nextBtn) {
-            nextBtn.disabled = true;
-        }
-
-        video.addEventListener("ended", () => {
-
-            lessonCompleted = true;
-
-            if (nextBtn) {
-                nextBtn.disabled = false;
-            }
-
-            saveLastLesson(currentLessonIndex);
-
-        });
-    }
-
-    updateLessonNav(true);
-}
+    textDiv.textContent = lesson.content.ar;
 
     const video = document.getElementById("lessonPlayer");
 
@@ -1468,27 +1429,21 @@ function showLessonDetail(lesson) {
         lessonCompleted = false;
 
         const nextBtn = document.getElementById("nextLessonBtn");
-
-        if (nextBtn) {
-            nextBtn.disabled = true;
-        }
+        if (nextBtn) nextBtn.disabled = true;
 
         video.addEventListener("ended", () => {
 
             lessonCompleted = true;
 
-            if (nextBtn) {
-                nextBtn.disabled = false;
-            }
+            if (nextBtn) nextBtn.disabled = false;
 
             saveLastLesson(currentLessonIndex);
         });
     }
 
-    // ✅ النص الخاص بالدرس
-    let currentLang = "ar";
     updateLessonNav(true);
 }
+   
 
                     // عرض قائمة الدروس بشكل كروت
                     function renderLessonList() {
@@ -1588,49 +1543,80 @@ function showLessonDetail(lesson) {
                         }
                     }
 
-                    function smartBack() {
-                        stopVideo();
+                 function smartBack() {
+    stopVideo();
 
-                        if (currentUnit) {
-                            // داخل الدروس → رجوع للوحدات
-                            currentUnit = null;
-                            renderUnits(currentGrade, currentSubject);
-                              updateNavButtons("subjectsScreen");
-                        }
-                        else if (currentSubject) {
-                            // داخل الوحدات → رجوع للمواد
-                            currentSubject = null;
-                            renderSubjects(currentGrade);
-                              updateNavButtons("subjectsScreen");
-                        }
-                        else if (currentGrade) {
-                            // داخل المواد → رجوع للصفوف
-                            currentGrade = null;
-                            renderGrades();
-                              updateNavButtons("subjectsScreen");
-                        }
-                    }
-
-                    function updateNavButtons(screen){
-
-let backBtn = document.getElementById("backBtn");
-let subjectsBtn = document.getElementById("subjectsBtn");
-let homeBtn = document.getElementById("homeBtn");
-
-backBtn.style.display = "none";
-subjectsBtn.style.display = "none";
-homeBtn.style.display = "none";
-
-if(screen === "lessonsScreen"){
-backBtn.style.display = "inline-block";
-subjectsBtn.style.display = "inline-block";
-homeBtn.style.display = "inline-block";
+    if (currentUnit) {
+        currentUnit = null;
+        renderUnits(currentGrade, currentSubject);
+        updateNavButtons("subjectsScreen");
+    }
+    else if (currentSubject) {
+        currentSubject = null;
+        renderSubjects(currentGrade);
+        updateNavButtons("subjectsScreen");
+    }
+    else if (currentGrade) {
+        currentGrade = null;
+        renderGrades();
+        updateNavButtons("subjectsScreen");
+    }
 }
 
-if(screen === "subjectsScreen"){
-homeBtn.style.display = "inline-block";
+
+// ==============================
+// 🏠 الرئيسية
+// ==============================
+function goHome() {
+
+    currentGrade = null;
+    currentSubject = null;
+    currentUnit = null;
+
+    renderGrades();
+
+    updateNavButtons("subjectsScreen");
 }
 
+
+// ==============================
+// 📚 المواد
+// ==============================
+function goSubjects() {
+
+    if (currentGrade) {
+
+        currentUnit = null;
+
+        renderSubjects(currentGrade);
+
+        updateNavButtons("subjectsScreen");
+    }
+}
+
+
+// ==============================
+// أزرار التنقل
+// ==============================
+function updateNavButtons(screen){
+
+    let backBtn = document.getElementById("backBtn");
+    let subjectsBtn = document.getElementById("subjectsBtn");
+    let homeBtn = document.getElementById("homeBtn");
+
+    backBtn.style.display = "none";
+    subjectsBtn.style.display = "none";
+    homeBtn.style.display = "none";
+
+    if(screen === "lessonsScreen"){
+        backBtn.style.display = "inline-block";
+        subjectsBtn.style.display = "inline-block";
+        homeBtn.style.display = "inline-block";
+    }
+
+    if(screen === "subjectsScreen"){
+        homeBtn.style.display = "inline-block";
+    }
 }
 
                     // إظهار قسم معين وإخفاء الباقي
@@ -1643,10 +1629,16 @@ homeBtn.style.display = "inline-block";
 
                     // إخفاء كل أقسام الإدارة
                     function hideAllAdminSections() {
-                        ["studentsList", "supervisorsList", "testsList", "resultsList"].forEach((id) => {
-                            document.getElementById(id).classList.add("hidden");
-                        });
-                    }
+    [
+        "studentsList",
+        "supervisorsList",
+        "testsList",
+        "resultsList",
+        "lessonsList"
+    ].forEach((id) => {
+        document.getElementById(id)?.classList.add("hidden");
+    });
+}
 
                     // عرض أقسام الإدارة
                     function showAdminSection(section) {
@@ -2108,30 +2100,112 @@ function showAddStudentModal() {
     if (modal) modal.style.display = "flex";
 }
 
+// ==============================
+// 👨‍🎓 إضافة طالب بشكل صحيح
+// ==============================
 async function addStudent() {
-    const email = document.getElementById("newStudentEmail")?.value.trim().toLowerCase();
-    const password = document.getElementById("newStudentPassword")?.value.trim();
-    if (!email || !password) { alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!"); return; }
+
+    const email =
+        document.getElementById("newStudentEmail")
+        ?.value
+        .trim()
+        .toLowerCase();
+
+    const password =
+        document.getElementById("newStudentPassword")
+        ?.value
+        .trim();
+
+    if (!email || !password) {
+
+        alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+
+        return;
+    }
 
     try {
-        const snap = await window.firestoreTools.db.collection("students").where("email", "==", email).get();
-        if (!snap.empty) { alert("هذا البريد مستخدم بالفعل!"); return; }
 
-        await window.firestoreTools.db.collection("students").add({
-            name: email.split("@")[0],
-            email,
-            password,
-            role: "STUDENT",
-            approved: true,
-            createdAt: new Date().toISOString()
-        });
+        // التحقق هل البريد مستخدم بالفعل
+        const methods =
+            await firebase
+            .auth()
+            .fetchSignInMethodsForEmail(email);
+
+        if (methods.length > 0) {
+
+            alert("هذا البريد مستخدم بالفعل!");
+
+            return;
+        }
+
+        // ✅ إنشاء حساب Authentication
+        const userCredential =
+            await firebase
+            .auth()
+            .createUserWithEmailAndPassword(
+                email,
+                password
+            );
+
+        const user = userCredential.user;
+
+        // ✅ حفظ البيانات داخل Firestore
+        await window.firestoreTools.db
+            .collection("students")
+            .doc(user.uid)
+            .set({
+
+                name:
+                    email.split("@")[0],
+
+                email: email,
+
+                role: "STUDENT",
+
+                approved: true,
+
+                createdAt:
+                    new Date().toISOString()
+            });
 
         alert("تمت إضافة الطالب بنجاح ✅");
+
         closeModal("studentModal");
+
         renderStudents();
+
     } catch (err) {
+
         console.error(err);
-        alert("حدث خطأ أثناء إضافة الطالب ❌\n" + err.message);
+
+        if (
+            err.code ===
+            "auth/email-already-in-use"
+        ) {
+
+            alert("البريد مستخدم بالفعل!");
+
+        } else if (
+            err.code ===
+            "auth/invalid-email"
+        ) {
+
+            alert("البريد الإلكتروني غير صالح!");
+
+        } else if (
+            err.code ===
+            "auth/weak-password"
+        ) {
+
+            alert("كلمة المرور ضعيفة جدًا!");
+
+        } else {
+
+            alert(
+                "حدث خطأ ❌\n" +
+                err.message
+            );
+        }
     }
 }
 
@@ -2335,7 +2409,7 @@ function restartAnimation() {
 async function loadAnnouncement() {
     try {
         if (!window.firestoreTools) return;
-        const doc = await window.firestoreTools.collection("announcements").doc("current").get();
+        const doc = await window.firestoreTools.db.collection("announcements").doc("current").get();
         const announcementText = document.getElementById("announcementText");
         if (!announcementText) return;
 
@@ -2391,7 +2465,7 @@ async function saveAnnouncement() {
     const text = input.value.trim();
     if (!text) { alert("يرجى كتابة نص الإعلان أولاً!"); return; }
     try {
-        await window.firestoreTools.collection("announcements").doc("current").set({ text });
+        await window.firestoreTools.db.collection("announcements").doc("current").set({ text });
         const announcementText = document.getElementById("announcementText");
         if (announcementText) { announcementText.innerText = text; restartAnimation(); }
         showAnnouncementBar();
@@ -2401,7 +2475,7 @@ async function saveAnnouncement() {
 
 async function deleteAnnouncement() {
     try {
-        await window.firestoreTools.collection("announcements").doc("current").set({ text: "" });
+        await window.firestoreTools.db.collection("announcements").doc("current").set({ text: "" });
         hideAnnouncementBar();
         alert("تم إيقاف الإعلان ✅");
     } catch (err) { console.error(err); alert("حدث خطأ أثناء الإيقاف ❌\n" + err.message); }
