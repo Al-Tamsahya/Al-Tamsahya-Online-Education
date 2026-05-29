@@ -715,10 +715,7 @@ function filterStudentsByStatus(type) {
 // بيانات عامة
 // ===============================
 
-let scores =
-    JSON.parse(
-        localStorage.getItem("scores") || "{}"
-    );
+scores = JSON.parse(localStorage.getItem("scores") || "{}");
 
 let currentUser = null;
 
