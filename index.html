@@ -694,28 +694,14 @@ async function getLessons(grade, subject, unit) {
     }
 }
 
-let scores = JSON.parse(localStorage.getItem("scores") || "{}");
-
-let currentUser = null;
-let currentGrade = null;
-let currentSubject = null;
-let currentUnit = null;
-
-// ===== فلترة الطلاب =====
-let currentFilter = "all";
-let savedStudents = [];
-
-// زر الفلترة
-function filterStudentsByStatus(type) {
-    currentFilter = type;
-    renderStudentsFiltered();
-}
-
 // ===============================
 // بيانات عامة
 // ===============================
 
-scores = JSON.parse(localStorage.getItem("scores") || "{}");
+let scores =
+    JSON.parse(
+        localStorage.getItem("scores") || "{}"
+    );
 
 let currentUser = null;
 
@@ -731,6 +717,16 @@ let currentFilter = "all";
 
 let savedStudents = [];
 
+// ===============================
+// فلترة الطلاب
+// ===============================
+
+function filterStudentsByStatus(type) {
+
+    currentFilter = type;
+
+    renderStudentsFiltered();
+}
 // ===============================
 // فلترة الطلاب
 // ===============================
