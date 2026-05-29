@@ -376,51 +376,82 @@ style="display:none; width:100%; margin-top:10px;">
 
 
 
-            <!-- الصفحة الرئيسية بعد تسجيل الدخول -->
-            <div id="mainPage" class="hidden">
+           <!-- الصفحة الرئيسية بعد تسجيل الدخول -->
+<div id="mainPage" class="hidden">
 
-                <!-- صفحة اختيار الصف -->
-                <div id="gradePage" class="list-container"></div>
+    <!-- صفحة اختيار الصف -->
+    <div id="gradePage" class="list-container"></div>
 
-                <!-- صفحة اختيار المادة -->
-                <div id="subjectPage" class="list-container hidden"></div>
+    <!-- صفحة اختيار المادة -->
+    <div id="subjectPage" class="list-container hidden"></div>
 
-                <!-- صفحة اختيار الوحدة -->
-                <div id="unitPage" class="list-container hidden"></div>
+    <!-- صفحة اختيار الوحدة -->
+    <div id="unitPage" class="list-container hidden"></div>
 
-                <div id="lessonPath" class="lesson-path"></div>
-                <!-- صفحة الدرس -->
-                <div id="lessonPage" class="hidden">
+    <!-- صفحة الدرس -->
+    <div id="lessonPage" class="hidden">
 
-                    <div class="nav-btns"></div>
+        <!-- مسار الدرس -->
+        <div id="lessonPath" class="lesson-path"></div>
 
-                    <!-- شريط التقدم -->
-                    <div class="progress-box">
-                        <div id="progressBar" class="progress-bar"></div>
-                    </div>
+        <!-- شريط التقدم -->
+        <div class="progress-box">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
 
-                    <h2 id="lessonTitle"></h2>
+        <!-- عنوان الدرس -->
+        <h2 id="lessonTitle"></h2>
 
-                    <button id="toggleLessonsBtn" class="toggle-lessons-btn" onclick="toggleLessons()">
-                        📚 قائمة الدروس
-                    </button>
+        <!-- زر إظهار قائمة الدروس -->
+        <button
+            id="toggleLessonsBtn"
+            class="toggle-lessons-btn"
+            onclick="toggleLessons()"
+        >
+            📚 قائمة الدروس
+        </button>
 
-                    <div id="lessonList" class="list-container"></div>
+        <!-- قائمة الدروس -->
+        <div
+            id="lessonList"
+            class="list-container"
+        ></div>
 
-                    <!-- أزرار التنقل بين الدروس -->
-                    <div class="nav-btns">
-                        <button id="prevLessonBtn" onclick="prevLesson()">⬅️ الدرس السابق</button>
-                        <button id="nextLessonBtn" onclick="nextLesson()">➡️ الدرس التالي</button>
-                    </div>
+        <!-- محتوى الدرس -->
+        <div id="lessonPageContent">
 
-                    <div id="lessonPageContent">
-                        <div id="lessonVideo"></div>
-                        <div id="lessonText"></div>
-                    </div>
+            <!-- الفيديو -->
+            <div id="lessonVideo"></div>
 
-                </div>
+            <!-- الشرح -->
+            <div id="lessonText"></div>
 
+        </div>
 
+        <!-- أزرار التنقل -->
+        <div class="nav-btns">
+
+            <button
+                id="prevLessonBtn"
+                onclick="prevLesson()"
+                class="custom-btn"
+            >
+                ⬅️ الدرس السابق
+            </button>
+
+            <button
+                id="nextLessonBtn"
+                onclick="nextLesson()"
+                class="custom-btn"
+            >
+                ➡️ الدرس التالي
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
                 <!-- لوحة التحكم للمدير والمشرف -->
 
@@ -1407,104 +1438,268 @@ async function renderLessons(grade, subject, unit) {
 
 
 // ==============================
+```js
+// ==============================
 // 📖 عرض تفاصيل الدرس
 // ==============================
 function showLessonDetail(lesson) {
 
-    const videoDiv = document.getElementById("lessonVideo");
-    const textDiv = document.getElementById("lessonText");
+    // إظهار صفحة الدرس
+    showSection("lessonPage");
 
-    videoDiv.innerHTML = `
-        <video id="lessonPlayer" controls width="100%">
-            <source src="${lesson.video}" type="video/mp4">
-        </video>
+    const videoDiv =
+        document.getElementById("lessonVideo");
+
+    const textDiv =
+        document.getElementById("lessonText");
+
+    const titleDiv =
+        document.getElementById("lessonTitle");
+
+    // عنوان الدرس
+    if (titleDiv) {
+
+        titleDiv.textContent =
+            lesson.title || "بدون عنوان";
+    }
+
+    // الفيديو
+    if (lesson.video) {
+
+        videoDiv.innerHTML = `
+            <video
+                id="lessonPlayer"
+                controls
+                width="100%"
+                style="
+                    border-radius:12px;
+                    margin:15px 0;
+                "
+            >
+                <source
+                    src="${lesson.video}"
+                    type="video/mp4"
+                >
+            </video>
+        `;
+
+    } else {
+
+        videoDiv.innerHTML = `
+            <p>
+                لا يوجد فيديو لهذا الدرس
+            </p>
+        `;
+    }
+
+    // نص الدرس
+    textDiv.innerHTML = `
+        <div class="lesson-content">
+            ${
+                lesson.content?.ar
+                || "لا يوجد شرح متاح"
+            }
+        </div>
     `;
 
-    textDiv.textContent = lesson.content.ar;
-
-    const video = document.getElementById("lessonPlayer");
+    // التحكم في انتهاء الفيديو
+    const video =
+        document.getElementById(
+            "lessonPlayer"
+        );
 
     if (video) {
 
         lessonCompleted = false;
 
-        const nextBtn = document.getElementById("nextLessonBtn");
-        if (nextBtn) nextBtn.disabled = true;
+        const nextBtn =
+            document.getElementById(
+                "nextLessonBtn"
+            );
 
-        video.addEventListener("ended", () => {
+        if (nextBtn) {
+            nextBtn.disabled = true;
+        }
 
-            lessonCompleted = true;
+        video.addEventListener(
+            "ended",
+            () => {
 
-            if (nextBtn) nextBtn.disabled = false;
+                lessonCompleted = true;
 
-            saveLastLesson(currentLessonIndex);
-        });
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                }
+
+                saveLastLesson(
+                    currentLessonIndex
+                );
+            }
+        );
     }
 
     updateLessonNav(true);
 }
-   
 
-                    // عرض قائمة الدروس بشكل كروت
-                    function renderLessonList() {
-                        const listDiv = document.getElementById("lessonList");
-                        if (!listDiv) return;
+// ==============================
+// 📚 عرض قائمة الدروس
+// ==============================
+function renderLessonList() {
 
-                        listDiv.innerHTML = `<div class="lessons-grid"></div>`;
-                        const grid = listDiv.querySelector(".lessons-grid");
+    const listDiv =
+        document.getElementById(
+            "lessonList"
+        );
 
-                        currentLessonsList.forEach((lesson, index) => {
-                            const btn = document.createElement("button");
-                            btn.textContent = lesson.title;
-                            btn.className = "lesson-card";
-                            btn.onclick = () => loadLesson(index);
-                            grid.appendChild(btn);
-                        });
-                    }
+    if (!listDiv) return;
 
+    listDiv.innerHTML =
+        `<div class="lessons-grid"></div>`;
 
-                    // ▶️ تحميل درس معين
-                    function loadLesson(index) {
-                         updateNavButtons("lessonsScreen");
-                        currentLessonIndex = index;
-                        lessonCompleted = false;
-                        document.getElementById("lessonList").style.display = "none";
+    const grid =
+        listDiv.querySelector(
+            ".lessons-grid"
+        );
 
-                        const lesson = currentLessonsList[index];
+    currentLessonsList.forEach(
+        (lesson, index) => {
 
-                        // مسار الدرس
-                        document.getElementById("lessonPath").innerHTML = `
-                                          <span>${currentSubject}</span>
-                                           <span> &gt; </span>
-                                            <span>${currentUnit}</span>
-                                             <span> &gt; </span>
-                                            <strong>${lesson.title}</strong>
-                                                                                                                                            `;
+            const btn =
+                document.createElement(
+                    "button"
+                );
 
-                        showLessonDetail(lesson);
+            btn.textContent =
+                lesson.title;
 
-                        const prevBtn = document.getElementById("prevLessonBtn");
-                        const nextBtn = document.getElementById("nextLessonBtn");
+            btn.className =
+                "lesson-card";
 
-                        if (prevBtn) prevBtn.disabled = index === 0;
-                        if (nextBtn) nextBtn.disabled = true;
+            btn.onclick = () =>
+                loadLesson(index);
 
-                        // 📊 شريط التقدم
-                        const progress =
-                            ((index + 1) / currentLessonsList.length) * 100;
-                        document.getElementById("progressBar").style.width = progress + "%";
+            grid.appendChild(btn);
+        }
+    );
+}
 
-                        saveLastLesson(index);
-                    }
+// ==============================
+// ▶️ تحميل درس
+// ==============================
+function loadLesson(index) {
 
+    updateNavButtons(
+        "lessonsScreen"
+    );
 
+    currentLessonIndex = index;
 
-                    function prevLesson() {
-                        if (currentLessonIndex > 0) {
-                            currentLessonIndex--;
-                            loadLesson(currentLessonIndex);
-                        }
-                    }
+    lessonCompleted = false;
+
+    // إخفاء قائمة الدروس
+    const lessonList =
+        document.getElementById(
+            "lessonList"
+        );
+
+    if (lessonList) {
+        lessonList.style.display =
+            "none";
+    }
+
+    const lesson =
+        currentLessonsList[index];
+
+    // مسار الدرس
+    const lessonPath =
+        document.getElementById(
+            "lessonPath"
+        );
+
+    if (lessonPath) {
+
+        lessonPath.innerHTML = `
+            <span>
+                ${currentSubject}
+            </span>
+
+            <span> &gt; </span>
+
+            <span>
+                ${currentUnit}
+            </span>
+
+            <span> &gt; </span>
+
+            <strong>
+                ${lesson.title}
+            </strong>
+        `;
+    }
+
+    // عرض الدرس
+    showLessonDetail(lesson);
+
+    // أزرار التنقل
+    const prevBtn =
+        document.getElementById(
+            "prevLessonBtn"
+        );
+
+    const nextBtn =
+        document.getElementById(
+            "nextLessonBtn"
+        );
+
+    if (prevBtn) {
+        prevBtn.disabled =
+            index === 0;
+    }
+
+    if (nextBtn) {
+        nextBtn.disabled = true;
+    }
+
+    // شريط التقدم
+    const progress =
+        (
+            (index + 1)
+            /
+            currentLessonsList.length
+        ) * 100;
+
+    const progressBar =
+        document.getElementById(
+            "progressBar"
+        );
+
+    if (progressBar) {
+
+        progressBar.style.width =
+            progress + "%";
+    }
+
+    saveLastLesson(index);
+}
+
+// ==============================
+// ⬅️ الدرس السابق
+// ==============================
+function prevLesson() {
+
+    if (
+        currentLessonIndex > 0
+    ) {
+
+        currentLessonIndex--;
+
+        loadLesson(
+            currentLessonIndex
+        );
+    }
+}
+```
+
 
                     function nextLesson() {
                         // 🔒 حماية إضافية: لا ينتقل إلا إذا اكتمل الدرس
