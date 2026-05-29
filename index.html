@@ -652,55 +652,87 @@ let lessonsCache = {}; // كاش مؤقت لتحسين الأداء
 
 async function getLessons(grade, subject, unit) {
 
-    const db = firebase.firestore();
+    try {
 
-    const snap = await db.collection("lessons")
-        .where("grade", "==", grade)
-        .where("subject", "==", subject)
-        .where("unit", "==", unit)
-        .orderBy("order")
-        .get();
+        const key = `${grade}-${subject}-${unit}`;
 
-    let lessons = [];
+        // ✅ استخدام الكاش إذا موجود
+        if (lessonsCache[key]) {
 
-    snap.forEach(doc => {
-        lessons.push(doc.data());
-    });
+            return lessonsCache[key];
+        }
 
-    return lessons;
-}
+        const db = firebase.firestore();
 
-        // ✔ لو مفيش دروس
+        const snap = await db.collection("lessons")
+            .where("grade", "==", grade)
+            .where("subject", "==", subject)
+            .where("unit", "==", unit)
+            .orderBy("order")
+            .get();
+
+        let lessons = [];
+
+        snap.forEach(doc => {
+
+            lessons.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+
+        // ✅ لو مفيش دروس
         if (lessons.length === 0) {
+
             console.log("لا توجد دروس لهذه الوحدة");
         }
 
+        // ✅ حفظ بالكاش
         lessonsCache[key] = lessons;
 
         return lessons;
 
     } catch (err) {
+
         console.error("خطأ في تحميل الدروس:", err);
+
         return [];
     }
 }
 
-                    let scores = JSON.parse(localStorage.getItem("scores") || "{}");
+// ===============================
+// بيانات عامة
+// ===============================
 
-                    let currentUser = null;
-                    let currentGrade = null;
-                    let currentSubject = null;
-                    let currentUnit = null;
-                    // ===== فلترة الطلاب =====
-                    let currentFilter = "all";
-                    let savedStudents = [];
+let scores =
+    JSON.parse(
+        localStorage.getItem("scores") || "{}"
+    );
 
-                    // زر الفلترة
-                    function filterStudentsByStatus(type) {
-                        currentFilter = type;
-                        renderStudentsFiltered();
-                    }
+let currentUser = null;
 
+let currentGrade = null;
+
+let currentSubject = null;
+
+let currentUnit = null;
+
+// ===== فلترة الطلاب =====
+
+let currentFilter = "all";
+
+let savedStudents = [];
+
+// ===============================
+// فلترة الطلاب
+// ===============================
+
+function filterStudentsByStatus(type) {
+
+    currentFilter = type;
+
+    renderStudentsFiltered();
+}
                     // رسم الطلاب حسب الفلتر
                     function renderStudentsFiltered() {
                         let filteredStudents = savedStudents;
