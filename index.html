@@ -1386,34 +1386,48 @@ await db.collection("students")
 
 
 
-                    // عرض الدروس
-                    async function renderLessons(grade, subject, unit) {
-                        resetNavigation();
+               // عرض الدروس
+async function renderLessons(grade, subject, unit) {
 
-                        currentLessonsList =
-    await getLessons(grade, subject, unit);
+    resetNavigation();
 
-                        // 🔹 جلب آخر درس محفوظ
-                        const lastIndex = getLastLesson();
-                        currentLessonIndex =
-                            lastIndex !== null && lastIndex < currentLessonsList.length
-                                ? lastIndex
-                                : 0;
-                        document.getElementById("lessonPath").style.display = "block";
+    currentLessonsList =
+        await getLessons(grade, subject, unit);
 
-                        showSection("lessonPage");
-                        updateBackButton();
+    // 🔹 جلب آخر درس محفوظ
+    const lastIndex = getLastLesson();
 
-                        document.getElementById("lessonTitle").textContent =
-                            `${grade} - ${subject} - ${unit}`;
+    currentLessonIndex =
+        lastIndex !== null &&
+        lastIndex < currentLessonsList.length
+            ? lastIndex
+            : 0;
 
-                        renderLessonList();
-                        loadLesson(currentLessonIndex);
-                    }
+    document.getElementById("lessonPath").style.display = "block";
+
+    showSection("lessonPage");
+
+    updateBackButton();
+
+    document.getElementById("lessonTitle").textContent =
+        `${grade} - ${subject} - ${unit}`;
+
+    renderLessonList();
+
+    loadLesson(currentLessonIndex);
+}
+
+
+// ==============================
+// 📖 عرض تفاصيل الدرس
+// ==============================
 function showLessonDetail(lesson) {
 
-    const videoDiv = document.getElementById("lessonVideo");
-    const textDiv = document.getElementById("lessonText");
+    const videoDiv =
+        document.getElementById("lessonVideo");
+
+    const textDiv =
+        document.getElementById("lessonText");
 
     videoDiv.innerHTML = `
         <video id="lessonPlayer" controls width="100%">
@@ -1421,20 +1435,33 @@ function showLessonDetail(lesson) {
         </video>
     `;
 
-    textDiv.textContent = lesson.content.ar;
+    textDiv.textContent =
+        lesson.content.ar;
 
-    let video = document.getElementById("lessonPlayer");
+    let video =
+        document.getElementById("lessonPlayer");
 
     if (video) {
+
         lessonCompleted = false;
 
-        const nextBtn = document.getElementById("nextLessonBtn");
-        if (nextBtn) nextBtn.disabled = true;
+        const nextBtn =
+            document.getElementById("nextLessonBtn");
+
+        if (nextBtn) {
+            nextBtn.disabled = true;
+        }
 
         video.addEventListener("ended", () => {
+
             lessonCompleted = true;
-            if (nextBtn) nextBtn.disabled = false;
+
+            if (nextBtn) {
+                nextBtn.disabled = false;
+            }
+
             saveLastLesson(currentLessonIndex);
+
         });
     }
 
