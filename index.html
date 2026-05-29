@@ -654,11 +654,10 @@ async function getLessons(grade, subject, unit) {
 
     try {
 
-        const key = `${grade}-${subject}-${unit}`;
+        const key = `${grade}_${subject}_${unit}`;
 
-        // ✅ استخدام الكاش إذا موجود
+        // ✅ لو البيانات موجودة في الكاش
         if (lessonsCache[key]) {
-
             return lessonsCache[key];
         }
 
@@ -674,20 +673,15 @@ async function getLessons(grade, subject, unit) {
         let lessons = [];
 
         snap.forEach(doc => {
-
-            lessons.push({
-                id: doc.id,
-                ...doc.data()
-            });
+            lessons.push(doc.data());
         });
 
-        // ✅ لو مفيش دروس
+        // ✔ لو مفيش دروس
         if (lessons.length === 0) {
-
             console.log("لا توجد دروس لهذه الوحدة");
         }
 
-        // ✅ حفظ بالكاش
+        // ✅ حفظ في الكاش
         lessonsCache[key] = lessons;
 
         return lessons;
@@ -698,6 +692,23 @@ async function getLessons(grade, subject, unit) {
 
         return [];
     }
+}
+
+let scores = JSON.parse(localStorage.getItem("scores") || "{}");
+
+let currentUser = null;
+let currentGrade = null;
+let currentSubject = null;
+let currentUnit = null;
+
+// ===== فلترة الطلاب =====
+let currentFilter = "all";
+let savedStudents = [];
+
+// زر الفلترة
+function filterStudentsByStatus(type) {
+    currentFilter = type;
+    renderStudentsFiltered();
 }
 
 // ===============================
