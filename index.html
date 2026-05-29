@@ -5,14 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة الخطيب التعليمية</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            direction: rtl;
-        }
-
+    
         /* الشريط العلوي */
         .top-bar {
             background-color: #ff9900;
@@ -144,7 +137,7 @@ margin-left:6px;
 }
 
 </style>
-    </style>
+   
 </head>
 <body>
     <!-- 🚨 شريط إعلان متحرك للطلاب -->
@@ -602,53 +595,53 @@ const subjectFolders = {
 
 };
 
-let lessons = {};
+// ===============================
+// 📚 نظام دروس ديناميكي (Firestore)
+// ===============================
 
-grades.forEach((grade) => {
+let lessonsCache = {}; // كاش مؤقت لتحسين الأداء
 
-    lessons[grade] = {};
+async function loadLessonsFromDB(grade, subject, unit) {
 
-    subjectsPerGrade[grade].forEach((sub) => {
+    const key = `${grade}_${subject}_${unit}`;
 
-        lessons[grade][sub] = {};
+    // ✔ لو موجود في الكاش ما نعيدش تحميله
+    if (lessonsCache[key]) {
+        return lessonsCache[key];
+    }
 
-        if (sectionsPerSubject[sub]) {
+    try {
+        const snap = await db
+            .collection("lessons")
+            .where("grade", "==", grade)
+            .where("subject", "==", subject)
+            .where("unit", "==", unit)
+            .orderBy("order", "asc")
+            .get();
 
-            sectionsPerSubject[sub].forEach((unit) => {
+        let lessons = [];
 
-                lessons[grade][sub][unit] = [
-
-                    {
-                        title: "درس 1 " + unit,
-
-                        content:
-                            "شرح نصي مفصل لدرس 1 في " + unit,
-
-                        // ✅ فيديو الدرس الأول
-                        video:
-                            `videos/${subjectFolders[sub]}/${unit}-lesson1.mp4`,
-                    },
-
-                    {
-                        title: "درس 2 " + unit,
-
-                        content:
-                            "شرح نصي مفصل لدرس 2 في " + unit,
-
-                        // ✅ فيديو الدرس الثاني
-                        video:
-                            `videos/${subjectFolders[sub]}/${unit}-lesson2.mp4`,
-                    }
-
-                ];
-
+        snap.forEach(doc => {
+            lessons.push({
+                id: doc.id,
+                ...doc.data()
             });
+        });
 
+        // ✔ لو مفيش دروس
+        if (lessons.length === 0) {
+            console.log("لا توجد دروس لهذه الوحدة");
         }
 
-    });
+        lessonsCache[key] = lessons;
 
-});
+        return lessons;
+
+    } catch (err) {
+        console.error("خطأ في تحميل الدروس:", err);
+        return [];
+    }
+}
 
                     let scores = JSON.parse(localStorage.getItem("scores") || "{}");
 
@@ -1157,8 +1150,8 @@ await firebase.auth()
 await db.collection("students")
 .doc(userCredential.user.uid)
 .set({
-    name: name,
-    email: email,
+    name,
+    email,
     role: "STUDENT",
     approved: false,
     createdAt: new Date().toISOString()
@@ -1312,7 +1305,7 @@ await db.collection("students")
                     function renderLessons(grade, subject, unit) {
                         resetNavigation();
 
-                        currentLessonsList = lessons[grade][subject][unit];
+                        currentLessonsList = await loadLessonsFromDB(grade, subject, unit);
 
                         // 🔹 جلب آخر درس محفوظ
                         const lastIndex = getLastLesson();
@@ -1336,20 +1329,31 @@ function showLessonDetail(lesson) {
     const videoDiv = document.getElementById("lessonVideo");
     const textDiv = document.getElementById("lessonText");
 
-    // ✅ استخدام فيديو الدرس الحقيقي
     videoDiv.innerHTML = `
-        <video
-            id="lessonPlayer"
-            controls
-            playsinline
-            preload="auto"
-            width="100%"
-            style="max-height:220px; border-radius:12px;"
-        >
+        <video id="lessonPlayer" controls width="100%">
             <source src="${lesson.video}" type="video/mp4">
-            المتصفح لا يدعم تشغيل الفيديو
         </video>
     `;
+
+    textDiv.textContent = lesson.content.ar;
+
+    let video = document.getElementById("lessonPlayer");
+
+    if (video) {
+        lessonCompleted = false;
+
+        const nextBtn = document.getElementById("nextLessonBtn");
+        if (nextBtn) nextBtn.disabled = true;
+
+        video.addEventListener("ended", () => {
+            lessonCompleted = true;
+            if (nextBtn) nextBtn.disabled = false;
+            saveLastLesson(currentLessonIndex);
+        });
+    }
+
+    updateLessonNav(true);
+}
 
     const video = document.getElementById("lessonPlayer");
 
@@ -1376,8 +1380,7 @@ function showLessonDetail(lesson) {
     }
 
     // ✅ النص الخاص بالدرس
-    textDiv.textContent = lesson.content;
-
+    let currentLang = "ar";
     updateLessonNav(true);
 }
 
