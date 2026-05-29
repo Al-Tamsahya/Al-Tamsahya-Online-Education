@@ -420,6 +420,10 @@ margin-left:6px;
                 <!-- لوحة التحكم للمدير والمشرف -->
 
                 <div id="adminPanel" class="admin-box hidden">
+                    <button class="custom-btn"
+onclick="showAdminSection('lessons')">
+📚 إدارة الدروس
+</button>
                     <h3>الإدارة</h3>
 
                     <div class="nav-btns">
@@ -452,6 +456,51 @@ margin-left:6px;
                         <div id="supervisorsList" class="table-container hidden"></div>
                         <div id="testsList" class="table-container hidden"></div>
                         <div id="resultsList" class="table-container hidden"></div>
+                        <div id="lessonsList"
+class="table-container hidden">
+
+    <h3>📚 إدارة الدروس</h3>
+
+    <input type="text"
+           id="lessonTitleInput"
+           placeholder="عنوان الدرس">
+
+    <input type="text"
+           id="lessonGradeInput"
+           placeholder="الصف الدراسي">
+
+    <input type="text"
+           id="lessonSubjectInput"
+           placeholder="المادة">
+
+    <input type="text"
+           id="lessonUnitInput"
+           placeholder="الوحدة">
+
+    <input type="text"
+           id="lessonVideoInput"
+           placeholder="رابط الفيديو">
+
+    <textarea id="lessonContentInput"
+              placeholder="شرح الدرس">
+    </textarea>
+
+    <input type="number"
+           id="lessonOrderInput"
+           placeholder="ترتيب الدرس">
+
+    <button class="custom-btn"
+            onclick="addLesson()">
+
+        ➕ إضافة الدرس
+
+    </button>
+
+    <hr>
+
+    <div id="lessonsContainer"></div>
+
+</div>
                     </div>
                 </div>
 
@@ -601,32 +650,25 @@ const subjectFolders = {
 
 let lessonsCache = {}; // كاش مؤقت لتحسين الأداء
 
-async function loadLessonsFromDB(grade, subject, unit) {
+async function getLessons(grade, subject, unit) {
 
-    const key = `${grade}_${subject}_${unit}`;
+    const db = firebase.firestore();
 
-    // ✔ لو موجود في الكاش ما نعيدش تحميله
-    if (lessonsCache[key]) {
-        return lessonsCache[key];
-    }
+    const snap = await db.collection("lessons")
+        .where("grade", "==", grade)
+        .where("subject", "==", subject)
+        .where("unit", "==", unit)
+        .orderBy("order")
+        .get();
 
-    try {
-        const snap = await db
-            .collection("lessons")
-            .where("grade", "==", grade)
-            .where("subject", "==", subject)
-            .where("unit", "==", unit)
-            .orderBy("order", "asc")
-            .get();
+    let lessons = [];
 
-        let lessons = [];
+    snap.forEach(doc => {
+        lessons.push(doc.data());
+    });
 
-        snap.forEach(doc => {
-            lessons.push({
-                id: doc.id,
-                ...doc.data()
-            });
-        });
+    return lessons;
+}
 
         // ✔ لو مفيش دروس
         if (lessons.length === 0) {
@@ -1302,10 +1344,11 @@ await db.collection("students")
 
 
                     // عرض الدروس
-                    function renderLessons(grade, subject, unit) {
+                    async function renderLessons(grade, subject, unit) {
                         resetNavigation();
 
-                        currentLessonsList = await loadLessonsFromDB(grade, subject, unit);
+                        currentLessonsList =
+    await getLessons(grade, subject, unit);
 
                         // 🔹 جلب آخر درس محفوظ
                         const lastIndex = getLastLesson();
@@ -1404,6 +1447,7 @@ function showLessonDetail(lesson) {
 
                     // ▶️ تحميل درس معين
                     function loadLesson(index) {
+                         updateNavButtons("lessonsScreen");
                         currentLessonIndex = index;
                         lessonCompleted = false;
                         document.getElementById("lessonList").style.display = "none";
@@ -1488,16 +1532,19 @@ function showLessonDetail(lesson) {
                             // داخل الدروس → رجوع للوحدات
                             currentUnit = null;
                             renderUnits(currentGrade, currentSubject);
+                              updateNavButtons("subjectsScreen");
                         }
                         else if (currentSubject) {
                             // داخل الوحدات → رجوع للمواد
                             currentSubject = null;
                             renderSubjects(currentGrade);
+                              updateNavButtons("subjectsScreen");
                         }
                         else if (currentGrade) {
                             // داخل المواد → رجوع للصفوف
                             currentGrade = null;
                             renderGrades();
+                              updateNavButtons("subjectsScreen");
                         }
                     }
 
@@ -1540,27 +1587,220 @@ homeBtn.style.display = "inline-block";
 
                     // عرض أقسام الإدارة
                     function showAdminSection(section) {
-                        hideAllAdminSections();
-                        switch (section) {
-                            case "students":
-                                renderStudents();
-                                break;
-                            case "supervisors":
-                                renderSupervisors();
-                                break;
-                            case "tests":
-                                renderTests();
-                                break;
-                            case "results":
-                                renderResults();
-                                break;
-                        }
-                    }
+
+    hideAllAdminSections();
+
+    switch (section) {
+
+        case "lessons":
+            renderLessonsAdmin();
+            break;
+
+        case "students":
+            renderStudents();
+            break;
+
+        case "supervisors":
+            renderSupervisors();
+            break;
+
+        case "tests":
+            renderTests();
+            break;
+
+        case "results":
+            renderResults();
+            break;
+    }
+}
                     async function loadPendingStudents() {
                         const res = await fetch("/api/students/pending"); // نطلب الطلبات من السيرفر
                         const data = await res.json();                    // نحولها JSON
                         console.log(data);                                // نعرضها في Console
                     }
+                    // ==============================
+// 📚 إضافة درس جديد
+// ==============================
+
+async function addLesson() {
+
+    const title =
+        document.getElementById(
+            "lessonTitleInput").value;
+
+    const grade =
+        document.getElementById(
+            "lessonGradeInput").value;
+
+    const subject =
+        document.getElementById(
+            "lessonSubjectInput").value;
+
+    const unit =
+        document.getElementById(
+            "lessonUnitInput").value;
+
+    const video =
+        document.getElementById(
+            "lessonVideoInput").value;
+
+    const content =
+        document.getElementById(
+            "lessonContentInput").value;
+
+    const order =
+        parseInt(
+            document.getElementById(
+                "lessonOrderInput").value
+        ) || 1;
+
+    if (!title || !grade || !subject) {
+
+        alert("أكمل البيانات");
+
+        return;
+    }
+
+    try {
+
+        await db.collection("lessons").add({
+
+            title: title,
+            grade: grade,
+            subject: subject,
+            unit: unit,
+            video: video,
+            order: order,
+
+            content: {
+                ar: content,
+                en: ""
+            },
+
+            createdAt:
+                new Date().toISOString()
+
+        });
+
+        alert("تم إضافة الدرس ✅");
+
+        renderLessonsAdmin();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("حدث خطأ ❌");
+    }
+}
+
+
+// ==============================
+// 📚 عرض الدروس
+// ==============================
+
+async function renderLessonsAdmin() {
+
+    hideAllAdminSections();
+
+    document.getElementById(
+        "lessonsList"
+    ).classList.remove("hidden");
+
+    const container =
+        document.getElementById(
+            "lessonsContainer"
+        );
+
+    container.innerHTML =
+        "جارٍ تحميل الدروس...";
+
+    try {
+
+        const snap =
+            await db.collection(
+                "lessons"
+            )
+            .orderBy("order")
+            .get();
+
+        let html = "";
+
+        snap.forEach(doc => {
+
+            const lesson = doc.data();
+
+            html += `
+
+<div style="
+background:#fff;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+">
+
+<h4>${lesson.title}</h4>
+
+<p>
+📘 ${lesson.grade}
+</p>
+
+<p>
+📚 ${lesson.subject}
+</p>
+
+<p>
+🧩 ${lesson.unit}
+</p>
+
+<button class="custom-btn danger"
+onclick="deleteLesson('${doc.id}')">
+
+🗑 حذف
+
+</button>
+
+</div>
+`;
+        });
+
+        container.innerHTML = html;
+
+    } catch (err) {
+
+        console.error(err);
+
+        container.innerHTML =
+            "حدث خطأ ❌";
+    }
+}
+
+
+// ==============================
+// 🗑 حذف درس
+// ==============================
+
+async function deleteLesson(id) {
+
+    if (!confirm("حذف الدرس؟"))
+        return;
+
+    try {
+
+        await db
+            .collection("lessons")
+            .doc(id)
+            .delete();
+
+        renderLessonsAdmin();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("حدث خطأ ❌");
+    }
+}
             // ==============================
             // 👨‍💼 إدارة الطلاب والمشرفين
             // ==============================
@@ -1731,7 +1971,9 @@ async function renderStudents() {
     `;
 
     try {
-        const snap = await window.firestoreTools.collection("students").get();
+        const snap = await window.firestoreTools.db
+    .collection("students")
+    .get();
 
         let rows = "";
         snap.forEach(docSnap => {
@@ -1923,11 +2165,20 @@ function resetNavigation() {
 // 🔴 إيقاف الفيديو عند مغادرة صفحة الدرس
 // ==============================
 function stopVideo() {
-    const video = document.getElementById("lessonPlayer");
-    if (video) {
+
+    const video =
+        document.getElementById("lessonPlayer");
+
+    if (!video) return;
+
+    if (video.tagName === "VIDEO") {
+
         video.pause();
         video.currentTime = 0;
-        video.src = "";
+
+    } else if (video.tagName === "IFRAME") {
+
+        video.src = video.src;
     }
 }
 
@@ -1949,8 +2200,16 @@ function updateGlobalNav(show) {
 }
 
 function toggleLessons() {
-    const list = document.getElementById("lessonList");
-    list.style.display = list.style.display === "none" ? "block" : "none";
+
+    const list =
+        document.getElementById("lessonList");
+
+    if (!list) return;
+
+    list.style.display =
+        list.style.display === "none"
+        ? "block"
+        : "none";
 }
 
 // ==============================
@@ -1965,11 +2224,27 @@ function toggleDarkMode() {
     localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
 }
 
-window.onload = function () {
-    const btn = document.getElementById('darkModeBtn');
-    if (localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
-    if (btn) btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ الوضع النهاري" : "🌙 الوضع الليلي";
-};
+window.addEventListener("load", function () {
+
+    const btn =
+        document.getElementById('darkModeBtn');
+
+    if (
+        localStorage.getItem("darkMode")
+        === "true"
+    ) {
+
+        document.body.classList.add("dark-mode");
+    }
+
+    if (btn) {
+
+        btn.textContent =
+            document.body.classList.contains("dark-mode")
+            ? "☀️ الوضع النهاري"
+            : "🌙 الوضع الليلي";
+    }
+});
 
 // =====================
 // شريط الإعلان
@@ -2250,7 +2525,9 @@ document.addEventListener("DOMContentLoaded", function() {
     0% { left: -100%; }
     100% { left: 100%; }
 }
-body { padding-top: 45px; }
+body.has-announcement {
+    padding-top: 45px;
+}
 </style>
 
 <div id="mobileNav">
